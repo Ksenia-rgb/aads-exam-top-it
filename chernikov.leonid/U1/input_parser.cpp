@@ -70,7 +70,8 @@ chernikov::Person chernikov::parseLine(const std::string &line, bool &success)
 chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &output)
 {
   ParseResult result{0, 0};
-  chernikov::HashTable<std::size_t, bool, std::hash<std::size_t>, std::equal_to<std::size_t>> seenIds;
+  chernikov::HashTable<std::size_t, bool> seenIds;
+  initHashTable(seenIds);
 
   std::string line;
   while (std::getline(input, line))
@@ -84,16 +85,18 @@ chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &
       continue;
     }
 
-    if (seenIds.has(person.id))
+    if (hasInHashTable(seenIds, person.id))
     {
       ++result.ignoredCount;
       continue;
     }
 
-    seenIds.add(person.id, true);
+    addToHashTable(seenIds, person.id, true);
     printPerson(person, output);
     ++result.validCount;
   }
+
+  destroyHashTable(seenIds);
 
   return result;
 }

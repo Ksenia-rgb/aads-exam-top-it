@@ -3,6 +3,7 @@
 
 #include <string>
 #include <cstddef>
+#include <iosfwd>
 
 namespace chernikov
 {

@@ -2,12 +2,11 @@
 #include <fstream>
 #include "file_utils.hpp"
 #include "input_parser.hpp"
-#include "hash_table.hpp"
 
 int main(int argc, char *argv[])
 {
   chernikov::FileConfig config;
-  if (!chernikov::parseArguments(argc, argv, config, std::cerr))
+  if (!chernikov::parseArguments(argc, argv, config))
   {
     std::cerr << "Invalid arguments\n";
     return 1;

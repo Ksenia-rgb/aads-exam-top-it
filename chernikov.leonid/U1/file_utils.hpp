@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iosfwd>
+#include <iostream>
 
 namespace chernikov
 {
@@ -15,16 +16,16 @@ namespace chernikov
     bool useStdout;
   };
 
-  bool parseArguments(int argc, char *argv[], FileConfig &config, std::ostream &errorOutput);
+  bool parseArguments(int argc, char *argv[], FileConfig &config);
 
   bool openFiles(
       const FileConfig &config,
-      std::ifstream &inputFile,
-      std::ofstream &outputFile,
+      std::ifstream &inputFileStream,
+      std::ofstream &outputFileStream,
       std::istream *&input,
       std::ostream *&output);
 
-  void closeFiles(std::ifstream &inputFile, std::ofstream &outputFile);
+  void closeFiles(std::ifstream &inputFileStream, std::ofstream &outputFileStream);
 
 }
 

@@ -2,9 +2,8 @@
 #include <fstream>
 #include <ostream>
 #include <cstring>
-#include <iostream>
 
-bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config, std::ostream &errorOutput)
+bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
 {
   config.inputFile = "";
   config.outputFile = "";
