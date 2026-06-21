@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include "file_utils.hpp"
 #include "input_parser.hpp"
 
@@ -23,11 +24,28 @@ int main(int argc, char *argv[])
     return 2;
   }
 
-  chernikov::ParseResult result = chernikov::parseInput(*input, *output);
+  chernikov::ParseResult result;
+
+  if (config.sameFile)
+  {
+    std::string outputStr = chernikov::parseInputToString(*input, result);
+    chernikov::closeFiles(inputFileStream, outputFileStream);
+    outputFileStream.open(config.outputFile);
+    if (!outputFileStream.is_open())
+    {
+      std::cerr << "Failed to open output file\n";
+      return 2;
+    }
+    outputFileStream << outputStr;
+    outputFileStream.close();
+  }
+  else
+  {
+    result = chernikov::parseInput(*input, *output);
+    chernikov::closeFiles(inputFileStream, outputFileStream);
+  }
 
   std::cerr << result.validCount << " " << result.ignoredCount << "\n";
-
-  chernikov::closeFiles(inputFileStream, outputFileStream);
 
   return 0;
 }

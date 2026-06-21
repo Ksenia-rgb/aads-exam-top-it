@@ -14,6 +14,7 @@ namespace chernikov
     std::string outputFile;
     bool useStdin;
     bool useStdout;
+    bool sameFile;
   };
 
   bool parseArguments(int argc, char *argv[], FileConfig &config);

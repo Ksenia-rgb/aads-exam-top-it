@@ -1,6 +1,7 @@
 #include "file_utils.hpp"
 #include <fstream>
 #include <ostream>
+#include <sstream>
 #include <cstring>
 
 bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
@@ -9,6 +10,7 @@ bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
   config.outputFile = "";
   config.useStdin = true;
   config.useStdout = true;
+  config.sameFile = false;
 
   if (argc > 3)
   {
@@ -46,6 +48,11 @@ bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
     }
   }
 
+  if (!config.useStdin && !config.useStdout && config.inputFile == config.outputFile)
+  {
+    config.sameFile = true;
+  }
+
   return true;
 }
 
@@ -56,7 +63,11 @@ bool chernikov::openFiles(
     std::istream *&input,
     std::ostream *&output)
 {
-  if (!config.useStdin)
+  if (config.useStdin)
+  {
+    input = &std::cin;
+  }
+  else
   {
     inputFileStream.open(config.inputFile);
     if (!inputFileStream.is_open())
@@ -65,12 +76,16 @@ bool chernikov::openFiles(
     }
     input = &inputFileStream;
   }
-  else
-  {
-    input = &std::cin;
-  }
 
-  if (!config.useStdout)
+  if (config.useStdout)
+  {
+    output = &std::cout;
+  }
+  else if (config.sameFile)
+  {
+    output = &std::cout;
+  }
+  else
   {
     outputFileStream.open(config.outputFile);
     if (!outputFileStream.is_open())
@@ -82,10 +97,6 @@ bool chernikov::openFiles(
       return false;
     }
     output = &outputFileStream;
-  }
-  else
-  {
-    output = &std::cout;
   }
 
   return true;

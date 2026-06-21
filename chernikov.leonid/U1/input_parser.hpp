@@ -18,6 +18,8 @@ namespace chernikov
 
   ParseResult parseInput(std::istream &input, std::ostream &output);
 
+  std::string parseInputToString(std::istream &input, ParseResult &result);
+
 }
 
 #endif

@@ -2,6 +2,7 @@
 #include "hash_table.hpp"
 #include <istream>
 #include <ostream>
+#include <sstream>
 #include <cctype>
 #include <string>
 #include <functional>
@@ -99,4 +100,11 @@ chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &
   destroyHashTable(seenIds);
 
   return result;
+}
+
+std::string chernikov::parseInputToString(std::istream &input, ParseResult &result)
+{
+  std::ostringstream output;
+  result = parseInput(input, output);
+  return output.str();
 }
