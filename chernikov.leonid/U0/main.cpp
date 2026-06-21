@@ -1,6 +1,5 @@
 #include <iostream>
-
-int main ()
+int main()
 {
   std::cout << "chernikov.leonid\n";
 }
