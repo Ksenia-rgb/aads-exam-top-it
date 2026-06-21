@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   if (!chernikov::parseArguments(argc, argv, config))
   {
     std::cerr << "Invalid arguments\n";
-    return 2;
+    return 1;
   }
 
   std::ifstream inputFileStream;
@@ -45,10 +45,7 @@ int main(int argc, char *argv[])
     chernikov::closeFiles(inputFileStream, outputFileStream);
   }
 
-  if (result.validCount > 0 || result.ignoredCount > 0)
-  {
-    std::cerr << result.validCount << " " << result.ignoredCount << "\n";
-  }
+  std::cerr << result.validCount << " " << result.ignoredCount << "\n";
 
   return 0;
 }
