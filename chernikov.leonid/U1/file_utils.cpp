@@ -1,7 +1,6 @@
 #include "file_utils.hpp"
 #include <fstream>
 #include <ostream>
-#include <sstream>
 #include <cstring>
 
 bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)

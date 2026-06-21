@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   if (!chernikov::parseArguments(argc, argv, config))
   {
     std::cerr << "Invalid arguments\n";
-    return 1;
+    return 2;
   }
 
   std::ifstream inputFileStream;
