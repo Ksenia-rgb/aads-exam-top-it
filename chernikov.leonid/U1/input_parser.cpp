@@ -1,8 +1,10 @@
 #include "input_parser.hpp"
+#include "hash_table.hpp"
 #include <istream>
 #include <ostream>
 #include <cctype>
 #include <string>
+#include <functional>
 
 namespace
 {
@@ -68,7 +70,7 @@ chernikov::Person chernikov::parseLine(const std::string &line, bool &success)
 chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &output)
 {
   ParseResult result{0, 0};
-  HashTable<std::size_t, bool, std::hash<std::size_t>, std::equal_to<std::size_t>> seenIds;
+  chernikov::HashTable<std::size_t, bool, std::hash<std::size_t>, std::equal_to<std::size_t>> seenIds;
 
   std::string line;
   while (std::getline(input, line))
