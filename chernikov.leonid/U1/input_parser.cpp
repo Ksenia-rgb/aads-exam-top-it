@@ -77,6 +77,11 @@ chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &
   std::string line;
   while (std::getline(input, line))
   {
+    if (line.empty())
+    {
+      continue;
+    }
+
     bool success = false;
     Person person = parseLine(line, success);
 
