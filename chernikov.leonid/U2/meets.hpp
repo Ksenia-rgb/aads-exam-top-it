@@ -21,7 +21,7 @@ namespace chernikov
     Meet *meets;
   };
 
-  using MeetsTable = HashTable<std::size_t, MeetList *>;
+  using MeetsByPerson = HashTable<std::size_t, MeetList *>;
 
   void initMeetList(MeetList &list);
 
@@ -30,8 +30,6 @@ namespace chernikov
   void addMeet(MeetList &list, const Meet &meet);
 
   void sortMeets(MeetList &list);
-
-  using MeetsByPerson = HashTable<std::size_t, MeetList *>;
 
   void initMeets(MeetsByPerson &meets);
 
