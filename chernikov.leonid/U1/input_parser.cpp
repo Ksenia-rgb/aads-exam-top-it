@@ -75,8 +75,10 @@ chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &
   initHashTable(seenIds);
 
   std::string line;
+  bool hasInput = false;
   while (std::getline(input, line))
   {
+    hasInput = true;
     if (line.empty())
     {
       continue;
@@ -103,6 +105,13 @@ chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &
   }
 
   destroyHashTable(seenIds);
+
+  if (!hasInput)
+  {
+    output << "\n";
+    result.ignoredCount = 0;
+    result.validCount = 0;
+  }
 
   return result;
 }
