@@ -109,8 +109,6 @@ chernikov::ParseResult chernikov::parseInput(std::istream &input, std::ostream &
   if (!hasInput)
   {
     output << "\n";
-    result.ignoredCount = 0;
-    result.validCount = 0;
   }
 
   return result;

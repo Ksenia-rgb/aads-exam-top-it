@@ -51,7 +51,10 @@ int main(int argc, char *argv[])
     chernikov::closeFiles(inputFileStream, outputFileStream);
   }
 
-  std::cerr << result.validCount << " " << result.ignoredCount << "\n";
+  if (result.validCount > 0 || result.ignoredCount > 0)
+  {
+    std::cerr << result.validCount << " " << result.ignoredCount << "\n";
+  }
 
   return 0;
 }
