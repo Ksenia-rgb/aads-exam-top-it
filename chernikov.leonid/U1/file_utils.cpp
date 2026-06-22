@@ -3,7 +3,7 @@
 #include <ostream>
 #include <cstring>
 
-bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
+int chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
 {
   config.inputFile = "";
   config.outputFile = "";
@@ -13,7 +13,7 @@ bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
 
   if (argc > 3)
   {
-    return false;
+    return 2;
   }
 
   bool hasInput = false;
@@ -25,7 +25,7 @@ bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
     {
       if (hasInput)
       {
-        return false;
+        return 1;
       }
       config.inputFile = argv[i] + 3;
       config.useStdin = false;
@@ -35,7 +35,7 @@ bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
     {
       if (hasOutput)
       {
-        return false;
+        return 1;
       }
       config.outputFile = argv[i] + 4;
       config.useStdout = false;
@@ -43,7 +43,7 @@ bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
     }
     else
     {
-      return false;
+      return 1;
     }
   }
 
@@ -52,7 +52,7 @@ bool chernikov::parseArguments(int argc, char *argv[], FileConfig &config)
     config.sameFile = true;
   }
 
-  return true;
+  return 0;
 }
 
 bool chernikov::openFiles(

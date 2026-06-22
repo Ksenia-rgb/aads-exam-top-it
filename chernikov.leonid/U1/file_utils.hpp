@@ -17,7 +17,7 @@ namespace chernikov
     bool sameFile;
   };
 
-  bool parseArguments(int argc, char *argv[], FileConfig &config);
+  int parseArguments(int argc, char *argv[], FileConfig &config);
 
   bool openFiles(
       const FileConfig &config,

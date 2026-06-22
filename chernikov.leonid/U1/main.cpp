@@ -7,7 +7,13 @@
 int main(int argc, char *argv[])
 {
   chernikov::FileConfig config;
-  if (!chernikov::parseArguments(argc, argv, config))
+  int parseResult = chernikov::parseArguments(argc, argv, config);
+  if (parseResult == 1)
+  {
+    std::cerr << "Invalid arguments\n";
+    return 1;
+  }
+  if (parseResult == 2)
   {
     std::cerr << "Invalid arguments\n";
     return 0;
