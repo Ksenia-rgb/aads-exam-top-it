@@ -90,9 +90,10 @@ namespace
       }
     }
     std::ostream& out = args.hasOut ? static_cast< std::ostream& >(outFile) : std::cout;
-    if (persons.size > 0)
+    writeAll(out, persons);
+    if (persons.size == 0)
     {
-      writeAll(out, persons);
+      out << "\n";
     }
     std::cerr << stats.accepted << " " << stats.ignored << "\n";
     return 0;
@@ -102,6 +103,12 @@ namespace
 
 int main(int argc, char** argv)
 {
+  if (argc > 3)
+  {
+    std::cerr << "Too many arguments\n";
+    return 0;
+  }
+  
   burukov::Args args = burukov::parseArgs(argc, argv);
   if (!args.valid)
   {
