@@ -24,9 +24,9 @@ namespace saldaev
 
 int main(int argc, char *argv[])
 {
-  if (argc > 2) {
+  if (argc > 3) {
     std::cerr << "wrong amoung of arguments";
-    return 1;
+    return 0;
   }
 
   std::fstream ifile, ofile;
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     if (in >> id) {
       if (std::getline(in, info)) {
         size_t pos = 0;
-        while (pos < info.size() && info[pos] == ' ') {
+        while (pos < info.size() && (info[pos] == ' ' || info[pos] == '\t')) {
           ++pos;
         }
 
