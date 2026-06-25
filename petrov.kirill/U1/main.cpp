@@ -27,8 +27,7 @@ int main(int argc, char** argv)
     }
     else
     {
-      std::cerr << "Error: Invalid argument format\n";
-      return 0;
+      return 1;
     }
   }
 
@@ -47,7 +46,18 @@ int main(int argc, char** argv)
 
   if (in->peek() == std::char_traits<char>::eof())
   {
-    std::cerr << "0 0\n";
+    std::ostream* out = &std::cout;
+    std::ofstream fout;
+    if (file_out != "")
+    {
+      fout.open(file_out);
+      if (!fout.is_open())
+      {
+        return 1;
+      }
+      out = &fout;
+    }
+    *out << "\n";
     return 0;
   }
 
