@@ -255,6 +255,114 @@ namespace krivoshapov
       destroy(set2);
       destroy(result);
     }
+
+    void doDeanon(std::istream &in, std::ostream &out, Database &db)
+    {
+      std::size_t anonId = 0, id = 0;
+      if (!(in >> anonId >> id))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      const Person *anon = findPerson(db, anonId);
+      if (anon == nullptr || !anon->info.empty())
+      {
+        invalidCmd(out);
+        return;
+      }
+      const Person *person = findPerson(db, id);
+      if (person == nullptr || person->info.empty())
+      {
+        invalidCmd(out);
+        return;
+      }
+      for (std::size_t i = 0; i < db.meetings.size_; ++i)
+      {
+        if (db.meetings.data_[i].a == anonId)
+        {
+          db.meetings.data_[i].a = id;
+        }
+        if (db.meetings.data_[i].b == anonId)
+        {
+          db.meetings.data_[i].b = id;
+        }
+      }
+      removeIf(db.meetings, [](const Meeting &m)
+               { return m.a == m.b; });
+      removeIf(db.persons, [anonId](const Person &p)
+               { return p.id == anonId; });
+    }
+
+    void doRedesc(std::istream &in, std::ostream &out, Database &db)
+    {
+      std::size_t id = 0;
+      if (!(in >> id))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      Person *p = findPerson(db, id);
+      if (p == nullptr)
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      char ch = 0;
+      bool foundQuote = false;
+      while (in.get(ch))
+      {
+        if (ch == '"')
+        {
+          foundQuote = true;
+          break;
+        }
+        if (ch != ' ' && ch != '\t')
+        {
+          skipLine(in);
+          invalidCmd(out);
+          return;
+        }
+      }
+      if (!foundQuote)
+      {
+        invalidCmd(out);
+        return;
+      }
+      std::string desc;
+      while (in.get(ch) && ch != '"')
+      {
+        desc += ch;
+      }
+      p->info = desc;
+    }
+
+    void doOutPersons(std::istream &in, std::ostream &out, const Database &db)
+    {
+      std::string filename;
+      if (!(in >> filename))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      std::ofstream file(filename);
+      if (!file.is_open())
+      {
+        invalidCmd(out);
+        return;
+      }
+      for (std::size_t i = 0; i < db.persons.size_; ++i)
+      {
+        const Person &p = db.persons.data_[i];
+        if (!p.info.empty())
+        {
+          file << p.id << ' ' << p.info << '\n';
+        }
+      }
+    }
   }
 
   void processCommands(std::istream &in, std::ostream &out, Database &db)
@@ -262,13 +370,29 @@ namespace krivoshapov
     std::string cmd;
     while (in >> cmd)
     {
-      if (cmd == "desc")
+      if (cmd == "anons")
+      {
+        doAnons(out, db);
+      }
+      else if (cmd == "deanon")
+      {
+        doDeanon(in, out, db);
+      }
+      else if (cmd == "redesc")
+      {
+        doRedesc(in, out, db);
+      }
+      else if (cmd == "desc")
       {
         doDesc(in, out, db);
       }
       else if (cmd == "meets")
       {
         doMeets(in, out, db);
+      }
+      else if (cmd == "commons")
+      {
+        doCommons(in, out, db);
       }
       else if (cmd == "less")
       {
@@ -278,13 +402,9 @@ namespace krivoshapov
       {
         doGreater(in, out, db);
       }
-      else if (cmd == "anons")
+      else if (cmd == "out-persons")
       {
-        doAnons(out, db);
-      }
-      else if (cmd == "commons")
-      {
-        doCommons(in, out, db);
+        doOutPersons(in, out, db);
       }
       else
       {
