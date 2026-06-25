@@ -12,6 +12,7 @@ namespace
   {
     borisov::Date start_;
     borisov::Date end_;
+    bool empty_;
     RangeNode *prev_;
   };
 
@@ -130,7 +131,7 @@ namespace
   bool cmdRange(std::ostream &out, const RangeNode * const rangeStack,
       const bool hasDate)
   {
-    if (!hasDate || rangeStack == nullptr)
+    if (!hasDate || rangeStack == nullptr || rangeStack->empty_)
     {
       out << "<EMPTY>\n";
       return true;
@@ -145,7 +146,7 @@ namespace
   bool cmdAfter(RangeNode **rangeStack,
       const borisov::DatedMeetingNode * const meetings, const borisov::Date date)
   {
-    if (*rangeStack == nullptr)
+    if (*rangeStack == nullptr || (*rangeStack)->empty_)
     {
       return false;
     }
@@ -166,11 +167,14 @@ namespace
       }
       cur = cur->next_;
     }
+    const borisov::Date dummy{0, 0, 0};
     if (!found)
     {
-      return false;
+      RangeNode * const node = new RangeNode{dummy, dummy, true, *rangeStack};
+      *rangeStack = node;
+      return true;
     }
-    RangeNode * const node = new RangeNode{newStart, curEnd, *rangeStack};
+    RangeNode * const node = new RangeNode{newStart, curEnd, false, *rangeStack};
     *rangeStack = node;
     return true;
   }
@@ -178,7 +182,7 @@ namespace
   bool cmdBefore(RangeNode **rangeStack,
       const borisov::DatedMeetingNode * const meetings, const borisov::Date date)
   {
-    if (*rangeStack == nullptr)
+    if (*rangeStack == nullptr || (*rangeStack)->empty_)
     {
       return false;
     }
@@ -199,11 +203,14 @@ namespace
       }
       cur = cur->next_;
     }
+    const borisov::Date dummy{0, 0, 0};
     if (!found)
     {
-      return false;
+      RangeNode * const node = new RangeNode{dummy, dummy, true, *rangeStack};
+      *rangeStack = node;
+      return true;
     }
-    RangeNode * const node = new RangeNode{curStart, newEnd, *rangeStack};
+    RangeNode * const node = new RangeNode{curStart, newEnd, false, *rangeStack};
     *rangeStack = node;
     return true;
   }
@@ -235,8 +242,9 @@ namespace
       const bool hasDate)
   {
     const borisov::Date dummyDate{0, 0, 0};
-    const borisov::Date rangeStart = hasDate ? (*rangeStack)->start_ : dummyDate;
-    const borisov::Date rangeEnd = hasDate ? (*rangeStack)->end_ : dummyDate;
+    const bool rangeEmpty = !hasDate || (*rangeStack)->empty_;
+    const borisov::Date rangeStart = rangeEmpty ? dummyDate : (*rangeStack)->start_;
+    const borisov::Date rangeEnd = rangeEmpty ? dummyDate : (*rangeStack)->end_;
     size_t pos = 0;
     std::string cmd;
     if (!parseWord(line, pos, cmd))
@@ -432,7 +440,7 @@ int main(int argc, char **argv)
   RangeNode *rangeStack = nullptr;
   if (hasDate)
   {
-    rangeStack = new RangeNode{minDate, maxDate, nullptr};
+    rangeStack = new RangeNode{minDate, maxDate, false, nullptr};
   }
   std::string line;
   while (std::getline(std::cin, line))
