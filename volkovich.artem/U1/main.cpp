@@ -1,11 +1,11 @@
-#include <functional>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
 
-#include "../common/list.hpp"
 #include "../common/htable.hpp"
+#include "../common/list.hpp"
 
 struct Person {
   size_t id;
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 
   if (argc >= 2 && argc <= 3) {
     bool out = 0, in = 0;
-    for (size_t i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
       std::stringstream ss(argv[i]);
       std::string type, arg;
       std::getline(ss, type, ':');
@@ -62,12 +62,12 @@ int main(int argc, char* argv[]) {
     }
   }
   std::hash< size_t > hashf;
-  volkovich::HashTable< size_t, std::string, std::hash< size_t >, std::equal_to< size_t> >
-      htable(hashf);
+  volkovich::HashTable< size_t, std::string, std::hash< size_t >, std::equal_to< size_t > > htable(
+      hashf);
   std::string line;
   size_t ignored = 0;
 
-  volkovich::List<size_t> ids;
+  volkovich::List< size_t > ids;
 
   while (std::getline(*input, line)) {
     size_t id;
@@ -92,9 +92,9 @@ int main(int argc, char* argv[]) {
     ids.pushBack(id);
   }
 
-  volkovich::LIter<size_t> iter = ids.begin();
-  for(size_t i =0;i<ids.size();i++) {
-    *output << *iter<<' '<< *htable.find(*iter) << '\n';
+  volkovich::LIter< size_t > iter = ids.begin();
+  for (size_t i = 0; i < ids.size(); i++) {
+    *output << *iter << ' ' << *htable.find(*iter) << '\n';
     ++iter;
   }
 }
