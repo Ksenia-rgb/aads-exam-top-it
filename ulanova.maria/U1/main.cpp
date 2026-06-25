@@ -55,9 +55,7 @@ int main(int argc, char * argv[])
   }
 
   std::istream & in = inFile.empty() ? std::cin : static_cast< std::istream & >(fin);
-
   ulanova::ParseResult result = ulanova::readPersons(in);
-  fin.close();
 
   std::ofstream fout;
   if (!outFile.empty())
