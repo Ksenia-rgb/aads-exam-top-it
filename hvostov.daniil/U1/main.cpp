@@ -12,6 +12,7 @@ int main(int argc, char* argv[])
   std::string outputFile = "";
 
   if (argc > 3) {
+    std::cerr << "To many arguments\n";
     return 0;
   }
 
@@ -105,6 +106,8 @@ int main(int argc, char* argv[])
   if (count == 0) {
     std::cout << "\n";
     std::cerr << 0 << ' ' << 0 << "\n";
+    delete[] persons;
+    delete[] usedIds;
     return 0;
   }
   if (inFile.is_open()) {
