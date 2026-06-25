@@ -56,7 +56,6 @@ namespace levkin {
     }
     freeVec(anon_ids);
   }
-
   void desc(const DB& db, std::istream& is, std::ostream& os)
   {
     size_t id;
@@ -74,5 +73,36 @@ namespace levkin {
         break;
       }
     }
+  }
+  void deanon(DB& db, std::istream& is, std::ostream& os)
+  {
+    size_t id_anon, id_desc;
+    if (!(is >> id_anon >> id_desc) || !hasPerson(db, id_anon)
+        || !hasPerson(db, id_desc) || hasDescription(db, id_anon)
+        || !hasDescription(db, id_desc)) {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      return;
+    }
+    for (size_t i = 0; i < db.meetings.size; ++i) {
+      if (db.meetings.data[i].id1 == id_anon)
+        db.meetings.data[i].id1 = id_desc;
+      if (db.meetings.data[i].id2 == id_anon)
+        db.meetings.data[i].id2 = id_desc;
+    }
+    size_t write_idx = 0;
+    for (size_t i = 0; i < db.meetings.size; ++i) {
+      if (db.meetings.data[i].id1 != db.meetings.data[i].id2) {
+        db.meetings.data[write_idx++] = db.meetings.data[i];
+      }
+    }
+    db.meetings.size = write_idx;
+    size_t p_write_idx = 0;
+    for (size_t i = 0; i < db.persons.size; ++i) {
+      if (db.persons.data[i].first != id_anon) {
+        db.persons.data[p_write_idx++] = db.persons.data[i];
+      }
+    }
+    db.persons.size = p_write_idx;
   }
 }
