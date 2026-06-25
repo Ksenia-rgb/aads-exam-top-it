@@ -46,10 +46,13 @@ int main(int argc, char ** argv)
       std::string line;
       while (std::getline(* inStream, line))
       {
+        if (line.empty())
+        {
+          continue;
+        }
         sedov::Person p;
         if (!sedov::parseLine(line, p))
         {
-          ++ignoreCount;
           continue;
         }
         if (!sedov::insertHashTable(seen, p.id))
