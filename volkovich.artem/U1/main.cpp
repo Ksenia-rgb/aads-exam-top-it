@@ -100,5 +100,6 @@ int main(int argc, char* argv[]) {
   } if (in) {
     file_in.close();
   }
+  std::cerr << ignored;
   return 0;
 }
