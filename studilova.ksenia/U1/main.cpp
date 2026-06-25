@@ -15,68 +15,68 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  std::ifstream inputFile;
-  std::istream *input = &std::cin;
-
-  if (args.hasInput_)
-  {
-    inputFile.open(args.inputFile_);
-
-    if (!inputFile)
-    {
-      return 2;
-    }
-
-    input = &inputFile;
-  }
-
-  std::ofstream outputFile;
-  std::ostream *output = &std::cout;
-
-  if (args.hasOutput_)
-  {
-    outputFile.open(args.outputFile_);
-
-    if (!outputFile)
-    {
-      return 2;
-    }
-
-    output = &outputFile;
-  }
-
   studilova::PersonArray persons;
   studilova::initPersonArray(persons);
 
-  std::size_t count = 0;
-  std::size_t ignore = 0;
-
-  std::string line;
-
-  while (std::getline(*input, line))
+  try
   {
-    studilova::Person person;
+    std::ifstream inputFile;
+    std::istream* input = &std::cin;
 
-    if (studilova::parsePersonLine(line, person) && !studilova::containsPersonId(persons, person.id_))
+    if (args.hasInput_)
     {
-      studilova::appendPerson(persons, person);
-      ++count;
+      inputFile.open(args.inputFile_);
+
+      if (!inputFile)
+      {
+        studilova::destroyPersonArray(persons);
+        return 2;
+      }
+
+      input = &inputFile;
     }
-    else
+
+    std::string line;
+
+    while (std::getline(*input, line))
     {
-      ++ignore;
+      studilova::Person person;
+
+      if (studilova::parsePersonLine(line, person) && !studilova::containsPersonId(persons, person.id_))
+      {
+        studilova::appendPerson(persons, person);
+      }
     }
+
+    inputFile.close();
+
+    std::ofstream outputFile;
+    std::ostream* output = &std::cout;
+
+    if (args.hasOutput_)
+    {
+      outputFile.open(args.outputFile_);
+
+      if (!outputFile)
+      {
+        studilova::destroyPersonArray(persons);
+        return 2;
+      }
+      output = &outputFile;
+    }
+
+    for (size_t i = 0; i < persons.size_; ++i)
+    {
+      *output << persons.data_[i].id_ << ' ' << persons.data_[i].info_ << '\n';
+    }
+
+    studilova::destroyPersonArray(persons);
   }
-
-  for (std::size_t i = 0; i < persons.size_; ++i)
+  catch (...)
   {
-    *output << persons.data_[i].id_ << ' ' << persons.data_[i].info_ << '\n';
+    studilova::destroyPersonArray(persons);
+    return 2;
   }
-
-  std::cerr << count << '\n';
-  std::cerr << ignore << '\n';
-
-  studilova::destroyPersonArray(persons);
 
   return 0;
 }
