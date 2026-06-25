@@ -108,12 +108,14 @@ int main(int argc, char** argv)
       {
         *outStream << persons.data[i].id << " " << persons.data[i].info << "\n";
       }
+
+      if (persons.size == 0)
+      {
+        *outStream << "\n";
+      }
     }
 
-    if (successCount > 0 || ignoreCount > 0)
-    {
-      std::cerr << successCount << " " << ignoreCount << "\n";
-    }
+    std::cerr << successCount << " " << ignoreCount << "\n";
 
     cleanupResources(persons, seen);
 
