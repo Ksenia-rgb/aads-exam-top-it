@@ -1,3 +1,4 @@
+#include "../U1/person.hpp"
 #include "meet.hpp"
 #include <istream>
 #include <stdexcept>
@@ -70,7 +71,7 @@ namespace
     }
   }
 
-bool zhuravleva::parseArgs(int argc, char *argv[], Args &args)
+bool zhuravleva::parseArgs(int argc, char *argv[], MeetArgs &args)
 {
   args.personsFile = "";
   args.meetsFile = "";
@@ -136,7 +137,7 @@ bool zhuravleva::readMeet(const std::string &line, Meet &meet)
   {
     return false;
   }
-  return meet.first != meet.second;
+  return true;
 }
 
 void zhuravleva::readMeets(
@@ -155,7 +156,10 @@ void zhuravleva::readMeets(
     {
       throw std::invalid_argument("invalid meet");
     }
-    pushBack(meets, meet);
+    if (meet.first != meet.second)
+    {
+      pushBack(meets, meet);
+    }
   }
 }
 

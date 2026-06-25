@@ -5,7 +5,7 @@
 #include <iosfwd>
 #include <string>
 #include <dynamicArray.hpp>
-#include "person.hpp"
+#include "../U1/person.hpp"
 
 namespace zhuravleva
 {
@@ -16,14 +16,14 @@ namespace zhuravleva
     size_t time;
   };
 
-  struct Args
+  struct MeetArgs
   {
     std::string personsFile;
     std::string meetsFile;
     bool hasPersons;
   };
 
-  bool parseArgs(int argc, char *argv[], Args &args);
+  bool parseArgs(int argc, char *argv[], MeetArgs &args);
 
   bool readMeet(const std::string &line, Meet &meet);
   void readMeets(std::istream &input, DynamicArray< Meet > &meets);

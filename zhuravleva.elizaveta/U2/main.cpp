@@ -1,11 +1,11 @@
-#include "person.hpp"
+#include "../U1/person.hpp"
 #include "meet.hpp"
 #include <fstream>
 #include <iostream>
 
 int main(int argc, char *argv[])
 {
-  zhuravleva::Args args;
+  zhuravleva::MeetArgs args;
 
   if (!zhuravleva::parseArgs(argc, argv, args))
   {
