@@ -44,9 +44,7 @@ int main(const int argc, char *argv[])
     pozdnyakov::writeData(std::cout, persons);
   }
 
-  if (stats.successCount > 0 || stats.ignoredCount > 0) {
-    std::cerr << stats.successCount << " " << stats.ignoredCount << "\n";
-  }
+  std::cerr << stats.successCount << " " << stats.ignoredCount << "\n";
 
   pozdnyakov::destroyArray(persons);
 

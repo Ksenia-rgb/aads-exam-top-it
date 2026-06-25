@@ -11,11 +11,6 @@ namespace pozdnyakov
     args.hasOut = false;
     args.isError = false;
 
-    if (argc > 3) {
-      args.isError = true;
-      return args;
-    }
-
     for (int i = 1; i < argc; ++i) {
       const std::string argStr = argv[i];
       if (argStr.find("in:") == 0) {
@@ -59,21 +54,27 @@ namespace pozdnyakov
     size_t pos = 0;
     const size_t len = line.length();
 
-    while (pos < len && (line[pos] == ' ' || line[pos] == '\t')) {
+    while (pos < len && std::isspace(static_cast< unsigned char >(line[pos]))) {
       ++pos;
     }
 
-    if (pos == len || !std::isdigit(static_cast< unsigned char >(line[pos]))) {
+    if (pos == len) {
       return result;
     }
 
     size_t id = 0;
+    bool hasDigits = false;
     while (pos < len && std::isdigit(static_cast< unsigned char >(line[pos]))) {
       id = id * 10 + static_cast< size_t >(line[pos] - '0');
       ++pos;
+      hasDigits = true;
     }
 
-    while (pos < len && (line[pos] == ' ' || line[pos] == '\t')) {
+    if (!hasDigits) {
+      return result;
+    }
+
+    while (pos < len && std::isspace(static_cast< unsigned char >(line[pos]))) {
       ++pos;
     }
 
@@ -102,19 +103,22 @@ namespace pozdnyakov
 
       bool isBlank = true;
       for (size_t i = 0; i < line.length(); ++i) {
-        if (line[i] != ' ' && line[i] != '\t') {
+        if (!std::isspace(static_cast< unsigned char >(line[i]))) {
           isBlank = false;
           break;
         }
       }
 
       if (isBlank) {
+        ++stats.ignoredCount;
         continue;
       }
 
       const ParseResult parsed = parseLine(line);
       if (parsed.success) {
-        if (containsId(arr, parsed.person.id)) {
+        if (parsed.person.info.empty()) {
+          ++stats.ignoredCount;
+        } else if (containsId(arr, parsed.person.id)) {
           ++stats.ignoredCount;
         } else {
           pushBack(arr, parsed.person);
