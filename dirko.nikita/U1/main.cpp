@@ -1,13 +1,8 @@
-#include <cstddef>
 #include <string>
 #include <fstream>
 #include <iostream>
-
-struct Person
-{
-  size_t id;
-  std::string info;
-};
+#include "person.hpp"
+#include "vector.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -41,11 +36,15 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
+  dirko::Vector< dirko::Person > persons;
   if (inSet) {
     std::ifstream fin(inFilename);
     if (!fin.is_open()) {
       return 2;
     }
+    dirko::input(fin, persons);
+  } else {
+    dirko::input(std::cin, persons);
   }
 
   if (outSet) {
