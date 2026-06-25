@@ -40,6 +40,6 @@ void goodStringsCount(std::istream &in, HashTable *table, OrderArray *order,
                       size_t &successCount, size_t &ignoredCount);
 void writeData(std::ostream &out, const HashTable *table,
                const OrderArray *order);
-Args parseArgs(int argc, char *argv[]);
+Args processArgs(int argc, char *argv[]);
 } // namespace karpenkov
 #endif

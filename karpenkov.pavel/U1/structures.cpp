@@ -135,5 +135,34 @@ void writeData(std::ostream &out, const HashTable *table,
     }
   }
 }
-
+Args processArgs(int argc, char *argv[]) {
+  Args args;
+  args.inputFile = "";
+  args.outputFile = "";
+  args.valid = true;
+  bool hasInput = false;
+  bool hasOutput = false;
+  for (int i = 1; i < argc; ++i) {
+    std::string arg = argv[i];
+    if (arg.rfind("in:", 0) == 0) {
+      if (hasInput) {
+        args.valid = false;
+        return args;
+      }
+      args.inputFile = arg.substr(3);
+      hasInput = true;
+    } else if (arg.rfind("out:", 0) == 0) {
+      if (hasOutput) {
+        args.valid = false;
+        return args;
+      }
+      args.outputFile = arg.substr(4);
+      hasOutput = true;
+    } else {
+      args.valid = false;
+      return args;
+    }
+  }
+  return args;
+}
 } // namespace karpenkov
