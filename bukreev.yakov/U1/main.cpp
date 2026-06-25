@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
   std::ofstream outfile;
   if (!fout.empty())
   {
-    outfile.open(fin);
+    outfile.open(fout);
     if (!outfile.is_open())
     {
       return 2;
@@ -78,6 +78,11 @@ void bukreev::input(List< Person >* people, std::istream& in)
   std::string line;
   while (getline(in, line))
   {
+    if (line.empty())
+    {
+      continue;
+    }
+
     size_t i = 0;
     while (std::isdigit(line[i]) && i < line.size())
     {
