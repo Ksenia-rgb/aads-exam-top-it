@@ -1,6 +1,7 @@
 #include "person.hpp"
 
 #include <istream>
+#include <limits>
 #include <ostream>
 
 namespace muraviev
@@ -56,12 +57,17 @@ namespace muraviev
     {
       return false;
     }
-    size_t position = 0;
     size_t id = 0;
+    size_t position = 0;
+    const size_t maximum = std::numeric_limits< size_t >::max();
     while (position < line.size() && line[position] >= '0' &&
         line[position] <= '9')
     {
       const size_t digit = line[position] - '0';
+      if (id > (maximum - digit) / 10)
+      {
+        return false;
+      }
       id = id * 10 + digit;
       ++position;
     }
