@@ -13,6 +13,7 @@ namespace losev
     bool hasIn;
     bool hasOut;
   };
+
   Args parseArgs(int argc, char* argv[]);
   Person parseLine(const std::string& line);
   void processInput(std::istream& in, Node*& people,
@@ -25,8 +26,10 @@ int main(int argc, char* argv[])
   try
   {
     losev::Args args = losev::parseArgs(argc, argv);
+
     std::ifstream inFile;
     std::istream* inStream = &std::cin;
+
     if (args.hasIn)
     {
       inFile.open(args.inFile);
