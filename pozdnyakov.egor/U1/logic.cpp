@@ -110,7 +110,6 @@ namespace pozdnyakov
       }
 
       if (isBlank) {
-        ++stats.ignoredCount;
         continue;
       }
 
