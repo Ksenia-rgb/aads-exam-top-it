@@ -129,7 +129,6 @@ int main(int argc, char* argv[])
     std::cerr << correct << " " << ignored << '\n';
   } else {
     std::cerr << "0 0" << '\n';
-    return 0;
   }
 
   destroy(persons);
