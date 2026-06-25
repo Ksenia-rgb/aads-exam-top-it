@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
       outFile = arg.substr(4);
     } else {
       std::cerr << "Invalid arguments\n";
-      return 1;
+      return 2;
     }
   }
   std::ifstream inFileStream;
@@ -57,21 +57,50 @@ int main(int argc, char *argv[])
   }
   size_t id;
   std::string info;
-  size_t succesCount = 0;
+  std::string line;
+  size_t successCount = 0;
   size_t ignoredCount = 0;
-  while (*in >> id && !(in->eof())) {
-    *in >> info;
+  while (std::getline(*in, line)) {
+    if (line.empty()) {
+      ignoredCount++;
+      continue;
+    }
+
+    size_t pos = line.find(' ');
+    if (pos == std::string::npos) {
+      ignoredCount++;
+      continue;
+    }
+
+    size_t id = 0;
+    try {
+      id = std::stoull(line.substr(0, pos));
+    } catch (...) {
+      ignoredCount++;
+      continue;
+    }
+
+    std::string info = line.substr(pos + 1);
+    size_t start = info.find_first_not_of(" \t");
+    if (start != std::string::npos) {
+      info = info.substr(start);
+    } else {
+      info.clear();
+    }
+
     if (info.empty()) {
       ignoredCount++;
       continue;
     }
+
     if (novikov::is_has(seen, id)) {
       ignoredCount++;
       continue;
     }
+
     novikov::insert(seen, id, true);
     novikov::push_back(persons, novikov::Person{id, info});
-    succesCount++;
+    successCount++;
   }
 
   novikov::Node< novikov::Person > *cur = persons.head;
@@ -79,7 +108,7 @@ int main(int argc, char *argv[])
     *out << cur->val.id << " " << cur->val.info << "\n";
     cur = cur->next;
   }
-  std::cerr << succesCount << " " << ignoredCount << "\n";
+  std::cerr << successCount << " " << ignoredCount << "\n";
   clear(persons);
   clear(seen);
   return 0;
