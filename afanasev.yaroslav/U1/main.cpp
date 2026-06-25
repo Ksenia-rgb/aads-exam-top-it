@@ -27,14 +27,26 @@ int main(int argc, char * argv[])
         std::cerr << "Duplicate input argument\n";
         return 1;
       }
+      std::string name = arg.substr(3);
+      if (name.empty())
+      {
+        std::cerr << "Invalid argument: empty filename\n";
+        return 1;
+      }
       hasIn = true;
-      inFile = arg.substr(3);
+      inFile = name;
     }
     else if (arg.rfind("out:", 0) == 0)
     {
       if (hasOut)
       {
         std::cerr << "Duplicate output argument\n";
+        return 1;
+      }
+      std::string name = arg.substr(3);
+      if (name.empty())
+      {
+        std::cerr << "Invalid argument: empty filename\n";
         return 1;
       }
       hasOut = true;
@@ -64,10 +76,12 @@ int main(int argc, char * argv[])
   size_t count = 0;
   size_t capacity = 0;
   size_t ignored = 0;
+  bool lines_read = false;
   std::string line;
 
   while (std::getline(*in, line))
   {
+    lines_read = true;
     Person person;
     if (parseLine(line, person))
     {
@@ -91,9 +105,10 @@ int main(int argc, char * argv[])
     inStream.close();
   }
 
+  bool useFile = hasOut && hasIn;
   std::ofstream outStream;
   std::ostream * out = &std::cout;
-  if (hasOut)
+  if (useFile)
   {
     outStream.open(outFile);
     if (!outStream.is_open())
@@ -110,7 +125,15 @@ int main(int argc, char * argv[])
     *out << persons[i].id << ' ' << persons[i].info << '\n';
   }
 
-  std::cerr << count << ' ' << ignored << '\n';
+  if (useFile)
+  {
+    outStream.close();
+  }
+
+  if (lines_read)
+  {
+    std::cerr << count << ' ' << ignored << '\n';
+  }
 
   delete[] persons;
   return 0;
