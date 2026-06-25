@@ -28,6 +28,31 @@ namespace yalovsky
     arr.size = 0;
     arr.capacity = 0;
   }
+
+  template< class T >
+  void reserveArray(Array< T >& arr, size_t newCapacity)
+  {
+    if (newCapacity <= arr.capacity)
+    {
+      return;
+    }
+    T* newData = new T[newCapacity];
+    try
+    {
+      for (size_t i = 0; i < arr.size; ++i)
+      {
+        newData[i] = arr.data[i];
+      }
+    }
+    catch (...)
+    {
+      delete[] newData;
+      throw;
+    }
+    delete[] arr.data;
+    arr.data = newData;
+    arr.capacity = newCapacity;
+  }
 }
 
 #endif
