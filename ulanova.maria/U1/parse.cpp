@@ -6,7 +6,7 @@
 
 namespace ulanova
 {
-  Array< Person > readPersons(std::istream & in)
+  ParseResult readPersons(std::istream & in)
   {
     Array< Person > arr = mArray< Person >();
     size_t ignoredCount = 0;
@@ -35,7 +35,7 @@ namespace ulanova
       {
         ++pos;
       }
-      const std::string info = line.substr(pos);
+      const std::string info = std::string(line.begin() + pos, line.end());
       if (info.empty())
       {
         ++ignoredCount;
@@ -48,7 +48,6 @@ namespace ulanova
       }
       pushBack(arr, Person{id, info});
     }
-    ignored = ignoredCount;
-    return arr;
+    return ParseResult{arr, ignoredCount};
   }
 }

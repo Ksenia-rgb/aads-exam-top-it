@@ -67,9 +67,9 @@ int main(int argc, char * argv[])
   std::istream & in = inFile.empty() ? std::cin : fin;
   std::ostream & out = outFile.empty() ? std::cout : fout;
 
-  ulanova::Array< ulanova::Person > arr = ulanova::readPersons(in);
-  ulanova::printPersons(arr, out);
-  std::cerr << arr.size << " " << ulanova::ignored << "\n";
-  ulanova::clear(arr);
+  ulanova::ParseResult result = ulanova::readPersons(in);
+  ulanova::printPersons(result.persons, out);
+  std::cerr << result.persons.size << " " << result.ignored << "\n";
+  ulanova::clear(result.persons);
   return 0;
 }
