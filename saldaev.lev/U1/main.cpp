@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
   std::string info;
   while (true) {
     if (in >> id) {
-      if (std::getline(in >> std::ws, info)) {
+      if (std::getline(in, info)) {
         if (saldaev::IdExcist(base, curr, id)) {
           ++ignored;
           continue;
