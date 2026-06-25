@@ -21,35 +21,40 @@ void karpovich::readPersons(std::istream &input, Vector< Person > &persons, size
   std::string line;
 
   while (std::getline(input, line)) {
+    if (line.empty()) {
+      continue;
+    }
+
     size_t pos = 0;
-    while (pos < line.size() && std::isspace(line[pos])) {
-      ++pos;
-    }
     size_t id = 0;
-    size_t idBegin = pos;
-    while (pos < line.size() && std::isdigit(line[pos])) {
-      id = id * 10 + line[pos] - '0';
-      ++pos;
-    }
-    if (idBegin == pos) {
+
+    try {
+      id = std::stoul(line, &pos);
+    } catch (...) {
       ++ignoredCount;
       continue;
     }
-    while (pos < line.size() && std::isspace(line[pos])) {
+
+    while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t')) {
       ++pos;
     }
+
     if (pos == line.size()) {
       ++ignoredCount;
       continue;
     }
+
     if (containsPerson(persons, id)) {
       ++ignoredCount;
       continue;
     }
+
     Person person;
     person.id = id;
     person.info = line.substr(pos);
+
     pushBack(persons, person);
+
     ++validCount;
   }
 }
@@ -58,5 +63,9 @@ void karpovich::writePersons(std::ostream &output, const Vector< Person > &perso
 {
   for (size_t i = 0; i < persons.size; ++i) {
     output << persons.data[i].id << ' ' << persons.data[i].info << '\n';
+  }
+
+  if (persons.size == 0) {
+    output << '\n';
   }
 }
