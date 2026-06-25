@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_CASE(less_and_greater_filter_meetings)
   }
 
   BOOST_TEST(
-      alekseev::readFile(filename) == "31 10\n32 11\n41 10\n32 99\n");
+      alekseev::readFile(filename) == "31\n41\n32\n32\n");
   alekseev::destroyMeetingArray(meetings);
   alekseev::destroyPersonArray(persons);
   std::remove(filename);
@@ -175,6 +175,63 @@ BOOST_AUTO_TEST_CASE(redesc_updates_description)
   BOOST_TEST(persons.data[0].info == "Mr. Bond");
 
   alekseev::destroyPersonArray(persons);
+}
+
+BOOST_AUTO_TEST_CASE(desc_with_description_updates_person)
+{
+  const char* const filename = "/tmp/alekseev-u2-desc-update.txt";
+  alekseev::PersonArray persons = {nullptr, 0, 0};
+  alekseev::MeetingArray meetings = {nullptr, 0, 0};
+  alekseev::initPersonArray(persons);
+  alekseev::initMeetingArray(meetings);
+  alekseev::addPerson(persons, 33, "");
+  {
+    std::ofstream output(filename);
+    BOOST_REQUIRE(alekseev::executeCommandLine(
+        "desc 33 \"Agent 007\"",
+        output,
+        persons,
+        meetings));
+  }
+
+  BOOST_TEST(persons.data[0].info == "Agent 007");
+  alekseev::destroyMeetingArray(meetings);
+  alekseev::destroyPersonArray(persons);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(meet_alias_and_empty_results)
+{
+  const char* const filename = "/tmp/alekseev-u2-empty-results.txt";
+  alekseev::PersonArray persons = {nullptr, 0, 0};
+  alekseev::MeetingArray meetings = {nullptr, 0, 0};
+  alekseev::initPersonArray(persons);
+  alekseev::initMeetingArray(meetings);
+  alekseev::addPerson(persons, 33, "");
+  alekseev::addPerson(persons, 41, "");
+  {
+    std::ofstream output(filename);
+    BOOST_REQUIRE(alekseev::executeCommandLine(
+        "meet 33",
+        output,
+        persons,
+        meetings));
+    BOOST_REQUIRE(alekseev::handleCommons(
+        " 33 41",
+        output,
+        persons,
+        meetings));
+    BOOST_REQUIRE(alekseev::handleLess(
+        " 1 33",
+        output,
+        persons,
+        meetings));
+  }
+
+  BOOST_TEST(alekseev::readFile(filename) == "\n\n\n");
+  alekseev::destroyMeetingArray(meetings);
+  alekseev::destroyPersonArray(persons);
+  std::remove(filename);
 }
 
 BOOST_AUTO_TEST_CASE(deanon_replaces_person_and_removes_self_meetings)
@@ -202,6 +259,7 @@ BOOST_AUTO_TEST_CASE(deanon_replaces_person_and_removes_self_meetings)
 BOOST_AUTO_TEST_CASE(out_persons_writes_only_described)
 {
   const char* const filename = "/tmp/alekseev-u2-out-persons.txt";
+  std::remove(filename);
   alekseev::PersonArray persons = {nullptr, 0, 0};
   alekseev::initPersonArray(persons);
   alekseev::addPerson(persons, 31, "The Agent");
@@ -209,7 +267,27 @@ BOOST_AUTO_TEST_CASE(out_persons_writes_only_described)
 
   const std::string arguments = std::string(" ") + filename;
   BOOST_REQUIRE(alekseev::handleOutPersons(arguments, persons));
-  BOOST_TEST(alekseev::readFile(filename) == "31 The Agent\n");
+  BOOST_REQUIRE(alekseev::handleRedesc(" 33 \"Agent 007\"", persons));
+  BOOST_REQUIRE(alekseev::handleOutPersons(arguments, persons));
+  const std::string expected =
+      "31 The Agent\n31 The Agent\n33 Agent 007\n";
+  BOOST_TEST(alekseev::readFile(filename) == expected);
+
+  alekseev::destroyPersonArray(persons);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(out_persons_writes_newline_for_empty_result)
+{
+  const char* const filename = "/tmp/alekseev-u2-out-empty.txt";
+  std::remove(filename);
+  alekseev::PersonArray persons = {nullptr, 0, 0};
+  alekseev::initPersonArray(persons);
+  alekseev::addPerson(persons, 33, "");
+
+  const std::string arguments = std::string(" ") + filename;
+  BOOST_REQUIRE(alekseev::handleOutPersons(arguments, persons));
+  BOOST_TEST(alekseev::readFile(filename) == "\n");
 
   alekseev::destroyPersonArray(persons);
   std::remove(filename);

@@ -92,9 +92,50 @@ namespace alekseev
         std::ostream& output,
         const MeetingViewArray& views)
     {
+      if (views.size == 0)
+      {
+        output << '\n';
+        return;
+      }
       for (size_t i = 0; i < views.size; ++i)
       {
         output << views.data[i].id << ' ' << views.data[i].time << '\n';
+      }
+    }
+
+    void sortMeetingViewsByTime(MeetingViewArray& views)
+    {
+      for (size_t i = 1; i < views.size; ++i)
+      {
+        const MeetingView value = views.data[i];
+        size_t position = i;
+        while (position > 0)
+        {
+          const MeetingView& previous = views.data[position - 1];
+          if (previous.time < value.time ||
+              (previous.time == value.time && previous.id <= value.id))
+          {
+            break;
+          }
+          views.data[position] = previous;
+          --position;
+        }
+        views.data[position] = value;
+      }
+    }
+
+    void writeMeetingIds(
+        std::ostream& output,
+        const MeetingViewArray& views)
+    {
+      if (views.size == 0)
+      {
+        output << '\n';
+        return;
+      }
+      for (size_t i = 0; i < views.size; ++i)
+      {
+        output << views.data[i].id << '\n';
       }
     }
 
@@ -148,8 +189,8 @@ namespace alekseev
       try
       {
         collectFilteredViews(meetings, id, time, less, filtered);
-        sortMeetingViews(filtered);
-        writeMeetingViews(output, filtered);
+        sortMeetingViewsByTime(filtered);
+        writeMeetingIds(output, filtered);
       }
       catch (...)
       {
@@ -211,9 +252,15 @@ bool alekseev::executeCommandLine(
   }
   if (command == "desc")
   {
+    size_t id = 0;
+    std::string description;
+    if (parseDescription(arguments, id, description))
+    {
+      return handleRedesc(arguments, persons);
+    }
     return handleDesc(arguments, output, persons);
   }
-  if (command == "meets")
+  if (command == "meet" || command == "meets")
   {
     return handleMeets(arguments, output, persons, meetings);
   }
@@ -269,6 +316,10 @@ bool alekseev::handleAnons(
     for (size_t i = 0; i < ids.size; ++i)
     {
       output << ids.data[i] << '\n';
+    }
+    if (ids.size == 0)
+    {
+      output << '\n';
     }
   }
   catch (...)
@@ -360,6 +411,10 @@ bool alekseev::handleCommons(
     for (size_t i = 0; i < ids.size; ++i)
     {
       output << ids.data[i] << '\n';
+    }
+    if (ids.size == 0)
+    {
+      output << '\n';
     }
   }
   catch (...)
@@ -457,7 +512,7 @@ bool alekseev::handleOutPersons(
       arguments,
       filenameBegin,
       filenameEnd - filenameBegin);
-  std::ofstream output(filename.c_str());
+  std::ofstream output(filename.c_str(), std::ios::app);
   if (!output)
   {
     return false;
@@ -474,14 +529,7 @@ bool alekseev::handleOutPersons(
         pushPerson(described, persons.data[i]);
       }
     }
-    if (described.size > 0)
-    {
-      writePersons(output, described);
-    }
-    else
-    {
-      output.flush();
-    }
+    writePersons(output, described);
     output.close();
     if (!output)
     {

@@ -66,6 +66,10 @@ int alekseev::runU2(
     std::ostream& output,
     std::ostream& error)
 {
+  if (argc > 3)
+  {
+    return 0;
+  }
   ProgramOptions options = {nullptr, nullptr, false};
   if (!parseProgramOptions(argc, argv, options))
   {

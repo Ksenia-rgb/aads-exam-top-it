@@ -54,6 +54,10 @@ bool alekseev::readMeetings(
   std::string line;
   while (std::getline(input, line))
   {
+    if (skipSpaces(line, 0) == line.size())
+    {
+      continue;
+    }
     Meeting meeting = {0, 0, 0};
     if (!parseMeetingLine(line, meeting))
     {
