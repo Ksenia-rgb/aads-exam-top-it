@@ -3,13 +3,15 @@
 #include <string>
 #include <cctype>
 namespace levkin {
-  bool isSpaceChar(char ch)
-  {
-    return std::isspace(static_cast< unsigned char >(ch));
-  }
-  bool isDigitChar(char ch)
-  {
-    return std::isdigit(static_cast< unsigned char >(ch));
+  namespace {
+    bool isSpaceChar(char ch)
+    {
+      return std::isspace(static_cast< unsigned char >(ch));
+    }
+    bool isDigitChar(char ch)
+    {
+      return std::isdigit(static_cast< unsigned char >(ch));
+    }
   }
   Pair* reallocate(Vec& v)
   {

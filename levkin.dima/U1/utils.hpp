@@ -14,5 +14,6 @@ namespace levkin {
   };
   Pair* reallocate(Vec& v);
   void readToVec(Vec& v, std::istream& is, size_t& total, size_t& ignored);
+  void writeFromVec(Vec& v, std::istream& is, size_t& total, size_t& ignored);
 }
 #endif
