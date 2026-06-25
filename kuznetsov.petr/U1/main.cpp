@@ -57,20 +57,22 @@ int main(int argc, char** argv)
 
   size_t cSucces = 0, cFail = 0;
   kuz::darray< kuz::Person > persons = kuz::makeDarray< kuz::Person >(8);
+  *source >> std::ws;
   while (!source->eof()) {
     bool s = false;
     kuz::Person p = kuz::readPerson(*source, s);
-    cSucces += s;
-    cFail += !s;
-    if (!source->fail()) {
-      if (!kuz::containsDarray(persons, p, kuz::equalPersons)) {
-        kuz::pushBackDarray(persons, p);
-      }
+    if (s && !kuz::containsDarray(persons, p, kuz::equalPersons)) {
+      kuz::pushBackDarray(persons, p);
+      ++cSucces;
     } else {
+      ++cFail;
+    }
+    if (!s) {
       source->clear();
       std::streamsize n = std::numeric_limits< std::streamsize >::max();
       source->ignore(n, '\n');
     }
+    *source >> std::ws;
   }
   ifile.close();
   if (countOut == 1) {
