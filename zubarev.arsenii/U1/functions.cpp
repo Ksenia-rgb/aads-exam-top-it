@@ -21,7 +21,7 @@ bool zubarev::detail::parse_args(int argc, char** argv, std::string& in_name, st
       if (has_out) {
         return false;
       }
-      out_name = arg.substr(3);
+      out_name = arg.substr(4);
       has_out = true;
     } else {
       return false;
