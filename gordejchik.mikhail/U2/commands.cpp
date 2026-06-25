@@ -62,6 +62,101 @@ static void cmdOutPersons(const gordejchik::dynarray_t< gordejchik::person_t >& 
   gordejchik::writeDescribedPersons(fout, persons);
 }
 
+static bool comparePairs(const std::pair< size_t, size_t >& a,
+    const std::pair< size_t, size_t >& b)
+{
+  if (a.first != b.first) {
+    return a.first < b.first;
+  }
+  return a.second < b.second;
+}
+
+static void collectMeets(const gordejchik::dynarray_t< gordejchik::meeting_t >& meetings,
+    size_t id, gordejchik::dynarray_t< std::pair< size_t, size_t > >& result)
+{
+  for (size_t i = 0; i < meetings.size_; ++i) {
+    const gordejchik::meeting_t& m = meetings.data_[i];
+    if (m.id1_ == id) {
+      gordejchik::pushBack(result, std::pair< size_t, size_t >(m.id2_, m.duration_));
+    } else if (m.id2_ == id) {
+      gordejchik::pushBack(result, std::pair< size_t, size_t >(m.id1_, m.duration_));
+    }
+  }
+}
+
+static void printMeets(gordejchik::dynarray_t< std::pair< size_t, size_t > >& entries)
+{
+  std::sort(entries.data_, entries.data_ + entries.size_, comparePairs);
+  for (size_t i = 0; i < entries.size_; ++i) {
+    std::cout << entries.data_[i].first << " " << entries.data_[i].second << "\n";
+  }
+}
+
+static void cmdMeets(const gordejchik::dynarray_t< gordejchik::person_t >& persons,
+    const gordejchik::dynarray_t< gordejchik::meeting_t >& meetings,
+    size_t id)
+{
+  if (gordejchik::findPersonById(persons, id) == gordejchik::npos) {
+    printInvalid();
+    return;
+  }
+  gordejchik::dynarray_t< std::pair< size_t, size_t > > entries;
+  gordejchik::init(entries);
+  collectMeets(meetings, id, entries);
+  printMeets(entries);
+  gordejchik::destroy(entries);
+}
+
+static void cmdLess(const gordejchik::dynarray_t< gordejchik::person_t >& persons,
+    const gordejchik::dynarray_t< gordejchik::meeting_t >& meetings,
+    size_t time, size_t id)
+{
+  if (gordejchik::findPersonById(persons, id) == gordejchik::npos) {
+    printInvalid();
+    return;
+  }
+  gordejchik::dynarray_t< std::pair< size_t, size_t > > entries;
+  gordejchik::init(entries);
+  for (size_t i = 0; i < meetings.size_; ++i) {
+    const gordejchik::meeting_t& m = meetings.data_[i];
+    if (m.duration_ >= time) {
+      continue;
+    }
+    if (m.id1_ == id) {
+      gordejchik::pushBack(entries, std::pair< size_t, size_t >(m.id2_, m.duration_));
+    } else if (m.id2_ == id) {
+      gordejchik::pushBack(entries, std::pair< size_t, size_t >(m.id1_, m.duration_));
+    }
+  }
+  printMeets(entries);
+  gordejchik::destroy(entries);
+}
+
+static void cmdGreater(const gordejchik::dynarray_t< gordejchik::person_t >& persons,
+    const gordejchik::dynarray_t< gordejchik::meeting_t >& meetings,
+    size_t time, size_t id)
+{
+  if (gordejchik::findPersonById(persons, id) == gordejchik::npos) {
+    printInvalid();
+    return;
+  }
+  gordejchik::dynarray_t< std::pair< size_t, size_t > > entries;
+  gordejchik::init(entries);
+  for (size_t i = 0; i < meetings.size_; ++i) {
+    const gordejchik::meeting_t& m = meetings.data_[i];
+    if (m.duration_ <= time) {
+      continue;
+    }
+    if (m.id1_ == id) {
+      gordejchik::pushBack(entries, std::pair< size_t, size_t >(m.id2_, m.duration_));
+    } else if (m.id2_ == id) {
+      gordejchik::pushBack(entries, std::pair< size_t, size_t >(m.id1_, m.duration_));
+    }
+  }
+  printMeets(entries);
+  gordejchik::destroy(entries);
+}
+
 static bool parseId(std::istream& in, size_t& id)
 {
   if (!(in >> id)) {
@@ -116,6 +211,29 @@ void gordejchik::runCommands(std::istream& in, dynarray_t< person_t >& persons,
         continue;
       }
       cmdOutPersons(persons, filename);
+      } else if (cmd == "meets") {
+      size_t id = 0;
+      if (!parseId(in, id)) {
+        printInvalid();
+        continue;
+      }
+      cmdMeets(persons, meetings, id);
+    } else if (cmd == "less") {
+      size_t time = 0;
+      size_t id = 0;
+      if (!(in >> time) || !parseId(in, id)) {
+        printInvalid();
+        continue;
+      }
+      cmdLess(persons, meetings, time, id);
+    } else if (cmd == "greater") {
+      size_t time = 0;
+      size_t id = 0;
+      if (!(in >> time) || !parseId(in, id)) {
+        printInvalid();
+        continue;
+      }
+      cmdGreater(persons, meetings, time, id);
     } else {
       printInvalid();
       std::string rest;
