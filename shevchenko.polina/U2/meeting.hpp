@@ -21,7 +21,7 @@ bool read_meeting(std::istream& in, Meeting& m) {
   if (!std::getline(in, line)) {
     return false;
   }
-  
+
   std::istringstream iss(line);
   size_t id1, id2, duration;
   if (!(iss >> id1 >> id2 >> duration)) {
@@ -30,7 +30,7 @@ bool read_meeting(std::istream& in, Meeting& m) {
   if (id1 == id2) {
     return false;
   }
-  
+
   m.id1 = id1;
   m.id2 = id2;
   m.duration = duration;
