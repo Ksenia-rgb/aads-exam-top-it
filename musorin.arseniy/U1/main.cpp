@@ -149,10 +149,11 @@ int main(int argc, char * argv[])
     writeRecords(std::cout, records);
   }
 
-  if (accepted != 0 || ignored != 0)
+  if (accepted == 0)
   {
-    std::cerr << accepted << ' ' << ignored << '\n';
+    return 2;
   }
+  std::cerr << accepted << ' ' << ignored << '\n';
   musorin::clear(records);
   return 0;
 }
