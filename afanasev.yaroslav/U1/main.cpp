@@ -65,7 +65,6 @@ int main(int argc, char * argv[])
 
   while (std::getline(*in, line))
   {
-    lines_read = true;
     Person person;
     if (parseLine(line, person))
     {
