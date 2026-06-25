@@ -186,3 +186,39 @@ void dirko::cmdDeanon(std::istream &input, std::ostream &output, Vector< Person 
 
   removeSelfMeets(meets);
 }
+
+void dirko::cmdRedesc(std::istream &input, std::ostream &output, Vector< Person > &persons, Vector< Meet > &)
+{
+  size_t id = 0;
+
+  input >> id;
+
+  if (!input) {
+    output << "<INVALID COMMAND>\n";
+    return;
+  }
+
+  char quote = 0;
+  input >> quote;
+
+  if (quote != '"') {
+    output << "<INVALID COMMAND>\n";
+    return;
+  }
+
+  std::string description;
+
+  if (!std::getline(input, description, '"')) {
+    output << "<INVALID COMMAND>\n";
+    return;
+  }
+
+  Person *person = findPersonById(persons, id);
+
+  if (person == nullptr) {
+    output << "<INVALID COMMAND>\n";
+    return;
+  }
+
+  person->info = description;
+}
