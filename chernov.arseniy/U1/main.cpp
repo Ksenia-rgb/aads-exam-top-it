@@ -75,7 +75,12 @@ int main(int argc, char ** argv)
     }
 
     Person p{id, description};
-    pushBack(persons, p);
+    try {
+      pushBack(persons, p);
+    } catch (...) {
+      destroy(persons);
+      throw;
+    }
     ++success;
   }
 
