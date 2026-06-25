@@ -326,27 +326,17 @@ void vasyakin::detail::cmdBound(std::istream& in, std::ostream& out, Graph* root
 
 void vasyakin::detail::cmdOutPersons(std::istream& in, std::ostream& out, Graph* root)
 {
-  static_cast< void >(out);
   std::string filename;
-
   if (!(in >> filename))
   {
     out << "<INVALID COMMAND>\n";
     return;
   }
-
-  std::ofstream file(filename.c_str());
-
-  if (!file)
-  {
-    out << "<INVALID COMMAND>\n";
-    return;
-  }
-  auto visitor = [&file](std::size_t id, const Vertex & vertex)
+  auto visitor = [&out](size_t id, const Vertex& vertex)
   {
     if (vertex.described)
     {
-      file << id << ' ' << vertex.description << '\n';
+      out << id << ' ' << vertex.description << '\n';
     }
   };
 
