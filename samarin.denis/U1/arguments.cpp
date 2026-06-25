@@ -20,17 +20,19 @@ bool samarin::parseArguments(int argc, const char * const * argv, options_t & op
   for (int i = 1; i < argc; ++i) {
     const std::string argument = argv[i];
     if (hasPrefix(argument, inputPrefix)) {
-      if (options.hasInput) {
+      const std::string name = argument.substr(inputPrefix.size());
+      if (options.hasInput || name.empty()) {
         return false;
       }
       options.hasInput = true;
-      options.inputName = argument.substr(inputPrefix.size());
+      options.inputName = name;
     } else if (hasPrefix(argument, outputPrefix)) {
-      if (options.hasOutput) {
+      const std::string name = argument.substr(outputPrefix.size());
+      if (options.hasOutput || name.empty()) {
         return false;
       }
       options.hasOutput = true;
-      options.outputName = argument.substr(outputPrefix.size());
+      options.outputName = name;
     } else {
       return false;
     }
