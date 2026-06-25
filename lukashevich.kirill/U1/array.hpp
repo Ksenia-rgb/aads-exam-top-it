@@ -23,7 +23,7 @@ namespace lukashevich
   template< class T >
   void initArray(Array< T >& array) noexcept
   {
-    array.data = nullptr;
+    array.data_ = nullptr;
     array.size_ = 0;
     array.capacity_ = 0;
   }
