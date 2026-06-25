@@ -100,8 +100,9 @@ int main(int argc, char ** argv)
       } else if (cmd == "less" || cmd == "greater") {
         valid = (tokens.size == 3 && parseSize(tokens.data[1], duration) && parseSize(tokens.data[2], id) &&
           hasIdInAll(allIds, id));
-        if (valid)
+        if (valid) {
           printDurationFiltered(meetings, id, duration, cmd == "greater");
+        }
       } else if (cmd == "out-persons") {
         valid = (tokens.size == 2 && writePersons(tokens.data[1], persons));
       } else {
