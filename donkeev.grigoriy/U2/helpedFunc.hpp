@@ -1,7 +1,9 @@
 #ifndef HELPEDFUNC_HPP
 #define HELPEDFUNC_HPP
 
-#include "list.hpp"
+#include "structs.hpp"
+#include <string>
+#include <iostream>
 
 namespace donkeev
 {
@@ -10,5 +12,7 @@ namespace donkeev
   bool isNumber(const std::string&);
   std::string nextWord(const std::string&, size_t&);
   void readingPersons(std::istream&, PersonList&, size_t&);
+
+  void pushMeeting(MeetingList&, size_t, size_t, size_t);
 }
 #endif

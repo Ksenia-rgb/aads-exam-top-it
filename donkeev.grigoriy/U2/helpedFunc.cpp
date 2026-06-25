@@ -1,5 +1,3 @@
-#include <string>
-
 #include "helpedFunc.hpp"
 
 void donkeev::pushBack(PersonList& list, Person* person)
@@ -104,4 +102,31 @@ void donkeev::readingPersons(std::istream& input, PersonList& list, size_t& igno
 
     pushBack(list, pers);
   }
+}
+
+void donkeev::pushMeeting(MeetingList& list, size_t id1, size_t id2, size_t duration)
+{
+  if (id1 > id2)
+  {
+    std::swap(id1, id2);
+  }
+        
+  MeetingNode* newNode = new MeetingNode;
+  newNode->ids = std::make_pair(id1, id2);
+  newNode->duration = duration;
+  newNode->next_ = nullptr;
+  newNode->prev_ = nullptr;
+  
+  if (!list.head_)
+  {
+    list.head_ = newNode;
+    list.tail_ = newNode;
+  }
+  else
+  {
+    list.tail_->next_ = newNode;
+    newNode->prev_ = list.tail_;
+    list.tail_ = newNode;
+  }
+  ++list.size_;
 }
