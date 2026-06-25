@@ -43,19 +43,6 @@ int main(int argc, char* argv[])
     in = std::addressof(infile);
   }
 
-  std::ostream* out = std::addressof(std::cout);
-  std::ofstream outfile;
-  if (!fout.empty())
-  {
-    outfile.open(fout);
-    if (!outfile.is_open())
-    {
-      return 2;
-    }
-
-    out = std::addressof(outfile);
-  }
-
   List< Person >* people;
   createList(&people);
 
@@ -67,6 +54,19 @@ int main(int argc, char* argv[])
   {
     deleteList(people);
     return 3;
+  }
+
+  std::ostream* out = std::addressof(std::cout);
+  std::ofstream outfile;
+  if (!fout.empty())
+  {
+    outfile.open(fout);
+    if (!outfile.is_open())
+    {
+      return 2;
+    }
+
+    out = std::addressof(outfile);
   }
 
   output(people, *out);
@@ -138,6 +138,12 @@ void bukreev::input(List< Person >* people, std::istream& in)
 
 void bukreev::output(List< Person >* people, std::ostream& out)
 {
+  if (!good)
+  {
+    out << '\n';
+    return;
+  }
+
   List< Person >* h = people->next;
   while (h != people)
   {
