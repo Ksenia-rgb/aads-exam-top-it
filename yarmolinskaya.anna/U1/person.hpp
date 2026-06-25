@@ -5,10 +5,10 @@
 
 namespace yarmolinskaya {
 
-struct Person {
-  size_t id;
-  std::string info;
-};
+  struct Person {
+    size_t id;
+    std::string info;
+  };
 
 }
 

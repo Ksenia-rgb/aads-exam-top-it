@@ -6,22 +6,22 @@
 
 namespace yarmolinskaya {
 
-bool parse_person(
-  const std::string& line,
-  Person& person
-);
+  bool parse_person(
+    const std::string& line,
+    Person& person
+  );
 
-int process_streams(
-  std::istream& in,
-  std::ostream& out
-);
+  int process_streams(
+    std::istream& in,
+    std::ostream& out
+  );
 
-int parse_arguments(
-  int argc,
-  char* argv[],
-  std::string& in_file,
-  std::string& out_file
-);
+  int parse_arguments(
+    int argc,
+    char* argv[],
+    std::string& in_file,
+    std::string& out_file
+  );
 
 }
 
