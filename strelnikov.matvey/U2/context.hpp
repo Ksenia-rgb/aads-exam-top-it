@@ -1,70 +1,96 @@
 #ifndef CONTEXT_HPP
 #define CONTEXT_HPP
 #include "../U1/person.hpp"
+#include "hashtable.hpp"
 
 namespace strelnikov
 {
+
   struct Meeting
   {
-    size_t id1;
-    size_t id2;
+    size_t partner_id;
     size_t duration;
+    Meeting *next;
   };
 
-  template < typename T > struct DynArray
+  struct PersonData
   {
-    T *data;
-    size_t size;
-    size_t capacity;
+    std::string info;
+    Meeting *meetings_head;
   };
 
   struct Context
   {
-    DynArray< Person > persons;
-    DynArray< Meeting > meetings;
+    HashTable< size_t, PersonData > persons;
   };
 
-  template < typename T > void dynarray_init(DynArray< T > &arr, size_t cap)
+  void context_init(Context &ctx)
   {
-    arr.data = new T[cap];
-    arr.size = 0;
-    arr.capacity = cap;
+    hash_init(ctx.persons, 1024);
   }
 
-  template < typename T > void dynarray_push(DynArray< T > &arr, const T &val)
+  void context_destroy(Context &ctx)
   {
-    if (arr.size == arr.capacity) {
-      size_t new_cap = arr.capacity == 0 ? 4 : arr.capacity * 2;
-      T *new_data = new T[new_cap];
-      for (size_t i = 0; i < arr.size; ++i) {
-        new_data[i] = arr.data[i];
-      }
-      delete[] arr.data;
-      arr.data = new_data;
-      arr.capacity = new_cap;
-    }
-    arr.data[arr.size++] = val;
-  }
-
-  template < typename T > void dynarray_destroy(DynArray< T > &arr)
-  {
-    delete[] arr.data;
-    arr.data = nullptr;
-    arr.size = 0;
-    arr.capacity = 0;
-  }
-
-  void ensure_person(Context &ctx, size_t id)
-  {
-    for (size_t i = 0; i < ctx.persons.size; ++i) {
-      if (ctx.persons.data[i].id == id) {
-        return;
+    for (size_t i = 0; i < ctx.persons.capacity; ++i) {
+      HashNode< size_t, PersonData > *current = ctx.persons.buckets[i];
+      while (current != nullptr) {
+        Meeting *m_curr = current->value.meetings_head;
+        while (m_curr != nullptr) {
+          Meeting *m_next = m_curr->next;
+          delete m_curr;
+          m_curr = m_next;
+        }
+        current = current->next;
       }
     }
+    hash_destroy(ctx.persons);
+  }
 
-    Person p{id, ""};
-    dynarray_push(ctx.persons, p);
+  PersonData *context_find_person(Context &ctx, size_t id)
+  {
+    return hash_find(ctx.persons, id, default_hash_size_t, default_eq_size_t);
+  }
+
+  void context_ensure_person(Context &ctx, size_t id)
+  {
+    if (context_find_person(ctx, id) == nullptr) {
+      PersonData data;
+      data.info = "";
+      data.meetings_head = nullptr;
+      hash_insert(ctx.persons, id, data, default_hash_size_t, default_eq_size_t);
+    }
+  }
+
+  void context_add_meeting(Context &ctx, size_t id1, size_t id2, size_t duration)
+  {
+    if (id1 == id2)
+      return;
+
+    context_ensure_person(ctx, id1);
+    context_ensure_person(ctx, id2);
+
+    PersonData *p1 = context_find_person(ctx, id1);
+    Meeting *m1 = new Meeting{id2, duration, p1->meetings_head};
+    p1->meetings_head = m1;
+
+    PersonData *p2 = context_find_person(ctx, id2);
+    Meeting *m2 = new Meeting{id1, duration, p2->meetings_head};
+    p2->meetings_head = m2;
+  }
+
+  void context_remove_person(Context &ctx, size_t id)
+  {
+    HashNode< size_t, PersonData > *node = hash_find_node(ctx.persons, id, default_hash_size_t, default_eq_size_t);
+    if (node != nullptr) {
+      Meeting *m = node->value.meetings_head;
+      while (m != nullptr) {
+        Meeting *next = m->next;
+        delete m;
+        m = next;
+      }
+      node->value.meetings_head = nullptr;
+      hash_remove(ctx.persons, id, default_hash_size_t, default_eq_size_t);
+    }
   }
 }
-
 #endif
