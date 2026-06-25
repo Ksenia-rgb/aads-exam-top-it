@@ -1,4 +1,4 @@
-k#ifndef DYNARRAY_HPP
+#ifndef DYNARRAY_HPP
 #define DYNARRAY_HPP
 
 #include <cstddef>
