@@ -80,6 +80,18 @@ int main(int argc, char *argv[])
   while (true) {
     if (in >> id) {
       if (std::getline(in, info)) {
+        size_t pos = 0;
+        while (pos < info.size() && info[pos] == ' ') {
+          ++pos;
+        }
+
+        if (pos == info.size()) {
+          ++ignored;
+          continue;
+        }
+
+        info = info.substr(pos);
+
         if (saldaev::IdExcist(base, curr, id)) {
           ++ignored;
           continue;
