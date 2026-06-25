@@ -50,6 +50,8 @@ namespace kondrat
   bool parsePerson(const std::string & line, Person & person);
   bool containsPerson(const PersonStorage & storage, size_t id);
   void readPersons(std::istream & input, PersonStorage & storage);
+  bool parseMeeting(const std::string & line, Meeting & meeting);
+  bool readMeetings(std::istream & input, MeetingStorage & storage);
 }
 
 bool kondrat::parseArgs(int argc, char ** argv, ProgramArgs & args)
@@ -217,6 +219,78 @@ void kondrat::readPersons(std::istream & input, PersonStorage & storage)
     }
     pushBack(storage, person);
   }
+}
+
+bool kondrat::parseMeeting(const std::string & line, Meeting & meeting)
+{
+  size_t pos = 0;
+  while (pos < line.size() && isSpace(line[pos]))
+  {
+    ++pos;
+  }
+
+  size_t first = 0;
+  if (!readSizeT(line, pos, first) || pos == line.size() || !isSpace(line[pos]))
+  {
+    return false;
+  }
+  while (pos < line.size() && isSpace(line[pos]))
+  {
+    ++pos;
+  }
+
+  size_t second = 0;
+  if (!readSizeT(line, pos, second) || pos == line.size() || !isSpace(line[pos]))
+  {
+    return false;
+  }
+  while (pos < line.size() && isSpace(line[pos]))
+  {
+    ++pos;
+  }
+
+  size_t time = 0;
+  if (!readSizeT(line, pos, time))
+  {
+    return false;
+  }
+  while (pos < line.size() && isSpace(line[pos]))
+  {
+    ++pos;
+  }
+  if (pos != line.size())
+  {
+    return false;
+  }
+
+  meeting.first = first;
+  meeting.second = second;
+  meeting.time = time;
+  return true;
+}
+
+bool kondrat::readMeetings(std::istream & input, MeetingStorage & storage)
+{
+  std::string line;
+  while (std::getline(input, line))
+  {
+    if (isBlank(line))
+    {
+      continue;
+    }
+
+    Meeting meeting = {};
+    if (!parseMeeting(line, meeting))
+    {
+      return false;
+    }
+    if (meeting.first == meeting.second)
+    {
+      continue;
+    }
+    pushBack(storage, meeting);
+  }
+  return true;
 }
 
 int main(int argc, char ** argv)
