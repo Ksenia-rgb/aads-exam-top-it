@@ -75,10 +75,4 @@ void chernov::pushBack(Vector< T > & v, const T & value)
   ++v.size;
 }
 
-template< typename T >
-size_t chernov::getSize(Vector< T > & v)
-{
-  return v.size;
-}
-
 #endif
