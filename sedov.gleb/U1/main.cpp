@@ -21,6 +21,7 @@ int main(int argc, char ** argv)
 {
   if (argc > 3)
   {
+    std::cerr << "Too many arguments\n";
     return 0;
   }
   sedov::Args args = sedov::parseArgs(argc, argv);
