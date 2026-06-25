@@ -30,6 +30,11 @@ namespace smirnova
 
     while (std::getline(input, line))
     {
+      if (line.empty())
+      {
+        continue;
+      }
+
       size_t id;
       std::string info;
 
@@ -63,4 +68,3 @@ namespace smirnova
 }
 
 #endif
-
