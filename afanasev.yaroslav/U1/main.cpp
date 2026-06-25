@@ -1,107 +1,67 @@
+#include <person.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 
-namespace afanasev
+namespace
 {
-  struct Person
+  bool parseArg(const std::string & arg, const std::string & prefix, bool & flag, std::string & filename)
   {
-    size_t id;
-    std::string info;
-  };
-
-  bool parseLine(const std::string & line, Person & person)
-  {
-    std::istringstream iss(line);
-    if (!(iss >> person.id))
+    if (arg.rfind(prefix, 0) == 0)
     {
-      return false;
-    }
-
-    iss >> std::ws;
-    if (!std::getline(iss, person.info))
-    {
-      return false;
-    }
-    return !person.info.empty();
-  }
-
-  void addPerson(Person *& persons, size_t & count, size_t & capacity, const Person & person)
-  {
-    if (count == capacity)
-    {
-      size_t newCapacity = capacity == 0 ? 1 : capacity * 2;
-      Person * newPersons = new Person[newCapacity];
-
-      for (size_t i = 0; i < count; ++i)
+      if (flag)
       {
-        newPersons[i] = persons[i];
+        std::cerr << "Duplicate " << prefix << " argument\n";
+        return false;
       }
-
-      delete[] persons;
-      persons = newPersons;
-      capacity = newCapacity;
-    }
-    persons[count++] = person;
-  }
-
-  bool existsPerson(const Person * persons, size_t count, size_t id)
-  {
-    for (size_t i = 0; i < count; ++i)
-    {
-      if (persons[i].id == id)
+      filename = arg.substr(prefix.size());
+      if (filename.empty())
       {
-        return true;
+        std::cerr << "Invalid argument: empty filename\n";
+        return false;
       }
+      flag = true;
+      return true;
     }
     return false;
   }
 }
 
-
-
 int main(int argc, char * argv[])
 {
   using namespace afanasev;
 
+  std::string inFile, outFile;
+  bool hasIn = false, hasOut = false;
+
   if (argc > 3)
   {
     std::cerr << "Too many arguments\n";
-    return 1;
+    return 2;
   }
-
-  std::string inFile, outFile;
-  bool hasIn = false, hasOut = false;
 
   for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
     if (arg.rfind("in:", 0) == 0)
     {
-      if (hasIn)
+      if (!parseArg(arg, "in:", hasIn, inFile))
       {
-        std::cerr << "Duplicate input argument\n";
         return 1;
       }
-      hasIn = true;
-      inFile = arg.substr(3);
+      continue;
     }
-    else if (arg.rfind("out:", 0) == 0)
+    if (arg.rfind("out:", 0) == 0)
     {
-      if (hasOut)
+      if (!parseArg(arg, "out:", hasOut, outFile))
       {
-        std::cerr << "Duplicate output argument\n";
         return 1;
       }
-      hasOut = true;
-      outFile = arg.substr(4);
+      continue;
     }
-    else
-    {
-      std::cerr << "Invalid argument\n";
-      return 1;
-    }
+    std::cerr << "Invalid argument\n";
+    return 1;
   }
 
   std::ifstream inStream;
@@ -167,7 +127,15 @@ int main(int argc, char * argv[])
     *out << persons[i].id << ' ' << persons[i].info << '\n';
   }
 
-  std::cerr << count << ' ' << ignored << '\n';
+  if (hasOut)
+  {
+    outStream.close();
+  }
+
+  if (count > 0)
+  {
+    std::cerr << count << ' ' << ignored << '\n';
+  }
 
   delete[] persons;
   return 0;
