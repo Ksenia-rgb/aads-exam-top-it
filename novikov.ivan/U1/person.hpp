@@ -24,10 +24,12 @@ namespace novikov
     size_t capacity;
   };
 
+  void create(PersonArray& arr);
   void drop(PersonArray& arr);
   void expand(PersonArray& arr);
   void push(PersonArray& arr, const Person& value);
 
+  void create(IdSet& set);
   void drop(IdSet& set);
   size_t hash(const IdSet& set, size_t value);
   bool contains(const IdSet& set, size_t value);

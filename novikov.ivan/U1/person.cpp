@@ -1,5 +1,12 @@
 #include "person.hpp"
 
+void novikov::create(PersonArray& arr)
+{
+  arr.data = nullptr;
+  arr.size = 0;
+  arr.capacity = 0;
+}
+
 void novikov::drop(PersonArray& arr)
 {
   delete[] arr.data;
@@ -26,6 +33,17 @@ void novikov::push(PersonArray& arr, const Person& value)
   }
   arr.data[arr.size] = value;
   ++arr.size;
+}
+
+void novikov::create(IdSet& set)
+{
+  set.capacity = 1024;
+  set.data = new size_t[set.capacity];
+  set.used = new bool[set.capacity];
+
+  for (size_t i = 0; i < set.capacity; ++i) {
+    set.used[i] = false;
+  }
 }
 
 void novikov::drop(IdSet& set)
