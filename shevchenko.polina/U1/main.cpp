@@ -35,6 +35,10 @@ int main(int argc, char* argv[]) {
 
   Person p;
   while (read_person(*in, p)) {
+    if (p.id == 0 && p.info.empty()) {
+      continue;
+    }
+
     if (!p.valid) {
       ++ignored_count;
       continue;
