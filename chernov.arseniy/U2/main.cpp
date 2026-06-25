@@ -3,7 +3,7 @@
 #include <utils.hpp>
 #include "commands.hpp"
 
-int main(int argc, char * argv[])
+int main(int argc, char ** argv)
 {
   using namespace chernov;
 
