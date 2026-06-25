@@ -11,15 +11,15 @@ namespace madieva {
   };
   PersonArray createArray();
 
-  void destroyArray(PersonArray& arr) noexcept;
+  void destroyArray(PersonArray & arr) noexcept;
 
-  void pushBack(PersonArray& arr, const Person& person);
+  void pushBack(PersonArray & arr, const Person& person);
 
-  size_t getSize(const PersonArray& arr) noexcept;
+  size_t getSize(const PersonArray & arr) noexcept;
 
-  Person& at(PersonArray& arr, size_t index);
+  Person& at(PersonArray & arr, size_t index);
 
-  const Person& at(const PersonArray& arr, size_t index);
+  const Person& at(const PersonArray & arr, size_t index);
 }
 
 #endif

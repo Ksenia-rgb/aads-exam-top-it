@@ -35,16 +35,15 @@ namespace madieva {
     ++arr.size_;
   }
 
-  size_t getSize(const PersonArray& arr) noexcept {
+  size_t getSize(const PersonArray & arr) noexcept {
     return arr.size_;
   }
 
-  Person& at(PersonArray& arr, size_t index) {
+  Person & at(PersonArray& arr, size_t index) {
     return arr.data_[index];
   }
 
-  const Person& at(const PersonArray& arr, size_t index) {
+  const Person & at(const PersonArray & arr, size_t index) {
     return arr.data_[index];
   }
-
 }
