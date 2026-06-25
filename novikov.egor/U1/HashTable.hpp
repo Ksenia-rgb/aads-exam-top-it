@@ -7,14 +7,16 @@
 
 namespace novikov
 {
-  template < class T, class Key > struct HashNode
+  template < class T, class Key >
+  struct HashNode
   {
     T val;
     Key key;
     HashNode *next;
   };
 
-  template < class T, class Key, class Hash = std::hash< Key >, class Equal = std::equal_to< Key > > struct HashTable
+  template < class T, class Key, class Hash = std::hash< Key >, class Equal = std::equal_to< Key > >
+  struct HashTable
   {
     HashNode< T, Key > **data;
     size_t size;
@@ -54,7 +56,8 @@ namespace novikov
     return false;
   };
 
-  template < class T, class Key, class Hash, class Equal > void clear(HashTable< T, Key, Hash, Equal > &table)
+  template < class T, class Key, class Hash, class Equal >
+  void clear(HashTable< T, Key, Hash, Equal > &table)
   {
     for (size_t i = 0; i < table.capacity; ++i) {
       HashNode< T, Key > *cur = table.data[i];
