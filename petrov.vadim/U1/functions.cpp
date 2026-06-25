@@ -1,5 +1,6 @@
 #include "functions.hpp"
 #include <iostream>
+#include <ios>
 #include "struct.hpp"
 
 bool petrov::parsePerson(std::istream& in, petrov::Person& person)
@@ -12,7 +13,7 @@ bool petrov::parsePerson(std::istream& in, petrov::Person& person)
   bool readingId = true;
   bool hasInfo = false;
 
-  while (in >> c && c != '\n')
+  while (in >> std::noskipws >> c && c != '\n')
   {
     if (readingId)
     {
@@ -30,7 +31,7 @@ bool petrov::parsePerson(std::istream& in, petrov::Person& person)
       }
       else
       {
-        while (in >> c && c != '\n')
+        while (in >> std::noskipws >> c && c != '\n')
         {
           continue;
         }
@@ -97,4 +98,14 @@ void petrov::processStream(std::istream& in, Data& data)
       data.ignored_++;
     }
   }
+}
+
+void petrov::printData(std::ostream& out, Data& data)
+{
+  for (size_t i = 0; i < data.saved_; ++i)
+  {
+    out << data.data_[i].id << ' ' << data.data_[i].info << '\n';
+  }
+
+  std::cerr << data.saved_ << ' ' << data.ignored_ << '\n';
 }
