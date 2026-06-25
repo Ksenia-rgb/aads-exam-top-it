@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
   {
     losev::Args args = losev::parseArgs(argc, argv);
 
+    // Читаем людей
     losev::PersonStorage people;
     initPersonStorage(people);
 
@@ -41,7 +42,17 @@ int main(int argc, char* argv[])
     }
     losev::readMeetings(dataFile, meetings);
 
+    std::string line;
+    while (std::getline(std::cin, line))
+    {
+      if (line.empty())
+      {
+        continue;
+      }
+      std::cerr << "<INVALID COMMAND>\n";
+    }
 
+    // Очистка
     clearPersonStorage(people);
     clearMeetingStorage(meetings);
 
