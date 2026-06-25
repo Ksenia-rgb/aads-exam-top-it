@@ -29,11 +29,6 @@ namespace nabieva {
     args.inputFile = 0;
     args.outputFile = 0;
 
-    if (argc > 4)
-    {
-      return false;
-    }
-
     for (int i = 1; i < argc; ++i)
     {
       if (startsWith(argv[i], "in:"))
@@ -65,6 +60,10 @@ namespace nabieva {
 int main(int argc, char** argv)
 {
   nabieva::ProgramArgs args = { 0, 0 };
+  if (argc > 3)
+  {
+    return 0;
+  }
   if (!readArgs(argc, argv, args))
   {
     return 1;
