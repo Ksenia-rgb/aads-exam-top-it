@@ -19,6 +19,10 @@ namespace
 
 int main(int argc, char ** argv)
 {
+  if (argc > 3)
+  {
+    return 1;
+  }
   sedov::Args args = sedov::parseArgs(argc, argv);
   if (!args.valid)
   {
@@ -81,10 +85,7 @@ int main(int argc, char ** argv)
         * outStream << persons.data[i].id << " " << persons.data[i].info << "\n";
       }
     }
-    if (persons.size > 0 || ignoreCount > 0)
-    {
-      std::cerr << persons.size << " " << ignoreCount << "\n";
-    }
+    std::cerr << persons.size << " " << ignoreCount << "\n";
     cleanupResources(persons, seen);
     return 0;
   }
