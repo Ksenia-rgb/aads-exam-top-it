@@ -1,4 +1,4 @@
-#include <person.hpp>
+#include "person.hpp"
 
 size_t chernov::findById(const Vector< Person > & persons, size_t id)
 {
