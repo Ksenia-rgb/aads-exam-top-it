@@ -26,3 +26,34 @@ chernov::Vector< chernov::Meeting > chernov::filterMeetingsByPerson(const Vector
   }
   return result;
 }
+
+chernov::Vector< size_t > chernov::getNeighbors(const Vector< Meeting > & meetings, size_t id)
+{
+  Vector< Meeting > filtered = filterMeetingsByPerson(meetings, id);
+  Vector< size_t > neighbors;
+  init(neighbors);
+
+  try {
+    for (size_t i = 0; i < filtered.size; ++i) {
+      const Meeting & m = filtered.data[i];
+      size_t other = (m.from == id) ? m.to : m.from;
+      bool found = false;
+      for (size_t j = 0; j < neighbors.size; ++j) {
+        if (neighbors.data[j] == other) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        pushBack(neighbors, other);
+      }
+    }
+  } catch (...) {
+    destroy(neighbors);
+    destroy(filtered);
+    throw;
+  }
+
+  destroy(filtered);
+  return neighbors;
+}
