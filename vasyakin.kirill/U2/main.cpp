@@ -19,14 +19,14 @@ namespace
 
   Arguments parseArguments(int argc, char** argv)
   {
-    Arguments result{ std::string(), std::string(), false, false, true };
+    Arguments result{std::string(), std::string(), false, false, true};
 
     if (argc < 2 || argc > 3)
     {
       result.valid = false;
       return result;
     }
-    
+
     for (int i = 1; i < argc; ++i)
     {
       std::string arg(argv[i]);
@@ -80,11 +80,12 @@ int main(int argc, char** argv)
 
   Arguments args = parseArguments(argc, argv);
   
-  if (!args.valid) {
+  if (!args.valid)
+  {
     std::cerr << "invalid arguments\n";
     return 1;
   }
-  
+
   vasyakin::Graph* root = nullptr;
   
   if (args.hasPersons)
@@ -99,7 +100,7 @@ int main(int argc, char** argv)
 
     vasyakin::loadPersons(personsStream, root);
   }
-  
+
   std::ifstream dataStream(args.dataFile.c_str());
   if (!dataStream)
   {
@@ -107,17 +108,17 @@ int main(int argc, char** argv)
     vasyakin::clearGraph(root);
     return 2;
   }
-  
+
   if (!vasyakin::loadMeetings(dataStream, root))
   {
     std::cerr << "invalid meetings data\n";
     vasyakin::clearGraph(root);
     return 3;
   }
-  
+
   vasyakin::runCommands(std::cin, std::cout, root);
-  
+
   vasyakin::clearGraph(root);
-  
+
   return 0;
 }
