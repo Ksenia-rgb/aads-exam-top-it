@@ -1,25 +1,62 @@
-#ifndef KARPOVICH_MEETS_HPP
-#define KARPOVICH_MEETS_HPP
-
-#include "meet.hpp"
 #include <cstddef>
-#include <iosfwd>
-#include "../common/person.hpp"
-#include "../common/vector.hpp"
+#include <istream>
+#include <stdexcept>
+#include <string>
+#include "meets.hpp"
 
-namespace karpovich
+void karpovich::readMeets(std::istream &input, Vector< Meet > &meets)
 {
-  void readMeets(std::istream &input, Vector< Meet > &meets);
-  void removeSelfMeets(Vector< Meet > &meets);
-  void printMeets(std::ostream &output, const Vector< Meet > &meets, size_t id);
-  void printAnons(std::ostream &output, const Vector< Person > &persons);
-  void deanon(Vector< Person > &persons, Vector< Meet > &meets, size_t anonId, size_t id);
-  void redesc(Vector< Person > &persons, size_t id, const std::string &description);
-  void desc(std::ostream &output, const Vector< Person > &persons, size_t id);
-  void commons(std::ostream &output, const Vector< Meet > &meets, size_t id1, size_t id2);
-  void less(std::ostream &output, const Vector< Meet > &meets, size_t time, size_t id);
-  void greater(std::ostream &output, const Vector< Meet > &meets, size_t time, size_t id);
-  void outPersons(std::ostream &output, const Vector< Person > &persons);
-}
+  std::string line;
 
-#endif
+  while (std::getline(input, line)) {
+    if (line.empty()) {
+      continue;
+    }
+
+    size_t pos = 0;
+    size_t firstId = 0;
+    size_t secondId = 0;
+    size_t duration = 0;
+
+    try {
+      firstId = std::stoul(line, &pos);
+    } catch (...) {
+      throw std::runtime_error("Invalid meet data");
+    }
+
+    while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t')) {
+      ++pos;
+    }
+
+    if (pos == line.size()) {
+      throw std::runtime_error("Invalid meet data");
+    }
+
+    try {
+      secondId = std::stoul(line.substr(pos), &pos);
+    } catch (...) {
+      throw std::runtime_error("Invalid meet data");
+    }
+
+    while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t')) {
+      ++pos;
+    }
+
+    if (pos == line.size()) {
+      throw std::runtime_error("Invalid meet data");
+    }
+
+    try {
+      duration = std::stoul(line.substr(pos), &pos);
+    } catch (...) {
+      throw std::runtime_error("Invalid meet data");
+    }
+
+    Meet meet;
+    meet.firstId = firstId;
+    meet.secondId = secondId;
+    meet.duration = duration;
+
+    pushBack(meets, meet);
+  }
+}
