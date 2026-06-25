@@ -13,7 +13,7 @@ bool vasyakin::parseLine(const std::string& line, vasyakin::Person& person)
   {
     cleanLine.pop_back();
   }
-    
+
   size_t pos = 0;
   size_t len = cleanLine.size();
 

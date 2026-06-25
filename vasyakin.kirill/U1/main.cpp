@@ -20,7 +20,7 @@ namespace
   {
     for (char c : line)
     {
-      if (!std::isspace(static_cast< unsigned char >(c))) 
+      if (!std::isspace(static_cast< unsigned char >(c)))
       {
         return false;
       }
