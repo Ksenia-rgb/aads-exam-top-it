@@ -1,6 +1,5 @@
 #include <fstream>
 #include <common_funcs.hpp>
-#include "solution.hpp"
 
 
 int main(int argc, char ** argv)

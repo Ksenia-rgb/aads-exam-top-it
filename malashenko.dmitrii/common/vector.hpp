@@ -46,6 +46,21 @@ namespace malashenko
     vec.size = 0;
     vec.capacity = 0;
   }
+
+  template <typename T>
+  bool contains(const Vec< T >& vec, T val)
+  {
+    for (size_t i = 0; i < vec.size(); ++i)
+    {
+      if (vec[i] == val)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
 }
 
 #endif

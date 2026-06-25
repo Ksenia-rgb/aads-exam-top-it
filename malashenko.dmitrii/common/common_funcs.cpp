@@ -39,17 +39,7 @@ bool malashenko::parse_line(const std::string &line, size_t &id, std::string &in
 
   size_t pos = 0;
 
-  if (!std::isdigit(static_cast<unsigned char>(line[pos])))
-  {
-    return false;
-  }
-
-  while (pos < len && std::isdigit(static_cast<unsigned char>(line[pos])))
-  {
-    ++pos;
-  }
-
-  std::string idStr = line.substr(0, pos);
+  std::string idStr = get_str_after_whitespace(line, pos);
   try
   {
     id = std::stoull(idStr);
@@ -59,10 +49,7 @@ bool malashenko::parse_line(const std::string &line, size_t &id, std::string &in
     return false;
   }
 
-  while (pos < len && line[pos] == ' ')
-  {
-    ++pos;
-  }
+  skip_whitespace(line, pos);
 
   if (pos >= len)
   {
@@ -126,13 +113,12 @@ bool malashenko::parse_date_line(const std::string& line, size_t& id1, size_t& i
   return true;
 }
 
-size_t malashenko::skip_whitespace(const std::string& str, size_t pos)
+void malashenko::skip_whitespace(const std::string& str, size_t& pos)
 {
     while (pos < str.size() && (str[pos] == ' '  || str[pos] == '\t' || str[pos] == '\v' || str[pos] == '\f'))
     {
         ++pos;
     }
-    return pos;
 }
 
 std::string malashenko::get_str_after_whitespace(const std::string& str, size_t& pos)
@@ -150,4 +136,16 @@ std::string malashenko::get_str_after_whitespace(const std::string& str, size_t&
 
   std::string newStr = str.substr(strBegin, pos);
   return newStr;
+}
+
+bool malashenko::containsId(const Vec< Person > &vec, size_t id)
+{
+  for (size_t i = 0; i < vec.size; ++i)
+  {
+    if (vec.data[i].id == id)
+    {
+      return true;
+    }
+  }
+  return false;
 }
