@@ -1,4 +1,5 @@
 #include <iostream>
+#include <exception>
 
 namespace donkeev
 {
@@ -10,7 +11,7 @@ namespace donkeev
 
   struct PersonNode
   {
-    Person data;
+    Person* data;
     PersonNode* next_;
     PersonNode* prev_;
   };
@@ -22,7 +23,7 @@ namespace donkeev
     size_t size_;
   };
 
-  void pushBack(PersonList& list, const Person& person)
+  void pushBack(PersonList& list, Person* person)
   {
     PersonNode* newNode = new PersonNode{person, nullptr, nullptr};
     
@@ -46,7 +47,7 @@ namespace donkeev
     PersonNode* current = list.head_;
     while (current)
     {
-      if (current->data.id == id)
+      if (current->data->id == id)
       {
         return false;
       }
@@ -55,7 +56,62 @@ namespace donkeev
     return true;
   }
 
-  
+  std::string nextWord(const std::string& str, size_t& pos)
+  {
+    while (pos < str.length() && str[pos] == ' ')
+    {
+      ++pos;
+    }
+    
+    if (pos >= str.length())
+    {
+      return "";
+    }
+    
+    size_t start = pos;
+    while (pos < str.length() && str[pos] != ' ')
+    {
+      ++pos;
+    }
+    
+    return str.substr(start, pos - start);
+  }
+
+  void readingPersons(std::istream& input, PersonList& list)
+  {
+    std::string line;
+    while (!input.eof())
+    {
+      if (!std::getline(input, line))
+      {
+        throw std::runtime_error("Bad input");
+      }
+
+      size_t pos = 0;   
+      std::string idStr = nextWord(line, pos);
+      if (idStr.empty())
+      {
+        throw std::runtime_error("Bad input");
+      }
+      size_t id = std::stoull(idStr);
+
+      std::string description = nextWord(line, pos);
+      if (description.empty())
+      {
+        continue;
+      }
+
+      if (!isUniqueId(list, id))
+      {
+        continue;
+      }
+      Person* pers = new Person;
+      pers->id = id;
+      pers->info = description;
+
+      pushBack(list, pers);
+    }
+  }
 }
 
 int main()
