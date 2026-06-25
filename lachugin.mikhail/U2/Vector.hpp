@@ -48,7 +48,14 @@ namespace lachugin
   }
 
   template< class T >
-  void clearVector(Vector< T >& vector);
+  void clearVector(Vector< T >& vector)
+  {
+    delete[] vector.data;
+
+    vector.data = nullptr;
+    vector.size = 0;
+    vector.capacity = 0;
+  }
 }
 
 #endif
