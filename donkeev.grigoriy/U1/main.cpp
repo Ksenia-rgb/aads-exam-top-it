@@ -27,7 +27,7 @@ namespace donkeev
   void pushBack(PersonList& list, Person* person)
   {
     PersonNode* newNode = new PersonNode{person, nullptr, nullptr};
-    
+
     if (!list.head_)
     {
       list.head_ = newNode;
@@ -39,7 +39,7 @@ namespace donkeev
       newNode->prev_ = list.tail_;
       list.tail_ = newNode;
     }
-    
+
     ++list.size_;
   }
 
@@ -79,18 +79,18 @@ namespace donkeev
     {
       ++pos;
     }
-    
+
     if (pos >= str.length())
     {
       return "";
     }
-    
+
     size_t start = pos;
     while (pos < str.length() && str[pos] != ' ' && str[pos] != '\t')
     {
       ++pos;
     }
-    
+
     return str.substr(start, pos - start);
   }
 
@@ -99,7 +99,7 @@ namespace donkeev
     std::string line;
     while (std::getline(input, line))
     {
-      size_t pos = 0;   
+      size_t pos = 0;
       std::string idStr = nextWord(line, pos);
       if (!isNumber(idStr))
       {
@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
 {
   std::istream* in = &std::cin;
   std::ostream* out = &std::cout;
-    
+
   std::ifstream inFile;
   std::ofstream outFile;
 
@@ -170,11 +170,11 @@ int main(int argc, char* argv[])
 
   int inCount = 0;
   int outCount = 0;
-  
+
   for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
-        
+
     if (arg.rfind("in:", 0) == 0)
     {
       ++inCount;
@@ -183,14 +183,14 @@ int main(int argc, char* argv[])
         std::cerr << "Invalid arguments: multiple input files specified\n";
         return 1;
       }
-      
+
       std::string filename = arg.substr(3);
       if (filename.empty())
       {
         std::cerr << "Invalid arguments: empty filename for input\n";
         return 1;
       }
-      
+
       inFile.open(filename);
       if (!inFile.is_open())
       {
@@ -207,14 +207,14 @@ int main(int argc, char* argv[])
         std::cerr << "Invalid arguments: multiple output files specified\n";
         return 1;
       }
-      
+
       std::string filename = arg.substr(4);
       if (filename.empty())
       {
         std::cerr << "Invalid arguments: empty filename for output\n";
         return 1;
       }
-      
+
       outFile.open(filename);
       if (!outFile.is_open())
       {
