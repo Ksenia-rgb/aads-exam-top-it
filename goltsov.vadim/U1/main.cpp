@@ -141,9 +141,9 @@ int main(int argc, char **argv)
   }
   goltsov::HashTable< goltsov::Person > ht = goltsov::newHT< goltsov::Person >(100);
   goltsov::List< goltsov::Person >* l = nullptr;
-  
+
   std::pair< size_t, size_t > res = goltsov::readPersons(ht, *is, &l);
-  
+
   if (!outFilename.empty())
   {
     outFile.open(outFilename, std::ios::trunc);
@@ -156,11 +156,11 @@ int main(int argc, char **argv)
     }
     os = &outFile;
   }
-  
+
   goltsov::printRes(*os, l);
   *os << '\n';
   std::cerr << res.first << ' ' << res.second << '\n';
-  
+
   goltsov::deleteHashTable(ht);
   goltsov::deleteList(l);
 }
