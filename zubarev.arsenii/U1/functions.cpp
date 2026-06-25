@@ -5,7 +5,7 @@ bool zubarev::detail::parse_args(int argc, char** argv, std::string& in_name, st
   bool has_in = false;
   bool has_out = false;
 
-  for (size_t i = 0; i < argc; ++i) {
+  for (int i = 0; i < argc; ++i) {
     std::string arg(argv[i]);
     if (arg.find("in: ")) {
       if (has_in) {
