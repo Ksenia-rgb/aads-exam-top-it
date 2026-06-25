@@ -4,10 +4,6 @@
 
 int main(const int argc, char *argv[])
 {
-  if (argc > 3) {
-    return 1;
-  }
-
   const pozdnyakov::AppArgs args = pozdnyakov::parseArguments(argc, argv);
   if (args.isError) {
     return 1;
@@ -44,11 +40,8 @@ int main(const int argc, char *argv[])
     pozdnyakov::writeData(std::cout, persons);
   }
 
-  if (stats.successCount > 0 || stats.ignoredCount > 0) {
-    std::cerr << stats.successCount << " " << stats.ignoredCount << "\n";
-  }
+  std::cerr << stats.successCount << " " << stats.ignoredCount << "\n";
 
   pozdnyakov::destroyArray(persons);
-
   return 0;
 }
