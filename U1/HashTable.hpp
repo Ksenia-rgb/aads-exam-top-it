@@ -41,6 +41,37 @@ namespace novikov
     table.data[index] = node;
     table.size++;
   };
+
+  template < class T, class Key, class Hash, class Equal >
+  bool is_has(const HashTable< T, Key, Hash, Equal > &table, const Key &key)
+  {
+    size_t index = table.hasher(key) % table.capacity;
+    HashNode< T, Key > *cur = table.data[index];
+    while (cur) {
+      if (table.equal(cur->key, key)) {
+        return true;
+      }
+      cur = cur->next;
+    }
+    return false;
+  };
+
+  template < class T, class Key, class Hash, class Equal >
+  void clear(HashTable< T, Key, Hash, Equal > &table)
+  {
+    for (size_t i = 0; i < table.capacity; ++i) {
+      HashNode< T, Key > *cur = table.data[i];
+      while (cur) {
+        HashNode< T, Key > *next = cur->next;
+        delete cur;
+        cur = next;
+      }
+    }
+    delete[] table.data;
+    table.data = nullptr;
+    table.capacity = 0;
+    table.size = 0;
+  };
 }
 
 #endif
