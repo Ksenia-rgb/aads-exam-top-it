@@ -1,12 +1,14 @@
 #include "commands.hpp"
 
 #include <cstddef>
+#include <fstream>
 #include <istream>
 #include <memory>
 #include <ostream>
 #include <string>
 #include <utility>
 
+#include "io.hpp"
 #include "parsing.hpp"
 
 namespace {
@@ -251,6 +253,16 @@ namespace {
     removePerson(data, anonId);
   }
 
+  void doOutPersons(std::ostream & out, const samarin::Dataset & data, const std::string & filename)
+  {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+      printInvalid(out);
+      return;
+    }
+    samarin::writePersons(file, data);
+  }
+
   void executeLine(std::ostream & out, samarin::Dataset & data, const std::string & line)
   {
     std::size_t position = 0;
@@ -313,6 +325,13 @@ namespace {
         doDeanon(out, data, anonId, namedId);
       } else {
         printInvalid(out);
+      }
+    } else if (command == "out-persons") {
+      const std::string filename = nextWord(line, position);
+      if (filename.empty()) {
+        printInvalid(out);
+      } else {
+        doOutPersons(out, data, filename);
       }
     } else {
       printInvalid(out);
