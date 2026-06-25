@@ -1,6 +1,8 @@
 #ifndef BST_HPP
 #define BST_HPP
 
+#include <memory>
+
 namespace vasyakin
 {
   template< class Key, class Value >
@@ -55,7 +57,7 @@ namespace vasyakin
     {
       if (key < (*link)->key)
       {
-        link = std::addressofr((*link)->left);
+        link = std::addressof((*link)->left);
       }
       else if ((*link)->key < key)
       {

@@ -1,6 +1,8 @@
 #ifndef SORTED_LIST_HPP
 #define SORTED_LIST_HPP
 
+#include <memory>
+
 namespace vasyakin
 {
   template< class T >
