@@ -76,6 +76,6 @@ int main(int argc, char const *argv[])
     char c = '\0';
     while (std::cin >> std::noskipws >> c && c != '\n');
   }
+  petrov::cleanupMeets(meets);
   delete[] persons.data_;
-  delete[] meets.data_;
 }

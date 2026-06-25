@@ -3,6 +3,20 @@
 #include <fstream>
 #include <exception>
 
+void petrov::cleanupMeets(petrov::MeetData& meets)
+{
+  if (meets.data_ != nullptr)
+  {
+    for (size_t i = 0; i < meets.saved_; ++i)
+    {
+      delete meets.data_[i].first;
+      delete meets.data_[i].second;
+    }
+    delete[] meets.data_;
+    meets.data_ = nullptr;
+  }
+}
+
 bool petrov::loadMeets(std::istream& in, MeetData& meets)
 {
   size_t id1 = 0;

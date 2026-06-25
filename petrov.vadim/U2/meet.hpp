@@ -19,5 +19,6 @@ namespace petrov
 
   bool loadMeets(std::istream& in, MeetData& meets);
   void executeCommands(std::istream& in, std::ostream& out, petrov::Data& persons, MeetData& meets);
+  void cleanupMeets(petrov::MeetData& meets);
 }
 #endif
