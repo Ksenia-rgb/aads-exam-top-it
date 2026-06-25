@@ -151,3 +151,43 @@ int chernov::readPersonsFromFile(const std::string & filename, Vector< Person > 
 
   return 0;
 }
+
+void chernov::parseCommandLine(const std::string & line, Vector< std::string > & tokens)
+{
+  init(tokens);
+
+  size_t pos = 0;
+  while (pos < line.size()) {
+    size_t start = line.find_first_not_of(" \t", pos);
+    if (start == std::string::npos) {
+      break;
+    }
+
+    std::string token;
+    if (line[start] == '"') {
+      size_t end = line.find('"', start + 1);
+      if (end == std::string::npos) {
+        destroy(tokens);
+        return;
+      }
+      token = line.substr(start + 1, end - start - 1);
+      pos = end + 1;
+    } else {
+      size_t end = line.find_first_of(" \t", start);
+      if (end == std::string::npos) {
+        token = line.substr(start);
+        pos = line.size();
+      } else {
+        token = line.substr(start, end - start);
+        pos = end + 1;
+      }
+    }
+
+    try {
+      pushBack(tokens, token);
+    } catch (...) {
+      destroy(tokens);
+      throw;
+    }
+  }
+}
