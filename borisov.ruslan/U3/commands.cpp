@@ -13,7 +13,7 @@ namespace
     size_t duration_;
   };
 
-  bool inRange(const borisov::MeetingNode * const node,
+  bool inRange(const borisov::DatedMeetingNode * const node,
       const borisov::Date rangeStart, const borisov::Date rangeEnd)
   {
     return borisov::dateCmp(node->data_.date_, rangeStart) >= 0 &&
@@ -51,9 +51,10 @@ namespace
     }
   }
 
-  bool existsInMeetings(const borisov::MeetingNode * const meetings, const size_t id)
+  bool existsInMeetings(const borisov::DatedMeetingNode * const meetings,
+      const size_t id)
   {
-    const borisov::MeetingNode *cur = meetings;
+    const borisov::DatedMeetingNode *cur = meetings;
     while (cur != nullptr)
     {
       if (cur->data_.id1_ == id || cur->data_.id2_ == id)
@@ -66,16 +67,16 @@ namespace
   }
 
   bool existsPerson(const borisov::PersonNode * const persons,
-      const borisov::MeetingNode * const meetings, const size_t id)
+      const borisov::DatedMeetingNode * const meetings, const size_t id)
   {
     return borisov::containsId(persons, id) || existsInMeetings(meetings, id);
   }
 
-  size_t countMeetingsOf(const borisov::MeetingNode * const meetings,
+  size_t countMeetingsOf(const borisov::DatedMeetingNode * const meetings,
       const size_t id, const borisov::Date rangeStart, const borisov::Date rangeEnd)
   {
     size_t n = 0;
-    const borisov::MeetingNode *cur = meetings;
+    const borisov::DatedMeetingNode *cur = meetings;
     while (cur != nullptr)
     {
       if ((cur->data_.id1_ == id || cur->data_.id2_ == id) &&
@@ -88,7 +89,7 @@ namespace
     return n;
   }
 
-  IdDuration *collectMeetingsOf(const borisov::MeetingNode * const meetings,
+  IdDuration *collectMeetingsOf(const borisov::DatedMeetingNode * const meetings,
       const size_t id, const borisov::Date rangeStart, const borisov::Date rangeEnd,
       size_t &count)
   {
@@ -99,7 +100,7 @@ namespace
     }
     IdDuration * const arr = new IdDuration[count];
     size_t idx = 0;
-    const borisov::MeetingNode *cur = meetings;
+    const borisov::DatedMeetingNode *cur = meetings;
     while (cur != nullptr)
     {
       if (inRange(cur, rangeStart, rangeEnd))
@@ -123,7 +124,7 @@ namespace
     return arr;
   }
 
-  size_t *collectPartnersOf(const borisov::MeetingNode * const meetings,
+  size_t *collectPartnersOf(const borisov::DatedMeetingNode * const meetings,
       const size_t id, const borisov::Date rangeStart, const borisov::Date rangeEnd,
       size_t &count)
   {
@@ -135,7 +136,7 @@ namespace
     }
     size_t * const tmp = new size_t[total];
     size_t tmpCount = 0;
-    const borisov::MeetingNode *cur = meetings;
+    const borisov::DatedMeetingNode *cur = meetings;
     while (cur != nullptr)
     {
       if (!inRange(cur, rangeStart, rangeEnd))
@@ -179,12 +180,12 @@ namespace
   }
 
   size_t *collectAnons(const borisov::PersonNode * const persons,
-      const borisov::MeetingNode * const meetings,
+      const borisov::DatedMeetingNode * const meetings,
       const borisov::Date rangeStart, const borisov::Date rangeEnd,
       size_t &count)
   {
     size_t total = 0;
-    const borisov::MeetingNode *cur = meetings;
+    const borisov::DatedMeetingNode *cur = meetings;
     while (cur != nullptr)
     {
       if (inRange(cur, rangeStart, rangeEnd))
@@ -239,7 +240,7 @@ namespace
 }
 
 bool borisov::cmdAnons(std::ostream &out, const borisov::PersonNode * const persons,
-    const borisov::MeetingNode * const meetings,
+    const borisov::DatedMeetingNode * const meetings,
     const borisov::Date rangeStart, const borisov::Date rangeEnd)
 {
   size_t count = 0;
@@ -253,7 +254,7 @@ bool borisov::cmdAnons(std::ostream &out, const borisov::PersonNode * const pers
 }
 
 bool borisov::cmdDesc(std::ostream &out, const borisov::PersonNode * const persons,
-    const borisov::MeetingNode * const meetings, const size_t id)
+    const borisov::DatedMeetingNode * const meetings, const size_t id)
 {
   if (!existsPerson(persons, meetings, id))
   {
@@ -274,7 +275,7 @@ bool borisov::cmdDesc(std::ostream &out, const borisov::PersonNode * const perso
 }
 
 bool borisov::cmdMeets(std::ostream &out, const borisov::PersonNode * const persons,
-    const borisov::MeetingNode * const meetings, const size_t id,
+    const borisov::DatedMeetingNode * const meetings, const size_t id,
     const borisov::Date rangeStart, const borisov::Date rangeEnd)
 {
   if (!existsPerson(persons, meetings, id))
@@ -291,7 +292,7 @@ bool borisov::cmdMeets(std::ostream &out, const borisov::PersonNode * const pers
   return true;
 }
 
-bool borisov::cmdDeanon(borisov::MeetingNode **meetingsHead,
+bool borisov::cmdDeanon(borisov::DatedMeetingNode **meetingsHead,
     const borisov::PersonNode * const persons, const size_t anonId, const size_t id)
 {
   if (borisov::containsId(persons, anonId) || !borisov::containsId(persons, id))
@@ -302,7 +303,7 @@ bool borisov::cmdDeanon(borisov::MeetingNode **meetingsHead,
   {
     return false;
   }
-  borisov::MeetingNode *cur = *meetingsHead;
+  borisov::DatedMeetingNode *cur = *meetingsHead;
   while (cur != nullptr)
   {
     if (cur->data_.id1_ == anonId)
@@ -315,13 +316,13 @@ bool borisov::cmdDeanon(borisov::MeetingNode **meetingsHead,
     }
     cur = cur->next_;
   }
-  borisov::MeetingNode *prev = nullptr;
+  borisov::DatedMeetingNode *prev = nullptr;
   cur = *meetingsHead;
   while (cur != nullptr)
   {
     if (cur->data_.id1_ == cur->data_.id2_)
     {
-      borisov::MeetingNode * const next = cur->next_;
+      borisov::DatedMeetingNode * const next = cur->next_;
       if (prev == nullptr)
       {
         *meetingsHead = next;
@@ -343,7 +344,7 @@ bool borisov::cmdDeanon(borisov::MeetingNode **meetingsHead,
 }
 
 bool borisov::cmdRedesc(borisov::PersonNode **head,
-    const borisov::MeetingNode * const meetings, const size_t id,
+    const borisov::DatedMeetingNode * const meetings, const size_t id,
     const std::string &newInfo)
 {
   if (!existsPerson(*head, meetings, id))
@@ -367,7 +368,7 @@ bool borisov::cmdRedesc(borisov::PersonNode **head,
 }
 
 bool borisov::cmdCommons(std::ostream &out, const borisov::PersonNode * const persons,
-    const borisov::MeetingNode * const meetings, const size_t id1, const size_t id2,
+    const borisov::DatedMeetingNode * const meetings, const size_t id1, const size_t id2,
     const borisov::Date rangeStart, const borisov::Date rangeEnd)
 {
   if (!existsPerson(persons, meetings, id1) || !existsPerson(persons, meetings, id2))
@@ -403,7 +404,7 @@ bool borisov::cmdCommons(std::ostream &out, const borisov::PersonNode * const pe
 }
 
 bool borisov::cmdLess(std::ostream &out, const borisov::PersonNode * const persons,
-    const borisov::MeetingNode * const meetings, const size_t time, const size_t id,
+    const borisov::DatedMeetingNode * const meetings, const size_t time, const size_t id,
     const borisov::Date rangeStart, const borisov::Date rangeEnd)
 {
   if (!existsPerson(persons, meetings, id))
@@ -424,7 +425,7 @@ bool borisov::cmdLess(std::ostream &out, const borisov::PersonNode * const perso
 }
 
 bool borisov::cmdGreater(std::ostream &out, const borisov::PersonNode * const persons,
-    const borisov::MeetingNode * const meetings, const size_t time, const size_t id,
+    const borisov::DatedMeetingNode * const meetings, const size_t time, const size_t id,
     const borisov::Date rangeStart, const borisov::Date rangeEnd)
 {
   if (!existsPerson(persons, meetings, id))
