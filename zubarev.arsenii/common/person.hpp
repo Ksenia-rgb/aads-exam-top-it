@@ -55,27 +55,23 @@ namespace zubarev
     size_t duration;
   };
 
-  // Управление динамическим массивом людей
   void init(PersonArray& arr);
   void destroy(PersonArray& arr);
   void resize(PersonArray& arr);
   void push(PersonArray& arr, const Person& value);
   Person* find_person(PersonArray& arr, size_t id);
 
-  // Управление динамическим массивом встреч
   void init(MeetArray& arr);
   void destroy(MeetArray& arr);
   void resize(MeetArray& arr);
   void push(MeetArray& arr, const Meet& value);
 
-  // Управление Хеш-таблицей (HashSet)
   void init(HashSet& set);
   void destroy(HashSet& set);
   size_t hash(const HashSet& set, size_t value);
   bool contains(const HashSet& set, size_t value);
   void insert(HashSet& set, size_t value);
 
-  // Утилиты сортировки (Вставки)
   void sort_ids(size_t* arr, size_t size);
   void sort_meet_views(MeetView* arr, size_t size);
 }

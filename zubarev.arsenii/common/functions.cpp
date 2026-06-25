@@ -31,6 +31,7 @@ bool zubarev::detail::parse_args_meet(int argc, char** argv, std::string& in_nam
 {
   if (argc < 2 || argc > 3)
     return false;
+
   bool has_in = false;
   bool has_data = false;
 

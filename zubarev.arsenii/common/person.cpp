@@ -81,7 +81,6 @@ void zubarev::push(MeetArray& arr, const Meet& value)
   ++arr.size;
 }
 
-// Реализация вашей Хеш-таблицы
 void zubarev::init(HashSet& set)
 {
   set.capacity = 2048; // Увеличим запас для интерактивных данных
