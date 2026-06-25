@@ -4,7 +4,7 @@
 
 namespace muraviev
 {
-  bool parseProgramOptions(const int argc, char** argv,
+  bool parseProgramOptions(const size_t argc, char** argv,
       ProgramOptions& options)
   {
     options.hasInput = false;
@@ -13,16 +13,24 @@ namespace muraviev
     {
       return false;
     }
-    for (size_t index = 1; index < static_cast< size_t >(argc); ++index)
+    for (size_t index = 1; index < argc; ++index)
     {
       const std::string argument = argv[index];
       if (argument.compare(0, 3, "in:") == 0)
       {
+        if (options.hasInput)
+        {
+          return false;
+        }
         options.hasInput = true;
         options.inputName = argument.substr(3);
       }
       else if (argument.compare(0, 4, "out:") == 0)
       {
+        if (options.hasOutput)
+        {
+          return false;
+        }
         options.hasOutput = true;
         options.outputName = argument.substr(4);
       }

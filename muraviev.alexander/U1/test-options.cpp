@@ -25,3 +25,14 @@ BOOST_AUTO_TEST_CASE(parse_output_option)
   BOOST_TEST(options.hasOutput);
   BOOST_TEST(options.outputName == "result.txt");
 }
+
+BOOST_AUTO_TEST_CASE(reject_repeated_input)
+{
+  char program[] = "lab";
+  char first[] = "in:a.txt";
+  char second[] = "in:b.txt";
+  char* argv[] = {program, first, second};
+  muraviev::ProgramOptions options;
+
+  BOOST_TEST(!muraviev::parseProgramOptions(3, argv, options));
+}
