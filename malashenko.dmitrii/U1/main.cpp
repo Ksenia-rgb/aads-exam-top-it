@@ -1,6 +1,6 @@
 #include "solution.hpp"
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   using namespace malashenko;
   if (argc > 3)

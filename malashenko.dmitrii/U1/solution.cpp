@@ -1,7 +1,7 @@
 #include "solution.hpp"
 
 
-bool malashenko::containsId(const Vec<Person> &vec, size_t id)
+bool malashenko::containsId(const Vec< Person >& vec, size_t id)
 {
   for (size_t i = 0; i < vec.size; ++i)
   {
@@ -13,7 +13,7 @@ bool malashenko::containsId(const Vec<Person> &vec, size_t id)
   return false;
 }
 
-bool malashenko::read_line(std::istream &in, std::string &line)
+bool malashenko::read_line(std::istream& in, std::string& line)
 {
   line.clear();
   char ch;
@@ -40,7 +40,7 @@ bool malashenko::read_line(std::istream &in, std::string &line)
   return !line.empty();
 }
 
-size_t malashenko::parse_line(const std::string &line, size_t &id, std::string &info)
+size_t malashenko::parse_line(const std::string& line, size_t& id, std::string& info)
 {
   size_t len = line.size();
   if (len == 0)
@@ -50,12 +50,12 @@ size_t malashenko::parse_line(const std::string &line, size_t &id, std::string &
 
   size_t pos = 0;
 
-  if (!std::isdigit(static_cast<unsigned char>(line[pos])))
+  if (!std::isdigit(static_cast< unsigned char >(line[pos])))
   {
     return 0;
   }
 
-  while (pos < len && std::isdigit(static_cast<unsigned char>(line[pos])))
+  while (pos < len && std::isdigit(static_cast< unsigned char >(line[pos])))
   {
     ++pos;
   }
