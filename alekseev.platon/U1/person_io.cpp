@@ -61,7 +61,10 @@ bool alekseev::parseProgramOptions(int argc, char** argv, ProgramOptions& option
   return true;
 }
 
-bool alekseev::parsePersonLine(const std::string& line, Person& person)
+bool alekseev::parsePersonLine(
+    const std::string& line,
+    const PersonArray& persons,
+    Person& person)
 {
   size_t position = 0;
   size_t id = 0;
@@ -94,6 +97,10 @@ bool alekseev::parsePersonLine(const std::string& line, Person& person)
   {
     return false;
   }
+  if (containsPersonId(persons, id))
+  {
+    return false;
+  }
 
   person.id = id;
   person.info.assign(line, position, end - position);
@@ -112,7 +119,7 @@ void alekseev::readPersons(
   while (std::getline(input, line))
   {
     Person person = {0, std::string()};
-    if (!parsePersonLine(line, person) || containsPersonId(persons, person.id))
+    if (!parsePersonLine(line, persons, person))
     {
       ++ignoredCount;
       continue;
@@ -132,6 +139,7 @@ void alekseev::writePersons(std::ostream& output, const PersonArray& persons)
   {
     output << persons.data[i].id << ' ' << persons.data[i].info << '\n';
   }
+  output.flush();
   if (!output)
   {
     throw std::runtime_error("output failure");

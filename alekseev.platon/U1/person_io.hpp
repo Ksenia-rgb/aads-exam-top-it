@@ -18,7 +18,10 @@ namespace alekseev
   };
 
   bool parseProgramOptions(int argc, char** argv, ProgramOptions& options);
-  bool parsePersonLine(const std::string& line, Person& person);
+  bool parsePersonLine(
+      const std::string& line,
+      const PersonArray& persons,
+      Person& person);
   void readPersons(
       std::istream& input,
       PersonArray& persons,
