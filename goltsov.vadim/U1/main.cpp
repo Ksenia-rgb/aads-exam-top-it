@@ -126,7 +126,7 @@ int main(int argc, char **argv)
       return 1;
     }
   }
-  goltsov::HashTable ht = goltsov::newHT< goltsov::Person >(100);
+  goltsov::HashTable< goltsov::Person > ht = goltsov::newHT< goltsov::Person >(100);
   goltsov::List< goltsov::Person >* l = nullptr;
   std::pair< size_t, size_t > res = goltsov::readPersons(ht, *is, &l);
   if (!outFilename.empty())
