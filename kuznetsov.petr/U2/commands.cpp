@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <utility>
 
-#include "../common/darray.hpp"
+#include <darray.hpp>
 
 void kuznetsov::detail::sort(darray< size_t >& arr)
 {
@@ -101,7 +101,8 @@ void kuznetsov::detail::sort(darray< meetingRecord >& arr)
   }
 }
 
-kuznetsov::darray< kuznetsov::detail::meetingRecord > kuznetsov::detail::collectMeetings(darray< Meeting >& mts, size_t id)
+kuznetsov::darray< kuznetsov::detail::meetingRecord > kuznetsov::detail::collectMeetings(darray< Meeting >& mts,
+                                                                                         size_t id)
 {
   darray< meetingRecord > res = makeDarray< meetingRecord >(8);
   try {
@@ -125,7 +126,8 @@ kuznetsov::darray< kuznetsov::detail::meetingRecord > kuznetsov::detail::collect
   return res;
 }
 
-kuznetsov::darray< kuznetsov::detail::meetingRecord > kuznetsov::detail::filterMeetings(darray< meetingRecord >& src, size_t threshold, bool greater)
+kuznetsov::darray< kuznetsov::detail::meetingRecord > kuznetsov::detail::filterMeetings(darray< meetingRecord >& src,
+                                                                                        size_t threshold, bool greater)
 {
   darray< meetingRecord > res = makeDarray< meetingRecord >(8);
   try {
@@ -336,4 +338,3 @@ void kuznetsov::out_persons(std::istream& in, std::ostream&, darray< Meeting >&,
     ofile << '\n';
   }
 }
-

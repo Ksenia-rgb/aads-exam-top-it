@@ -19,7 +19,7 @@ namespace kuznetsov {
     darray< meetingRecord > filterMeetings(darray< meetingRecord >& src, size_t threshold, bool greater);
     darray< size_t > partnerIds(darray< Meeting >& mts, size_t id);
     void printMeetings(std::ostream& out, darray< meetingRecord >& arr);
-  }
+  } // namespace detail
 
   void anons(std::istream&, std::ostream&, darray< Meeting >&, darray< Person >&);
   void deanon(std::istream&, std::ostream&, darray< Meeting >&, darray< Person >&);
