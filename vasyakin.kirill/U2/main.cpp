@@ -79,7 +79,7 @@ int main(int argc, char** argv)
   }
 
   Arguments args = parseArguments(argc, argv);
-  
+
   if (!args.valid)
   {
     std::cerr << "invalid arguments\n";
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
   }
 
   vasyakin::Graph* root = nullptr;
-  
+
   if (args.hasPersons)
   {
     std::ifstream personsStream(args.personsFile.c_str());
