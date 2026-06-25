@@ -8,141 +8,143 @@
 #include "list.hpp"
 #include "person.hpp"
 
-bool containsId(List< Person > *l, size_t id)
+namespace strelnikov
 {
-  for (List< Person > *c = l; c; c = c->next) {
-    if (c->val.id == id) {
-      return true;
+  bool containsId(List< Person > *l, size_t id)
+  {
+    for (List< Person > *c = l; c; c = c->next) {
+      if (c->val.id == id) {
+        return true;
+      }
     }
-  }
 
-  return false;
-}
-
-bool parsePerson(const std::string &line, Person &per)
-{
-  size_t i = 0;
-  size_t len = line.length();
-
-  std::string inft = "";
-  size_t idt = 0;
-  while (i < len && std::isspace(static_cast< unsigned char >(line[i]))) {
-    ++i;
-  }
-
-  if (i >= len || !std::isdigit(static_cast< unsigned char >(line[i]))) {
     return false;
   }
 
-  size_t num_start = i;
-  while (i < len && std::isdigit(static_cast< unsigned char >(line[i]))) {
-    ++i;
-  }
+  bool parsePerson(const std::string &line, Person &per)
+  {
+    size_t i = 0;
+    size_t len = line.length();
 
-  try {
-    idt = std::stoull(line.substr(num_start, i - num_start));
-  } catch (...) {
-    return false;
-  }
-
-  bool needSpace = false;
-
-  while (i < len) {
+    std::string inft = "";
+    size_t idt = 0;
     while (i < len && std::isspace(static_cast< unsigned char >(line[i]))) {
       ++i;
     }
 
-    if (i >= len) {
-      break;
+    if (i >= len || !std::isdigit(static_cast< unsigned char >(line[i]))) {
+      return false;
     }
 
-    size_t word_start = i;
-
-    while (i < len && !std::isspace(static_cast< unsigned char >(line[i]))) {
+    size_t num_start = i;
+    while (i < len && std::isdigit(static_cast< unsigned char >(line[i]))) {
       ++i;
     }
 
-    if (needSpace) {
-      inft += " ";
+    try {
+      idt = std::stoull(line.substr(num_start, i - num_start));
+    } catch (...) {
+      return false;
     }
-    inft += line.substr(word_start, i - word_start);
-    needSpace = true;
+
+    bool needSpace = false;
+
+    while (i < len) {
+      while (i < len && std::isspace(static_cast< unsigned char >(line[i]))) {
+        ++i;
+      }
+
+      if (i >= len) {
+        break;
+      }
+
+      size_t word_start = i;
+
+      while (i < len && !std::isspace(static_cast< unsigned char >(line[i]))) {
+        ++i;
+      }
+
+      if (needSpace) {
+        inft += " ";
+      }
+      inft += line.substr(word_start, i - word_start);
+      needSpace = true;
+    }
+
+    if (inft.empty()) {
+      return false;
+    }
+
+    per.id = idt;
+    per.info = inft;
+    return true;
   }
 
-  if (inft.empty()) {
-    return false;
-  }
+  List< Person > *getLine(std::istream &is, size_t &ign, size_t &acpt)
+  {
+    List< Person > *l = nullptr;
+    List< Person > *tail = l;
 
-  per.id = idt;
-  per.info = inft;
-  return true;
-}
+    std::string currentLine = "";
+    char ch;
 
-List< Person > *getLine(std::istream &is, size_t &ign, size_t &acpt)
-{
-  List< Person > *l = nullptr;
-  List< Person > *tail = l;
+    while (is.get(ch)) {
+      if (ch == '\n') {
+        Person p;
+        if (!parsePerson(currentLine, p)) {
+          ++ign;
+          currentLine.clear();
+          continue;
+        }
 
-  std::string currentLine = "";
-  char ch;
+        if (containsId(l, p.id)) {
+          ++ign;
+          currentLine.clear();
+          continue;
+        }
+        if (!l) {
+          l = createList(p);
+          tail = l;
+        } else {
+          tail = pushback(tail, p);
+        }
+        currentLine.clear();
+        ++acpt;
+      } else {
+        currentLine += ch;
+      }
+    }
 
-  while (is.get(ch)) {
-    if (ch == '\n') {
+    if (!currentLine.empty()) {
       Person p;
       if (!parsePerson(currentLine, p)) {
         ++ign;
         currentLine.clear();
-        continue;
-      }
-
-      if (containsId(l, p.id)) {
+      } else if (containsId(l, p.id)) {
         ++ign;
         currentLine.clear();
-        continue;
+      } else {
+        ++acpt;
       }
+
       if (!l) {
         l = createList(p);
         tail = l;
       } else {
         tail = pushback(tail, p);
       }
-      currentLine.clear();
-      ++acpt;
-    } else {
-      currentLine += ch;
     }
+
+    return l;
   }
 
-  if (!currentLine.empty()) {
-    Person p;
-    if (!parsePerson(currentLine, p)) {
-      ++ign;
-      currentLine.clear();
-    } else if (containsId(l, p.id)) {
-      ++ign;
-      currentLine.clear();
-    } else {
-      ++acpt;
+  void printPersons(List< Person > *l, std::ostream &os)
+  {
+    for (List< Person > *cur = l; cur; cur = cur->next) {
+      os << cur->val.id << ' ' << cur->val.info << '\n';
     }
-
-    if (!l) {
-      l = createList(p);
-      tail = l;
-    } else {
-      tail = pushback(tail, p);
-    }
-  }
-
-  return l;
-}
-
-void printPersons(List< Person > *l, std::ostream &os)
-{
-  for (List< Person > *cur = l; cur; cur = cur->next) {
-    os << cur->val.id << ' ' << cur->val.info << '\n';
   }
 }
-
 int main(int argc, char *argv[])
 {
   if (argc > 3) {
@@ -199,13 +201,13 @@ int main(int argc, char *argv[])
   size_t ign = 0;
   size_t acpt = 0;
 
-  List< Person > *persons = getLine(*in, ign, acpt);
+  strelnikov::List< strelnikov::Person > *persons = strelnikov::getLine(*in, ign, acpt);
 
-  printPersons(persons, *out);
+  strelnikov::printPersons(persons, *out);
 
   std::cerr << acpt << ' ' << ign << '\n';
 
-  clearList(persons);
+  strelnikov::clearList(persons);
 
   return 0;
 }

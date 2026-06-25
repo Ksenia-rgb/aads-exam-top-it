@@ -4,10 +4,13 @@
 #include <cstddef>
 #include <string>
 
-struct Person
+namespace strelnikov
 {
-  size_t id;
-  std::string info;
-};
+  struct Person
+  {
+    size_t id;
+    std::string info;
+  };
+}
 
-#endif // !PERSON_HPP
+#endif
