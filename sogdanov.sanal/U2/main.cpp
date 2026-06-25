@@ -90,6 +90,11 @@ namespace sogdanov {
 int main(int argc, char* argv[]) {
   using namespace sogdanov;
 
+  if (argc > 3) {
+    std::cerr << "Invalid argument format\n";
+    return 0;
+  }
+
   std::string inFilename;
   std::string dataFilename;
   bool hasIn = false;
@@ -99,21 +104,21 @@ int main(int argc, char* argv[]) {
     const std::string arg = argv[i];
     if (arg.find("in:") == 0) {
       if (hasIn) {
-        std::cerr << "Duplicate in file\n";
-        return 1;
+        std::cerr << "Invalid argument format\n";
+        return 0;
       }
       inFilename = arg.substr(3);
       hasIn = true;
     } else if (arg.find("data:") == 0) {
       if (hasData) {
-        std::cerr << "Duplicate data file\n";
-        return 1;
+        std::cerr << "Invalid argument format\n";
+        return 0;
       }
       dataFilename = arg.substr(5);
       hasData = true;
     } else {
       std::cerr << "Invalid argument format\n";
-      return 1;
+      return 0;
     }
   }
 
@@ -212,8 +217,12 @@ int main(int argc, char* argv[]) {
         }
       }
       sortSizeT(anons);
-      for (size_t i = 0; i < anons.size; ++i) {
-        std::cout << anons.data[i] << "\n";
+      if (anons.size == 0) {
+        std::cout << "\n";
+      } else {
+        for (size_t i = 0; i < anons.size; ++i) {
+          std::cout << anons.data[i] << "\n";
+        }
       }
       destroyVector(anons);
 
@@ -352,10 +361,10 @@ int main(int argc, char* argv[]) {
         }
       }
       sortMeetings(filtered);
-      for (size_t i = 0; i < filtered.size; ++i) {
-        if (cmd == "less" || cmd == "greater") {
-          std::cout << filtered.data[i].otherId << "\n";
-        } else {
+      if (filtered.size == 0) {
+        std::cout << "\n";
+      } else {
+        for (size_t i = 0; i < filtered.size; ++i) {
           std::cout << filtered.data[i].otherId << " " << filtered.data[i].duration << "\n";
         }
       }
@@ -402,8 +411,12 @@ int main(int argc, char* argv[]) {
         }
       }
       sortSizeT(commonIds);
-      for (size_t i = 0; i < commonIds.size; ++i) {
-        std::cout << commonIds.data[i] << "\n";
+      if (commonIds.size == 0) {
+        std::cout << "\n";
+      } else {
+        for (size_t i = 0; i < commonIds.size; ++i) {
+          std::cout << commonIds.data[i] << "\n";
+        }
       }
       destroyVector(commonIds);
 
@@ -414,16 +427,23 @@ int main(int argc, char* argv[]) {
         continue;
       }
       size_t e = line.find_first_of(" \t\r", pos);
-      std::string outFilename = line.substr(pos, e - pos);
+      std::string outFilename = (e == std::string::npos) ? line.substr(pos) : line.substr(pos, e - pos);
       std::ofstream fout(outFilename);
       if (!fout.is_open()) {
         std::cout << "<INVALID COMMAND>\n";
         continue;
       }
+      bool hasAny = false;
       for (size_t i = 0; i < registry.size; ++i) {
         if (registry.data[i] != nullptr && !registry.data[i]->isAnon) {
           fout << registry.data[i]->id << " " << registry.data[i]->description << "\n";
+          std::cout << registry.data[i]->id << " " << registry.data[i]->description << "\n";
+          hasAny = true;
         }
+      }
+      if (!hasAny) {
+        fout << "\n";
+        std::cout << "\n";
       }
     } else {
       std::cout << "<INVALID COMMAND>\n";
@@ -431,6 +451,4 @@ int main(int argc, char* argv[]) {
   }
 
   cleanupAll(indexMap, registry);
-  return 0;
 }
-
