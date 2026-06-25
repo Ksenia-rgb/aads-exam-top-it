@@ -2,10 +2,10 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include "person.hpp"
-#include "list.hpp"
-#include "hash.hpp"
-#include "string_utils.hpp"
+#include <person.hpp>
+#include <list.hpp>
+#include <hash.hpp>
+#include <string_utils.hpp>
 
 int main(int argc, char* argv[])
 {
