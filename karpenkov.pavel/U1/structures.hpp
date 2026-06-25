@@ -28,5 +28,7 @@ Person *hashTableGet(const HashTable *table, size_t id);
 OrderArray *createOrderArray(size_t initCapacity);
 void destroyOrderArray(OrderArray *arr);
 void orderArrayPush(OrderArray *arr, size_t id);
+size_t orderArrayGet(const OrderArray *arr, size_t index);
+size_t orderArraySize(const OrderArray *arr);
 } // namespace karpenkov
 #endif

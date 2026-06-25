@@ -76,5 +76,9 @@ void orderArrayPush(OrderArray *arr, size_t id) {
   }
   arr->data[arr->size++] = id;
 }
+size_t orderArrayGet(const OrderArray *arr, size_t index) {
+  return arr->data[index];
+}
+size_t orderArraySize(const OrderArray *arr) { return arr->size; }
 
 } // namespace karpenkov
