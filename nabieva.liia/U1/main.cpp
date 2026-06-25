@@ -108,8 +108,9 @@ int main(int argc, char** argv)
   nabieva::printPersons(*output, storage);
   if (stats.accepted != 0 || stats.ignored != 0)
   {
-    std::cerr << stats.accepted << ' ' << stats.ignored << '\n';
+    std::cerr << stats.accepted << ' ' << stats.ignored;
   }
+  std::cout << '\n';
 
   nabieva::destroyStorage(storage);
 }
