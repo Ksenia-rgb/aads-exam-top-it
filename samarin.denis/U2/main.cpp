@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "arguments.hpp"
+#include "commands.hpp"
 #include "io.hpp"
 #include "model.hpp"
 
@@ -30,6 +31,7 @@ namespace {
       std::cerr << "invalid meetings data\n";
       return exitDataError;
     }
+    samarin::runCommands(std::cin, std::cout, data);
     return 0;
   }
 }
