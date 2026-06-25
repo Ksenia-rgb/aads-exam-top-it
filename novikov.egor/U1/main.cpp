@@ -24,6 +24,9 @@ int main(int argc, char *argv[])
       return 2;
     }
   }
+
+  bool sameFile = (!inFile.empty() && !outFile.empty() && inFile == outFile);
+
   std::ifstream inFileStream;
   std::istream *in = &std::cin;
   if (!inFile.empty()) {
@@ -37,14 +40,6 @@ int main(int argc, char *argv[])
 
   std::ofstream outFileStream;
   std::ostream *out = &std::cout;
-  if (!outFile.empty()) {
-    outFileStream.open(outFile);
-    if (!outFileStream) {
-      std::cerr << "Failed to open output file\n";
-      return 2;
-    }
-    out = &outFileStream;
-  }
 
   novikov::List< novikov::Person > persons;
   persons.head = nullptr;
@@ -55,21 +50,102 @@ int main(int argc, char *argv[])
   for (size_t i = 0; i < seen.capacity; ++i) {
     seen.data[i] = nullptr;
   }
+
   std::string line;
   size_t successCount = 0;
   size_t ignoredCount = 0;
-  while (std::getline(*in, line)) {
-    if (line.empty()) {
-      ignoredCount++;
-      continue;
+
+  if (sameFile) {
+    novikov::List< novikov::Person > tempPersons;
+    tempPersons.head = nullptr;
+    novikov::HashTable< bool, size_t > tempSeen;
+    tempSeen.capacity = 101;
+    tempSeen.size = 0;
+    tempSeen.data = new novikov::HashNode< bool, size_t > *[tempSeen.capacity];
+    for (size_t i = 0; i < tempSeen.capacity; ++i) {
+      tempSeen.data[i] = nullptr;
     }
 
+    size_t tempSuccess = 0;
+    size_t tempIgnored = 0;
+
+    while (std::getline(*in, line)) {
+      if (line.empty()) {
+        continue;
+      }
+      size_t pos = line.find(' ');
+      if (pos == std::string::npos) {
+        tempIgnored++;
+        continue;
+      }
+      size_t id = 0;
+      try {
+        id = std::stoull(line.substr(0, pos));
+      } catch (...) {
+        tempIgnored++;
+        continue;
+      }
+      std::string info = line.substr(pos + 1);
+      size_t start = info.find_first_not_of(" \t");
+      if (start != std::string::npos) {
+        info = info.substr(start);
+      } else {
+        info.clear();
+      }
+      if (info.empty()) {
+        tempIgnored++;
+        continue;
+      }
+      if (novikov::is_has(tempSeen, id)) {
+        tempIgnored++;
+        continue;
+      }
+      novikov::insert(tempSeen, id, true);
+      novikov::push_back(tempPersons, novikov::Person{id, info});
+      tempSuccess++;
+    }
+
+    inFileStream.close();
+
+    outFileStream.open(outFile);
+    if (!outFileStream) {
+      std::cerr << "Failed to open output file\n";
+      return 2;
+    }
+    out = &outFileStream;
+
+    novikov::Node< novikov::Person > *cur = tempPersons.head;
+    while (cur) {
+      *out << cur->val.id << " " << cur->val.info << "\n";
+      cur = cur->next;
+    }
+    std::cerr << tempSuccess << " " << tempIgnored << "\n";
+
+    novikov::clear(tempPersons);
+    novikov::clear(tempSeen);
+    novikov::clear(persons);
+    novikov::clear(seen);
+    return 0;
+  }
+
+  if (!outFile.empty()) {
+    outFileStream.open(outFile);
+    if (!outFileStream) {
+      std::cerr << "Failed to open output file\n";
+      return 2;
+    }
+    out = &outFileStream;
+  }
+
+  while (std::getline(*in, line)) {
+    if (line.empty()) {
+      continue;
+    }
     size_t pos = line.find(' ');
     if (pos == std::string::npos) {
       ignoredCount++;
       continue;
     }
-
     size_t id = 0;
     try {
       id = std::stoull(line.substr(0, pos));
@@ -77,7 +153,6 @@ int main(int argc, char *argv[])
       ignoredCount++;
       continue;
     }
-
     std::string info = line.substr(pos + 1);
     size_t start = info.find_first_not_of(" \t");
     if (start != std::string::npos) {
@@ -85,17 +160,14 @@ int main(int argc, char *argv[])
     } else {
       info.clear();
     }
-
     if (info.empty()) {
       ignoredCount++;
       continue;
     }
-
     if (novikov::is_has(seen, id)) {
       ignoredCount++;
       continue;
     }
-
     novikov::insert(seen, id, true);
     novikov::push_back(persons, novikov::Person{id, info});
     successCount++;
@@ -107,7 +179,8 @@ int main(int argc, char *argv[])
     cur = cur->next;
   }
   std::cerr << successCount << " " << ignoredCount << "\n";
-  clear(persons);
-  clear(seen);
+
+  novikov::clear(persons);
+  novikov::clear(seen);
   return 0;
 }
