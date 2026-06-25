@@ -288,13 +288,99 @@ namespace
     {
       size_t otherId = 0;
 
-      if (getOtherId(meetings.data[i], id, otherId) && isDurationNeeded(meetings.data[i].duration, time, mode))
+      if (
+        getOtherId(meetings.data[i], id, otherId) &&
+        isDurationNeeded(meetings.data[i].duration, time, mode)
+      )
       {
         MeetingOutput row;
         row.id = otherId;
         row.duration = meetings.data[i].duration;
         pushBack(output, row);
       }
+    }
+  }
+
+  bool containsId(const matveev::Array< size_t > &ids, size_t id)
+  {
+    for (size_t i = 0; i < ids.size; ++i)
+    {
+      if (ids.data[i] == id)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void collectPartners(
+    const matveev::Array< matveev::Meeting > &meetings,
+    size_t id,
+    matveev::Array< size_t > &partners
+  )
+  {
+    for (size_t i = 0; i < meetings.size; ++i)
+    {
+      size_t otherId = 0;
+
+      if (getOtherId(meetings.data[i], id, otherId) && !containsId(partners, otherId))
+      {
+        pushBack(partners, otherId);
+      }
+    }
+  }
+
+  void sortIds(matveev::Array< size_t > &ids)
+  {
+    for (size_t i = 0; i < ids.size; ++i)
+    {
+      size_t minIndex = i;
+
+      for (size_t j = i + 1; j < ids.size; ++j)
+      {
+        if (ids.data[j] < ids.data[minIndex])
+        {
+          minIndex = j;
+        }
+      }
+
+      if (minIndex != i)
+      {
+        size_t tmp = ids.data[i];
+        ids.data[i] = ids.data[minIndex];
+        ids.data[minIndex] = tmp;
+      }
+    }
+  }
+
+  void writeCommonPartners(
+    std::ostream &out,
+    const matveev::Array< matveev::Meeting > &meetings,
+    size_t firstId,
+    size_t secondId
+  )
+  {
+    matveev::Array< size_t > firstPartners;
+    matveev::Array< size_t > secondPartners;
+    matveev::Array< size_t > commonPartners;
+
+    collectPartners(meetings, firstId, firstPartners);
+    collectPartners(meetings, secondId, secondPartners);
+
+    for (size_t i = 0; i < firstPartners.size; ++i)
+    {
+      if (containsId(secondPartners, firstPartners.data[i]) && !containsId(commonPartners, firstPartners.data[i]))
+      {
+        pushBack(commonPartners, firstPartners.data[i]);
+      }
+    }
+
+    sortIds(commonPartners);
+
+    for (size_t i = 0; i < commonPartners.size; ++i)
+    {
+      out << commonPartners.data[i] << '\n';
     }
   }
 }
@@ -515,6 +601,25 @@ bool matveev::executeMeetingCommand(
     Array< MeetingOutput > output;
     collectMeetingOutput(meetings, id, 0, 0, output);
     writeMeetingOutput(out, output);
+    return true;
+  }
+
+  if (command == "commons")
+  {
+    size_t firstId = 0;
+    size_t secondId = 0;
+
+    if (!readSizeT(line, pos, firstId) || !readSizeT(line, pos, secondId) || !isEnd(line, pos))
+    {
+      return false;
+    }
+
+    if (findPersonIndex(persons, firstId) == persons.size || findPersonIndex(persons, secondId) == persons.size)
+    {
+      return false;
+    }
+
+    writeCommonPartners(out, meetings, firstId, secondId);
     return true;
   }
 
