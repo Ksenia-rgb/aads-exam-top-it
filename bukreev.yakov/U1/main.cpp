@@ -25,9 +25,13 @@ int main(int argc, char* argv[])
 
   std::string fin = "", fout = "";
   int s = processArgs(argc, argv, fin, fout);
-  if (s != 0)
+  if (s == 1)
   {
     return s;
+  }
+  else if (s == 2)
+  {
+    return 0;
   }
 
   std::istream* in = std::addressof(std::cin);
@@ -159,7 +163,7 @@ int bukreev::processArgs(int argc, char* argv[], std::string& fin, std::string& 
 {
   if (argc > 3)
   {
-    return 1;
+    return 2;
   }
 
   for (int i = 1; i < argc; i++)
