@@ -270,6 +270,19 @@ int main(int argc, char* argv[])
         continue;
       }
 
+      for (ListNode< size_t >* i = anonIds.begin(); i != anonIds.end(); ++i)
+      {
+        for (ListNode< size_t >* j = i; j != anonIds.end(); ++j)
+        {
+          if (j->data < i->data)
+          {
+            size_t tmp = i->data;
+            i->data = j->data;
+            j->data = tmp;
+          }
+        }
+      }
+
       for (ListNode< size_t >* node = anonIds.begin(); node != anonIds.end(); node = node->next)
       {
         std::cout << node->data << "\n";
@@ -333,6 +346,33 @@ int main(int argc, char* argv[])
       if (filtered.empty())
       {
         continue;
+      }
+
+      for (ListNode< Meeting >* i = filtered.begin(); i != filtered.end(); ++i)
+      {
+        for (ListNode< Meeting >* j = i; j != filtered.end(); ++j)
+        {
+          size_t otherI = (i->data.id1 == id) ? i->data.id2 : i->data.id1;
+          size_t otherJ = (j->data.id1 == id) ? j->data.id2 : j->data.id1;
+
+          bool swap = false;
+
+          if (otherI > otherJ)
+          {
+            swap = true;
+          }
+          else if (otherI == otherJ && i->data.duration > j->data.duration)
+          {
+            swap = true;
+          }
+
+          if (swap)
+          {
+            Meeting tmp = i->data;
+            i->data = j->data;
+            j->data = tmp;
+          }
+        }
       }
 
       for (ListNode< Meeting >* node = filtered.begin(); node != filtered.end(); node = node->next)
@@ -485,6 +525,19 @@ int main(int argc, char* argv[])
         }
       }
 
+      for (ListNode< size_t >* i = result.begin(); i != result.end(); ++i)
+      {
+        for (ListNode< size_t >* j = i; j != result.end(); ++j)
+        {
+          if (j->data < i->data)
+          {
+            size_t tmp = i->data;
+            i->data = j->data;
+            j->data = tmp;
+          }
+        }
+      }
+
       for (ListNode< size_t >* node = result.begin(); node != result.end(); node = node->next)
       {
         std::cout << node->data << "\n";
@@ -509,6 +562,7 @@ int main(int argc, char* argv[])
       }
 
       bool isLess = (command == "less");
+      List< Meeting > filtered;
 
       for (ListNode< Meeting >* node = meetings.begin(); node != meetings.end(); node = node->next)
       {
@@ -518,10 +572,47 @@ int main(int argc, char* argv[])
 
           if (condition)
           {
-            size_t otherId = (node->data.id1 == id) ? node->data.id2 : node->data.id1;
-            std::cout << otherId << " " << node->data.duration << "\n";
+            filtered.pushBack(node->data);
           }
         }
+      }
+
+      if (filtered.empty())
+      {
+        continue;
+      }
+
+      for (ListNode< Meeting >* i = filtered.begin(); i != filtered.end(); ++i)
+      {
+        for (ListNode< Meeting >* j = i; j != filtered.end(); ++j)
+        {
+          size_t otherI = (i->data.id1 == id) ? i->data.id2 : i->data.id1;
+          size_t otherJ = (j->data.id1 == id) ? j->data.id2 : j->data.id1;
+
+          bool swap = false;
+
+          if (otherI > otherJ)
+          {
+            swap = true;
+          }
+          else if (otherI == otherJ && i->data.duration > j->data.duration)
+          {
+            swap = true;
+          }
+
+          if (swap)
+          {
+            Meeting tmp = i->data;
+            i->data = j->data;
+            j->data = tmp;
+          }
+        }
+      }
+
+      for (ListNode< Meeting >* node = filtered.begin(); node != filtered.end(); node = node->next)
+      {
+        size_t otherId = (node->data.id1 == id) ? node->data.id2 : node->data.id1;
+        std::cout << otherId << " " << node->data.duration << "\n";
       }
     }
     else if (command == "out-persons")
