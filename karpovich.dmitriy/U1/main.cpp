@@ -2,15 +2,15 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "person.hpp"
-#include "persons.hpp"
-#include "vector.hpp"
+#include <person.hpp>
+#include <persons.hpp>
+#include <vector.hpp>
 
 int main(int argc, char **argv)
 {
   if (argc > 3) {
     std::cerr << "Invalid arguments\n";
-    return 1;
+    return 0;
   }
   bool hasInputFile = false;
   bool hasOutputFile = false;
