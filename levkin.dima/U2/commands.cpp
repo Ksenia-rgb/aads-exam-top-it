@@ -149,4 +149,26 @@ namespace levkin {
     }
     printFilterMeets(db, id, os, 0);
   }
+
+  void less(const DB& db, std::istream& is, std::ostream& os)
+  {
+    size_t id, duration;
+    if (!(is >> id >> duration) || !hasPerson(db, id)) {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      return;
+    }
+    printFilterMeets(db, id, os, 1, duration);
+  }
+
+  void greater(const DB& db, std::istream& is, std::ostream& os)
+  {
+    size_t id, duration;
+    if (!(is >> id >> duration) || !hasPerson(db, id)) {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      return;
+    }
+    printFilterMeets(db, id, os, 2, duration);
+  }
 }
