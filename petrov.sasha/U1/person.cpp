@@ -3,6 +3,7 @@
 #include <new>
 #include <cctype>
 #include <stdexcept>
+
 namespace petrov
 {
   const size_t CAP_FACTOR = 2;
@@ -95,6 +96,11 @@ namespace petrov
       return false;
     }
     pos += endPos;
+    if (pos < line.length() && !std::isspace(static_cast<unsigned char>(line[pos])))
+    {
+      return false;
+    }
+
     while (pos < line.length() && std::isspace(static_cast<unsigned char>(line[pos])))
     {
       ++pos;
@@ -113,6 +119,20 @@ namespace petrov
     std::string line = "";
     while (std::getline(inStream, line))
     {
+      bool isEmpty = true;
+      for (size_t i = 0; i < line.length(); ++i)
+      {
+        if (!std::isspace(static_cast<unsigned char>(line[i])))
+        {
+          isEmpty = false;
+          break;
+        }
+      }
+      if (isEmpty)
+      {
+        continue;
+      }
+
       Person currentPerson = {};
       if (parseLine(line, currentPerson))
       {
@@ -145,4 +165,3 @@ namespace petrov
     }
   }
 }
-
