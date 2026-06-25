@@ -1,5 +1,6 @@
 #include "commands.hpp"
 
+#include "../common/io.hpp"
 #include "../common/vector.hpp"
 
 #include <algorithm>
@@ -39,8 +40,14 @@ namespace krivoshapov
       return x.duration < y.duration;
     }
 
+    bool meetEntryCmpById(const MeetEntry &x, const MeetEntry &y)
+    {
+      return x.otherId < y.otherId;
+    }
+
+    // showDuration: true – выводить "номер длительность", false – только номер
     void printMeets(std::ostream &out, const Database &db, std::size_t id,
-                    std::size_t limit, bool useLess, bool useGreater)
+                    std::size_t limit, bool useLess, bool useGreater, bool showDuration)
     {
       Vector<MeetEntry> entries;
       init(entries);
@@ -74,88 +81,23 @@ namespace krivoshapov
         MeetEntry e = {other, m.duration};
         pushBack(entries, e);
       }
-      std::sort(entries.data_, entries.data_ + entries.size_, meetEntryCmp);
-      for (std::size_t i = 0; i < entries.size_; ++i)
+      if (showDuration)
       {
-        out << entries.data_[i].otherId << ' ' << entries.data_[i].duration << '\n';
-      }
-      destroy(entries);
-    }
-
-    void doDesc(std::istream &in, std::ostream &out, const Database &db)
-    {
-      std::size_t id = 0;
-      if (!(in >> id))
-      {
-        skipLine(in);
-        invalidCmd(out);
-        return;
-      }
-      const Person *p = findPerson(db, id);
-      if (p == nullptr)
-      {
-        invalidCmd(out);
-        return;
-      }
-      if (p->info.empty())
-      {
-        out << "<ANON>\n";
+        std::sort(entries.data_, entries.data_ + entries.size_, meetEntryCmp);
+        for (std::size_t i = 0; i < entries.size_; ++i)
+        {
+          out << entries.data_[i].otherId << ' ' << entries.data_[i].duration << '\n';
+        }
       }
       else
       {
-        out << p->info << '\n';
+        std::sort(entries.data_, entries.data_ + entries.size_, meetEntryCmpById);
+        for (std::size_t i = 0; i < entries.size_; ++i)
+        {
+          out << entries.data_[i].otherId << '\n';
+        }
       }
-    }
-
-    void doMeets(std::istream &in, std::ostream &out, const Database &db)
-    {
-      std::size_t id = 0;
-      if (!(in >> id))
-      {
-        skipLine(in);
-        invalidCmd(out);
-        return;
-      }
-      if (findPerson(db, id) == nullptr)
-      {
-        invalidCmd(out);
-        return;
-      }
-      printMeets(out, db, id, 0, false, false);
-    }
-
-    void doLess(std::istream &in, std::ostream &out, const Database &db)
-    {
-      std::size_t limit = 0, id = 0;
-      if (!(in >> limit >> id))
-      {
-        skipLine(in);
-        invalidCmd(out);
-        return;
-      }
-      if (findPerson(db, id) == nullptr)
-      {
-        invalidCmd(out);
-        return;
-      }
-      printMeets(out, db, id, limit, true, false);
-    }
-
-    void doGreater(std::istream &in, std::ostream &out, const Database &db)
-    {
-      std::size_t limit = 0, id = 0;
-      if (!(in >> limit >> id))
-      {
-        skipLine(in);
-        invalidCmd(out);
-        return;
-      }
-      if (findPerson(db, id) == nullptr)
-      {
-        invalidCmd(out);
-        return;
-      }
-      printMeets(out, db, id, limit, false, true);
+      destroy(entries);
     }
 
     void doAnons(std::ostream &out, const Database &db)
@@ -175,85 +117,6 @@ namespace krivoshapov
         out << ids.data_[i] << '\n';
       }
       destroy(ids);
-    }
-
-    void doCommons(std::istream &in, std::ostream &out, const Database &db)
-    {
-      std::size_t id1 = 0, id2 = 0;
-      if (!(in >> id1 >> id2))
-      {
-        skipLine(in);
-        invalidCmd(out);
-        return;
-      }
-      if (findPerson(db, id1) == nullptr || findPerson(db, id2) == nullptr)
-      {
-        invalidCmd(out);
-        return;
-      }
-      Vector<std::size_t> set1, set2;
-      init(set1);
-      init(set2);
-      for (std::size_t i = 0; i < db.meetings.size_; ++i)
-      {
-        const Meeting &m = db.meetings.data_[i];
-        if (m.a == id1)
-        {
-          pushBack(set1, m.b);
-        }
-        else if (m.b == id1)
-        {
-          pushBack(set1, m.a);
-        }
-        if (m.a == id2)
-        {
-          pushBack(set2, m.b);
-        }
-        else if (m.b == id2)
-        {
-          pushBack(set2, m.a);
-        }
-      }
-      Vector<std::size_t> result;
-      init(result);
-      for (std::size_t i = 0; i < set1.size_; ++i)
-      {
-        std::size_t x = set1.data_[i];
-        bool inSet2 = false;
-        for (std::size_t j = 0; j < set2.size_; ++j)
-        {
-          if (set2.data_[j] == x)
-          {
-            inSet2 = true;
-            break;
-          }
-        }
-        if (!inSet2)
-        {
-          continue;
-        }
-        bool alreadyIn = false;
-        for (std::size_t j = 0; j < result.size_; ++j)
-        {
-          if (result.data_[j] == x)
-          {
-            alreadyIn = true;
-            break;
-          }
-        }
-        if (!alreadyIn)
-        {
-          pushBack(result, x);
-        }
-      }
-      std::sort(result.data_, result.data_ + result.size_);
-      for (std::size_t i = 0; i < result.size_; ++i)
-      {
-        out << result.data_[i] << '\n';
-      }
-      destroy(set1);
-      destroy(set2);
-      destroy(result);
     }
 
     void doDeanon(std::istream &in, std::ostream &out, Database &db)
@@ -339,6 +202,141 @@ namespace krivoshapov
       p->info = desc;
     }
 
+    void doDesc(std::istream &in, std::ostream &out, const Database &db)
+    {
+      std::size_t id = 0;
+      if (!(in >> id))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      const Person *p = findPerson(db, id);
+      if (p == nullptr)
+      {
+        invalidCmd(out);
+        return;
+      }
+      if (p->info.empty())
+      {
+        out << "<ANON>\n";
+      }
+      else
+      {
+        out << p->info << '\n';
+      }
+    }
+
+    void doMeets(std::istream &in, std::ostream &out, const Database &db)
+    {
+      std::size_t id = 0;
+      if (!(in >> id))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      printMeets(out, db, id, 0, false, false, true);
+    }
+
+    void doCommons(std::istream &in, std::ostream &out, const Database &db)
+    {
+      std::size_t id1 = 0, id2 = 0;
+      if (!(in >> id1 >> id2))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      Vector<std::size_t> set1, set2;
+      init(set1);
+      init(set2);
+      for (std::size_t i = 0; i < db.meetings.size_; ++i)
+      {
+        const Meeting &m = db.meetings.data_[i];
+        if (m.a == id1)
+        {
+          pushBack(set1, m.b);
+        }
+        else if (m.b == id1)
+        {
+          pushBack(set1, m.a);
+        }
+        if (m.a == id2)
+        {
+          pushBack(set2, m.b);
+        }
+        else if (m.b == id2)
+        {
+          pushBack(set2, m.a);
+        }
+      }
+      Vector<std::size_t> result;
+      init(result);
+      for (std::size_t i = 0; i < set1.size_; ++i)
+      {
+        std::size_t x = set1.data_[i];
+        bool inSet2 = false;
+        for (std::size_t j = 0; j < set2.size_; ++j)
+        {
+          if (set2.data_[j] == x)
+          {
+            inSet2 = true;
+            break;
+          }
+        }
+        if (!inSet2)
+        {
+          continue;
+        }
+        bool alreadyIn = false;
+        for (std::size_t j = 0; j < result.size_; ++j)
+        {
+          if (result.data_[j] == x)
+          {
+            alreadyIn = true;
+            break;
+          }
+        }
+        if (!alreadyIn)
+        {
+          pushBack(result, x);
+        }
+      }
+      std::sort(result.data_, result.data_ + result.size_);
+      for (std::size_t i = 0; i < result.size_; ++i)
+      {
+        out << result.data_[i] << '\n';
+      }
+      destroy(set1);
+      destroy(set2);
+      destroy(result);
+    }
+
+    void doLess(std::istream &in, std::ostream &out, const Database &db)
+    {
+      std::size_t limit = 0, id = 0;
+      if (!(in >> limit >> id))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      printMeets(out, db, id, limit, true, false, false);
+    }
+
+    void doGreater(std::istream &in, std::ostream &out, const Database &db)
+    {
+      std::size_t limit = 0, id = 0;
+      if (!(in >> limit >> id))
+      {
+        skipLine(in);
+        invalidCmd(out);
+        return;
+      }
+      printMeets(out, db, id, limit, false, true, false);
+    }
+
     void doOutPersons(std::istream &in, std::ostream &out, const Database &db)
     {
       std::string filename;
@@ -354,13 +352,26 @@ namespace krivoshapov
         invalidCmd(out);
         return;
       }
+      bool first = true;
       for (std::size_t i = 0; i < db.persons.size_; ++i)
       {
         const Person &p = db.persons.data_[i];
         if (!p.info.empty())
         {
-          file << p.id << ' ' << p.info << '\n';
+          if (!first)
+          {
+            file << '\n';
+            out << '\n';
+          }
+          file << p.id << ' ' << p.info;
+          out << p.id << ' ' << p.info;
+          first = false;
         }
+      }
+      if (!first)
+      {
+        file << '\n';
+        out << '\n';
       }
     }
   }
@@ -386,7 +397,7 @@ namespace krivoshapov
       {
         doDesc(in, out, db);
       }
-      else if (cmd == "meets")
+      else if (cmd == "meets" || cmd == "meet")
       {
         doMeets(in, out, db);
       }
