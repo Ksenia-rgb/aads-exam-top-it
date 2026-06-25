@@ -90,11 +90,11 @@ namespace
       }
     }
     std::ostream& out = args.hasOut ? static_cast< std::ostream& >(outFile) : std::cout;
-    if (persons.size > 0)
-    {
-      writeAll(out, persons);
-    }
     writeAll(out, persons);
+    if (persons.size == 0)
+    {
+      out << "\n";
+    }
     std::cerr << stats.accepted << " " << stats.ignored << "\n";
     return 0;
   }
@@ -103,11 +103,16 @@ namespace
 
 int main(int argc, char** argv)
 {
+  if (argc > 3)
+  {
+    std::cerr << "Too many arguments\n";
+    return 0;
+  }
   burukov::Args args = burukov::parseArgs(argc, argv);
   if (!args.valid)
   {
     std::cerr << "Invalid arguments" << "\n";
-    return 0;
+    return 1;
   }
   burukov::darray< burukov::Person > persons = burukov::makeArray< burukov::Person >(4);
   int code = 0;
