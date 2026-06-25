@@ -3,33 +3,40 @@
 
 kuznetsov::Meeting kuznetsov::readMeeting(std::istream& in, bool& success, darray< Person >& p)
 {
-  size_t id1, id2, time;
+  size_t id1 = 0, id2 = 0, time = 0;
   in >> id1 >> id2 >> time;
-  if (!containsDarray(p, Person{id1, ""}, equalPersons)) {
-    pushBackDarray(p, Person{id1, ""});
+  if (!in) {
+    success = false;
+    return Meeting{0, 0, 0};
   }
-  if (!containsDarray(p, Person{id2, ""}, equalPersons)) {
-    pushBackDarray(p, Person{id2, ""});
+  success = true;
+  Person pr1{id1, ""};
+  if (!containsDarray(p, pr1, equalPersons)) {
+    pushBackDarray(p, pr1);
   }
-  return Meeting{ id1, id2, time };
+  Person pr2{id2, ""};
+  if (!containsDarray(p, pr2, equalPersons)) {
+    pushBackDarray(p, pr2);
+  }
+  return Meeting{id1, id2, time};
 }
 
-kuznetsov::darray< kuznetsov::Meeting > kuznetsov::readArrayMeets(std::istream& in, darray< Person >& p)
+kuznetsov::darray< kuznetsov::Meeting > kuznetsov::readArrayMeets(std::istream& in, darray< Person >& p, bool& ok)
 {
   darray< Meeting > meets = makeDarray< Meeting >(8);
+  ok = true;
   in >> std::ws;
   while (!in.eof()) {
-    bool s = false;
-    Meeting p = readMeeting(in, s);
-    if (in.fail()) {
-      in.clear();
-      std::streamsize max = std::numeric_limits< std::streamsize >::max();
-      in.ignore(max, '\n');
-    } else {
-      pushBackDarray(meets, p);
+    bool success = false;
+    Meeting m = readMeeting(in, success, p);
+    if (!success) {
+      ok = false;
+      break;
     }
+    if (m.id1 != m.id2) {
+      pushBackDarray(meets, m);
+    }
+    in >> std::ws;
   }
   return meets;
 }
-
-

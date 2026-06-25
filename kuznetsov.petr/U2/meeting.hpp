@@ -2,6 +2,8 @@
 #define AADS_EXAM_TOP_IT_MEETING_HPP
 #include <cstddef>
 #include <iosfwd>
+#include <darray.hpp>
+#include <person.hpp>
 
 namespace kuznetsov {
 
@@ -11,7 +13,7 @@ namespace kuznetsov {
   };
 
   Meeting readMeeting(std::istream& in, bool& success, darray< Person >& p);
-  darray< Meeting > readArrayMeets(std::istream& in, darray< Person >& p);
+  darray< Meeting > readArrayMeets(std::istream& in, darray< Person >& p, bool& ok);
 
 }
 

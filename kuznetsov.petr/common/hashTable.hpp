@@ -61,7 +61,7 @@ namespace kuznetsov {
       chainNode< K, V >* cur = ht.buckets[i];
       while (cur) {
         chainNode< K, V >* next = cur->next;
-        size_t idx = bucketIndex< K, V >(cur->key, newCap);
+        size_t idx = bucketIndex< K >(cur->key, newCap);
         cur->next = nb[idx];
         nb[idx] = cur;
         cur = next;
@@ -70,6 +70,30 @@ namespace kuznetsov {
     delete[] ht.buckets;
     ht.buckets = nb;
     ht.cap = newCap;
+  }
+
+  template< class K, class V >
+  chainNode< K, V >* findNode(hashTable< K, V >& ht, const K& key)
+  {
+    if (ht.cap == 0) {
+      return nullptr;
+    }
+    size_t idx = bucketIndex< K >(key, ht.cap);
+    chainNode< K, V >* cur = ht.buckets[idx];
+    while (cur) {
+      if (cur->key == key) {
+        return cur;
+      }
+      cur = cur->next;
+    }
+    return nullptr;
+  }
+
+  template< class K, class V >
+  V* findHashTable(hashTable< K, V >& ht, const K& key)
+  {
+    chainNode< K, V >* node = findNode(ht, key);
+    return node ? &node->value : nullptr;
   }
 
   template< class K, class V >
@@ -89,7 +113,7 @@ namespace kuznetsov {
         throw;
       }
     }
-    size_t idx = bucketIndex< K, V >(node->key, ht.cap);
+    size_t idx = bucketIndex< K >(node->key, ht.cap);
     node->next = ht.buckets[idx];
     ht.buckets[idx] = node;
     ++ht.size;
