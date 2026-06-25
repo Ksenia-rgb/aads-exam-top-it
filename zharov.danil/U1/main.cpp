@@ -1,28 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <array.hpp>
-#include "person.hpp"
-
-namespace zharov
-{
-  bool parseLine(const std::string& str, Person& p);
-}
-
-namespace
-{
-  bool hasId(const zharov::Array< zharov::Person >& arr, size_t id)
-  {
-    for (size_t i = 0; i < arr.size; ++i)
-    {
-      if (arr.data[i].id == id)
-      {
-        return true;
-      }
-    }
-    return false;
-  }
-}
+#include <io.hpp>
 
 int main(int argc, char** argv)
 {
@@ -86,27 +65,7 @@ int main(int argc, char** argv)
 
   size_t accepted = 0;
   size_t ignored = 0;
-  std::string line;
-  while (std::getline(*in, line))
-  {
-    if (line.empty())
-    {
-      continue;
-    }
-    zharov::Person p;
-    if (!zharov::parseLine(line, p))
-    {
-      ++ignored;
-      continue;
-    }
-    if (hasId(persons, p.id))
-    {
-      ++ignored;
-      continue;
-    }
-    zharov::pushBack(persons, p);
-    ++accepted;
-  }
+  zharov::readPersons(*in, persons, accepted, ignored);
   std::ofstream file_out;
   if (hasOut)
   {
@@ -119,40 +78,11 @@ int main(int argc, char** argv)
     }
     out = std::addressof(file_out);
   }
-  for (size_t i = 0; i < persons.size; ++i)
-  {
-    *out << persons.data[i].id << " " << persons.data[i].info << "\n";
-  }
+  zharov::writePersons(*out, persons);
   if (persons.size == 0)
   {
     *out << "\n";
   }
   std::cerr << accepted << " " << ignored << "\n";
   zharov::clear(persons);
-}
-
-
-bool zharov::parseLine(const std::string& str, Person& p)
-{
-  size_t pos = 0;
-  size_t id = 0;
-  try
-  {
-    id = std::stoul(str, &pos);
-  }
-  catch (...)
-  {
-    return false;
-  }
-  while (pos < str.size() && (str[pos] == ' ' || str[pos] == '\t'))
-  {
-    ++pos;
-  }
-  if (pos == str.size())
-  {
-    return false;
-  }
-  p.id = id;
-  p.info = str.substr(pos);
-  return true;
 }

@@ -1,7 +1,7 @@
 #ifndef PERSON_HPP
 #define PERSON_HPP
-#include <string>
 #include <cstddef>
+#include <string>
 
 namespace zharov
 {
