@@ -3,6 +3,7 @@
 #include <ostream>
 #include <string>
 #include <cstddef>
+#include <cstdint>
 #include <climits>
 
 std::istream & sedov::readPerson(std::istream & in, Person & person, bool & valid)
