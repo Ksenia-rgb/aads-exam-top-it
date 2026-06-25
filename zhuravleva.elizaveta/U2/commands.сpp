@@ -1,0 +1,296 @@
+#include "commands.hpp"
+#include <istream>
+#include <ostream>
+#include <string>
+#include <iomanip>
+
+namespace
+{
+  size_t findPerson(
+      const zhuravleva::DynamicArray< zhuravleva::Person > &persons,
+      size_t id)
+  {
+    for (size_t i = 0; i < persons.size; ++i)
+    {
+      if (persons.data[i].id == id)
+      {
+        return i;
+      }
+    }
+    return persons.size;
+  }
+
+  void erasePerson(
+      zhuravleva::DynamicArray< zhuravleva::Person > &persons,
+      size_t index)
+  {
+    for (size_t i = index + 1; i < persons.size; ++i)
+    {
+      persons.data[i - 1] = persons.data[i];
+    }
+    --persons.size;
+  }
+
+  void sortPersonsById(
+      zhuravleva::DynamicArray< zhuravleva::Person > &persons)
+  {
+    for (size_t i = 0; i < persons.size; ++i)
+    {
+      for (size_t j = i + 1; j < persons.size; ++j)
+      {
+        if (persons.data[j].id < persons.data[i].id)
+        {
+          zhuravleva::Person temp = persons.data[i];
+          persons.data[i] = persons.data[j];
+          persons.data[j] = temp;
+        }
+      }
+    }
+  }
+
+  void printMeets(
+      std::ostream &output,
+      zhuravleva::DynamicArray< zhuravleva::Meet > &meets,
+      size_t id)
+  {
+    sortMeetsForPerson(meets, id);
+
+    for (size_t i = 0; i < meets.size; ++i)
+    {
+      if (isMeetWithPerson(meets.data[i], id))
+      {
+        output << getOtherPerson(meets.data[i], id) << " "
+            << meets.data[i].time << "\n";
+      }
+    }
+  }
+
+  bool isMeetWithPerson(
+      const zhuravleva::Meet &meet,
+      size_t id)
+  {
+    return meet.first == id || meet.second == id;
+  }
+
+  size_t getOtherPerson(
+      const zhuravleva::Meet &meet,
+      size_t id)
+  {
+    if (meet.first == id)
+    {
+      return meet.second;
+    }
+    return meet.first;
+  }
+
+  void printMeets(
+      std::ostream &output,
+      const zhuravleva::DynamicArray< zhuravleva::Meet > &meets,
+      size_t id)
+  {
+    for (size_t i = 0; i < meets.size; ++i)
+    {
+      for (size_t j = i + 1; j < meets.size; ++j)
+      {
+        if (isMeetWithPerson(meets.data[i], id) &&
+            isMeetWithPerson(meets.data[j], id))
+        {
+          size_t otherI = getOtherPerson(meets.data[i], id);
+          size_t otherJ = getOtherPerson(meets.data[j], id);
+
+          if (otherJ < otherI ||
+              (otherJ == otherI && meets.data[j].time < meets.data[i].time))
+          {
+            zhuravleva::Meet temp = meets.data[i];
+            const_cast< zhuravleva::DynamicArray< zhuravleva::Meet > & >(meets).data[i] =
+                const_cast< zhuravleva::DynamicArray< zhuravleva::Meet > & >(meets).data[j];
+            const_cast< zhuravleva::DynamicArray< zhuravleva::Meet > & >(meets).data[j] = temp;
+          }
+        }
+      }
+    }
+
+    for (size_t i = 0; i < meets.size; ++i)
+    {
+      if (isMeetWithPerson(meets.data[i], id))
+      {
+        output << getOtherPerson(meets.data[i], id) << " "
+            << meets.data[i].time << "\n";
+      }
+    }
+  }
+}
+
+void zhuravleva::processCommands(
+    std::istream &input,
+    std::ostream &output,
+    DynamicArray< Person > &persons,
+    DynamicArray< Meet > &meets)
+{
+  std::string command = "";
+
+  while (input >> command)
+  {
+    if (command == "anons")
+    {
+      sortPersonsById(persons);
+
+      for (size_t i = 0; i < persons.size; ++i)
+      {
+        if (persons.data[i].info.empty())
+        {
+          output << persons.data[i].id << "\n";
+        }
+      }
+    }
+    else if (command == "desc")
+    {
+      size_t id = 0;
+      if (!(input >> id))
+      {
+        output << "<INVALID COMMAND>\n";
+        input.clear();
+
+        std::string skip = "";
+        std::getline(input, skip);
+      }
+      else
+      {
+        size_t pos = findPerson(persons, id);
+        if (pos == persons.size)
+        {
+          output << "<INVALID COMMAND>\n";
+        }
+        else if (persons.data[pos].info.empty())
+        {
+          output << "<ANON>\n";
+        }
+        else
+        {
+          output << persons.data[pos].info << "\n";
+        }
+      }
+    }
+    else if (command == "redesc")
+    {
+      size_t id = 0;
+      std::string description = "";
+
+      if (!(input >> id >> std::quoted(description)))
+      {
+        output << "<INVALID COMMAND>\n";
+        input.clear();
+
+        std::string skip = "";
+        std::getline(input, skip);
+      }
+      else
+      {
+        size_t pos = findPerson(persons, id);
+        if (pos == persons.size)
+        {
+          output << "<INVALID COMMAND>\n";
+        }
+        else
+        {
+          persons.data[pos].info = description;
+        }
+      }
+    }
+    else if (command == "deanon")
+    {
+      size_t anonId = 0;
+      size_t id = 0;
+
+      if (!(input >> anonId >> id))
+      {
+        output << "<INVALID COMMAND>\n";
+        input.clear();
+
+        std::string skip = "";
+        std::getline(input, skip);
+      }
+      else
+      {
+        size_t anonPos = findPerson(persons, anonId);
+        size_t personPos = findPerson(persons, id);
+
+        if (anonPos == persons.size ||
+            personPos == persons.size ||
+            !persons.data[anonPos].info.empty() ||
+            persons.data[personPos].info.empty())
+        {
+          output << "<INVALID COMMAND>\n";
+        }
+        else
+        {
+          for (size_t i = 0; i < meets.size; ++i)
+          {
+            if (meets.data[i].first == anonId)
+            {
+              meets.data[i].first = id;
+            }
+
+            if (meets.data[i].second == anonId)
+            {
+              meets.data[i].second = id;
+            }
+          }
+
+          size_t i = 0;
+          while (i < meets.size)
+          {
+            if (meets.data[i].first == meets.data[i].second)
+            {
+              for (size_t j = i + 1; j < meets.size; ++j)
+              {
+                meets.data[j - 1] = meets.data[j];
+              }
+              --meets.size;
+            }
+            else
+            {
+              ++i;
+            }
+          }
+
+          erasePerson(persons, anonPos);
+        }
+      }
+    }
+
+    else if (command == "meets")
+    {
+      size_t id = 0;
+
+      if (!(input >> id))
+      {
+        output << "<INVALID COMMAND>\n";
+        input.clear();
+
+        std::string skip = "";
+        std::getline(input, skip);
+      }
+      else
+      {
+        size_t pos = findPerson(persons, id);
+
+        if (pos == persons.size)
+        {
+          output << "<INVALID COMMAND>\n";
+        }
+        else
+        {
+          printMeets(output, meets, id);
+        }
+      }
+    }
+    else
+    {
+      output << "<INVALID COMMAND>\n";
+
+      std::string skip = "";
+      std::getline(input, skip);
+    }
+  }
+}
