@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(anons_empty_output_when_no_anons)
 
   BOOST_TEST(shaykhraziev::executeAnons(storage, output));
   output.close();
-  BOOST_TEST(readTextFile(filename) == "");
+  BOOST_TEST(readTextFile(filename) == "\n");
 
   shaykhraziev::clearU2Storage(storage);
   std::remove(filename);
@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE(meets_without_values_outputs_nothing)
 
   BOOST_TEST(shaykhraziev::executeMeets(storage, "meets 31", output));
   output.close();
-  BOOST_TEST(readTextFile(filename) == "");
+  BOOST_TEST(readTextFile(filename) == "\n");
 
   shaykhraziev::clearU2Storage(storage);
   std::remove(filename);
@@ -210,6 +210,26 @@ BOOST_AUTO_TEST_CASE(meets_outputs_sorted_values)
   BOOST_TEST(shaykhraziev::executeMeets(storage, "meet 33", output));
   output.close();
   BOOST_TEST(readTextFile(filename) == "31 10\n31 99\n32 11\n");
+
+  shaykhraziev::clearU2Storage(storage);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(meet_known_id_without_meetings_outputs_newline)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+  const bool known = true;
+  shaykhraziev::insert(storage.knownIds, static_cast< size_t >(100), known);
+  shaykhraziev::addPerson(storage.persons,
+      storage.personsById,
+      shaykhraziev::Person{ 100, "No meetings" });
+  const char* filename = "out/u2-meet-known-empty.txt";
+  std::ofstream output(filename);
+
+  BOOST_TEST(shaykhraziev::executeMeets(storage, "meet 100", output));
+  output.close();
+  BOOST_TEST(readTextFile(filename) == "\n");
 
   shaykhraziev::clearU2Storage(storage);
   std::remove(filename);
@@ -292,6 +312,22 @@ BOOST_AUTO_TEST_CASE(commons_unknown_id_is_invalid)
   std::ofstream output(filename);
 
   BOOST_TEST(!shaykhraziev::executeCommons(storage, "commons 33 100", output));
+
+  shaykhraziev::clearU2Storage(storage);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(commons_empty_output_is_newline)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+  addMeeting(storage, 33, 31, 10);
+  const char* filename = "out/u2-commons-empty.txt";
+  std::ofstream output(filename);
+
+  BOOST_TEST(shaykhraziev::executeCommons(storage, "commons 33 32", output));
+  output.close();
+  BOOST_TEST(readTextFile(filename) == "\n");
 
   shaykhraziev::clearU2Storage(storage);
   std::remove(filename);
@@ -396,7 +432,7 @@ BOOST_AUTO_TEST_CASE(command_loop_full_scenario)
 
   shaykhraziev::runCommandLoop(storage, input, output);
   output.close();
-  BOOST_TEST(readTextFile(outputName) == "32\nKnown\n");
+  BOOST_TEST(readTextFile(outputName) == "32\nKnown\n\n");
 
   shaykhraziev::clearU2Storage(storage);
   std::remove(inputName);

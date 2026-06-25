@@ -184,6 +184,11 @@ namespace
 
   void printMeetViews(shaykhraziev::List< shaykhraziev::MeetView >& views, std::ostream& output)
   {
+    if (views.size == 0)
+    {
+      output << '\n';
+      return;
+    }
     shaykhraziev::ListIterator< shaykhraziev::MeetView > iterator = shaykhraziev::begin(views);
     while (!shaykhraziev::isEnd(iterator))
     {
@@ -227,6 +232,11 @@ namespace
 
   void printSizeTList(shaykhraziev::List< size_t >& values, std::ostream& output)
   {
+    if (values.size == 0)
+    {
+      output << '\n';
+      return;
+    }
     shaykhraziev::ListIterator< size_t > iterator = shaykhraziev::begin(values);
     while (!shaykhraziev::isEnd(iterator))
     {
@@ -242,12 +252,7 @@ bool shaykhraziev::executeAnons(U2Storage& storage, std::ostream& output)
   initList(anons);
   AnonsData data = { &storage, &anons };
   forEachEntry(storage.knownIds, collectAnonId, &data);
-  ListIterator< size_t > iterator = begin(anons);
-  while (!isEnd(iterator))
-  {
-    output << get(iterator) << '\n';
-    iterator = next(iterator);
-  }
+  printSizeTList(anons, output);
   clearList(anons);
   return true;
 }
