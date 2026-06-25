@@ -22,8 +22,8 @@ namespace volkovich {
   template < class Key, class Value, class Hash, class Equal >
   class HashTable {
     struct Record {
-      Key key;
-      Value value;
+      Key key{};
+      Value value{};
     };
 
     struct Slot {
@@ -216,7 +216,7 @@ namespace volkovich {
     Slot* getFromOverflow(const Key& key) {
       for (size_t i = 0; i < overflow_capacity_; i++) {
         Slot& s = overflow_[i];
-        if (eq_(s.data.key, key) && s.state == Slot::State::OCCUPIED) {
+        if (s.state == Slot::State::OCCUPIED && eq_(s.data.key, key)) {
           return &s;
         }
       }
@@ -226,7 +226,7 @@ namespace volkovich {
     const Slot* getFromOverflow(const Key& key) const {
       for (size_t i = 0; i < overflow_capacity_; i++) {
         const Slot& s = overflow_[i];
-        if (eq_(s.data.key, key) && s.state == Slot::State::OCCUPIED) {
+        if (s.state == Slot::State::OCCUPIED && eq_(s.data.key, key)) {
           return &s;
         }
       }

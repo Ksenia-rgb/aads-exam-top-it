@@ -15,7 +15,7 @@ struct Person {
 int main(int argc, char* argv[]) {
   if (argc > 3) {
     std::cerr << "Too many args";
-    return 2;
+    return 0;
   }
   std::istream* input = &std::cin;
   std::ostream* output = &std::cout;
