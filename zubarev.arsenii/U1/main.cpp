@@ -52,6 +52,11 @@ int main(int argc, char* argv[])
       ++pos;
     }
 
+    if (pos == line.size()) {
+      ++ignored;
+      continue;
+    }
+
     size_t id = 0;
     bool hasId = false;
 
