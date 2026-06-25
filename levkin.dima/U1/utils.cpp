@@ -2,8 +2,15 @@
 #include <iostream>
 #include <string>
 #include <cctype>
-
 namespace levkin {
+  bool isSpaceChar(char ch)
+  {
+    return std::isspace(static_cast< unsigned char >(ch));
+  }
+  bool isDigitChar(char ch)
+  {
+    return std::isdigit(static_cast< unsigned char >(ch));
+  }
   Pair* reallocate(Vec& v)
   {
     size_t nw_cap = 0;
@@ -23,35 +30,30 @@ namespace levkin {
     v.data = nw;
     return nw;
   }
-
   void readToVec(Vec& v, std::istream& is, size_t& total, size_t& ignored)
   {
     std::string line;
     while (std::getline(is, line)) {
       size_t idx = 0;
-      while (idx < line.length()
-             && std::isspace(static_cast< unsigned char >(line[idx]))) {
+      while (idx < line.length() && isSpaceChar(line[idx])) {
         idx++;
       }
       size_t id = 0;
-      bool hasDigit = false;
-      while (idx < line.length()
-             && std::isdigit(static_cast< unsigned char >(line[idx]))) {
+      bool has_digit = false;
+      while (idx < line.length() && isDigitChar(line[idx])) {
         id = id * 10 + (line[idx] - '0');
-        hasDigit = true;
+        has_digit = true;
         idx++;
       }
-      if (!hasDigit) {
+      if (!has_digit) {
         ignored++;
         continue;
       }
-      if (idx < line.length()
-          && !std::isspace(static_cast< unsigned char >(line[idx]))) {
+      if (idx < line.length() && !isSpaceChar(line[idx])) {
         ignored++;
         continue;
       }
-      while (idx < line.length()
-             && std::isspace(static_cast< unsigned char >(line[idx]))) {
+      while (idx < line.length() && isSpaceChar(line[idx])) {
         idx++;
       }
       if (idx == line.length()) {

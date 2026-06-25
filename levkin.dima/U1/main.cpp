@@ -1,4 +1,5 @@
 #include <iostream>
+#include "utils.hpp"
 int main(int argc, char* argv[])
 {
   if (argc > 3) {
@@ -24,4 +25,9 @@ int main(int argc, char* argv[])
       return 1;
     }
   }
+  levkin::Vec my_vector = {0, 0, nullptr};
+  size_t total = 0;
+  size_t ignored = 0;
+  std::cerr << total - ignored << "\n";
+  std::cerr << ignored << "\n";
 }
