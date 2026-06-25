@@ -2,7 +2,7 @@
 #define COMMANDS_HPP
 #include <cstddef>
 #include <string>
-#include "../common/person.hpp"
+#include "../common/Person.hpp"
 
 namespace lavrentev
 {
