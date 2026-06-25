@@ -30,7 +30,7 @@ namespace sedov
   }
 
   template< class T >
-  listNode< T > * copyList(listNode< T > * head)
+  listNode< T > * copyList(const listNode< T > * head)
   {
     listNode< T > * resHead = nullptr;
     listNode< T > * resTail = nullptr;

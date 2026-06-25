@@ -86,6 +86,6 @@ int main(int argc, char ** argv)
   catch (...)
   {
     cleanupResources(persons, seen);
-    throw;
+    return 2;
   }
 }
