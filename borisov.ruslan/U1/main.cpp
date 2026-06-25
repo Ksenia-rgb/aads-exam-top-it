@@ -7,6 +7,7 @@ int main(int argc, char **argv)
 {
   if (argc > 3)
   {
+    std::cerr << "bad args\n";
     return 0;
   }
   const borisov::Args args = borisov::parseArgs(argc, argv);
@@ -43,11 +44,13 @@ int main(int argc, char **argv)
     }
   }
   std::ostream &out = args.outSet_ ? static_cast< std::ostream & >(outFstream) : std::cout;
+  const bool empty = (head == nullptr);
   borisov::writePersons(out, head);
   borisov::freePersons(head);
-  if (argc > 1 || hasInput)
+  if (empty)
   {
-    std::cerr << count << " " << skipped << "\n";
+    out << "\n";
   }
+  std::cerr << count << " " << skipped << "\n";
   return 0;
 }
