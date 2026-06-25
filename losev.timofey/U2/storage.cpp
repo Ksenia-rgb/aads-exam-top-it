@@ -91,6 +91,35 @@ namespace losev
     }
   }
 
+  void getMeetingsById(const MeetingStorage& storage, size_t id, MeetingNode*& resultHead, MeetingNode*& resultTail)
+  {
+    resultHead = nullptr;
+    resultTail = nullptr;
+
+    MeetingNode* current = storage.head;
+    while (current != nullptr)
+    {
+      if (current->data.id1 == id || current->data.id2 == id)
+      {
+        MeetingNode* node = new MeetingNode;
+        node->data = current->data;
+        node->next = nullptr;
+
+        if (resultTail == nullptr)
+        {
+          resultHead = node;
+          resultTail = node;
+        }
+        else
+        {
+          resultTail->next = node;
+          resultTail = node;
+        }
+      }
+      current = current->next;
+    }
+  }
+
   void clearMeetingStorage(MeetingStorage& storage)
   {
     MeetingNode* current = storage.head;

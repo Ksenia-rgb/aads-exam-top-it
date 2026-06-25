@@ -38,6 +38,7 @@ namespace losev
 
   void initMeetingStorage(MeetingStorage& storage);
   void addMeeting(MeetingStorage& storage, const Meeting& meeting);
+  void getMeetingsById(const MeetingStorage& storage, size_t id, MeetingNode*& resultHead, MeetingNode*& resultTail);
   void clearMeetingStorage(MeetingStorage& storage);
 }
 
