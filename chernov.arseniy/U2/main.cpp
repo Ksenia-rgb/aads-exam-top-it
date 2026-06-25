@@ -7,6 +7,11 @@ int main(int argc, char * argv[])
 {
   using namespace chernov;
 
+  if (argc > 3) {
+    std::cerr << "Too many arguments\n";
+    return 0;
+  }
+
   Vector< Person > persons;
   Vector< Meeting > meetings;
   Vector< size_t > allIds;
