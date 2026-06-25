@@ -57,3 +57,37 @@ chernov::Vector< size_t > chernov::getNeighbors(const Vector< Meeting > & meetin
   destroy(filtered);
   return neighbors;
 }
+
+size_t chernov::detail::getOther(const Meeting & m, size_t id)
+{
+  return (m.from == id) ? m.to : m.from;
+}
+
+bool chernov::detail::shouldSwap(const Meeting & a, const Meeting & b, size_t id)
+{
+  size_t otherA = detail::getOther(a, id);
+  size_t otherB = detail::getOther(b, id);
+  if (otherA != otherB) {
+    return otherA > otherB;
+  }
+  return a.duration > b.duration;
+}
+
+void chernov::sortMeetingsForOutput(Vector< Meeting > & meetings, size_t id)
+{
+  size_t n = meetings.size;
+  for (size_t i = 0; i < n - 1; ++i) {
+    bool swapped = false;
+    for (size_t j = 0; j < n - i - 1; ++j) {
+      if (detail::shouldSwap(meetings.data[j], meetings.data[j + 1], id)) {
+        Meeting temp = meetings.data[j];
+        meetings.data[j] = meetings.data[j + 1];
+        meetings.data[j + 1] = temp;
+        swapped = true;
+      }
+    }
+    if (!swapped) {
+      break;
+    }
+  }
+}
