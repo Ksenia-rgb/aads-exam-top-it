@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstddef>
 #include <fstream>
-#include <limits>
 #include "person.hpp"
 #include "darray.hpp"
 
@@ -58,6 +57,7 @@ int main(int argc, char** argv)
 
   size_t cSucces = 0, cFail = 0;
   kuz::darray< kuz::Person > persons = kuz::makeDarray< kuz::Person >(8);
+  *source >> std::ws;
   while (!source->eof()) {
     bool s = false;
     kuz::Person p = kuz::readPerson(*source, s);
@@ -67,11 +67,7 @@ int main(int argc, char** argv)
     } else {
       ++cFail;
     }
-    if (!s) {
-      source->clear();
-      std::streamsize n = std::numeric_limits< std::streamsize >::max();
-      source->ignore(n, '\n');
-    }
+    *source >> std::ws;
   }
   ifile.close();
   if (countOut == 1) {
@@ -100,16 +96,17 @@ kuznetsov::Person kuznetsov::readPerson(std::istream& in, bool& success)
   in >> id;
   if (!in) {
     success = false;
+    in.clear();
+    std::string skip;
+    std::getline(in, skip);
     return {};
   }
   while (in.peek() == ' ' || in.peek() == '\t') {
     in.ignore();
   }
-  in >> std::ws;
   std::string inf;
   std::getline(in, inf);
   if (inf.empty()) {
-    in.setstate(std::ios::failbit);
     success = false;
     return {};
   }
