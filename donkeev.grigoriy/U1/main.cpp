@@ -231,6 +231,10 @@ int main(int argc, char* argv[])
   }
 
   donkeev::PersonList list;
+  list.head_ = nullptr;
+  list.tail_ = nullptr;
+  list.size_ = 0;
+  
   size_t ignoredCount = 0;
 
   donkeev::readingPersons(*in, list, ignoredCount);
