@@ -43,4 +43,83 @@ int main(int argc, char* argv[])
       }
   }
 
+  lukashevich::Array< lukashevich::Person > persons;
+  lukashevich::initArray(persons);
+
+  try {
+    std::istream* input = &std::cin;
+    std::ifstream inputFile;
+
+    if (hasInput) {
+      inputFile.open(inputName.c_str());
+
+      if (!inputFile.is_open()) {
+        std::cerr << "file open error\n";
+        lukashevich::destroyArray(persons);
+        return 2;
+      }
+
+      input = &inputFile;
+    }
+
+    size_t accepted = 0;
+    size_t ignored = 0;
+    std::string line;
+
+    while (std::getline(*input, line)) {
+      size_t pos = 0;
+
+      while ((pos < line.size()) && lukashevich::detail::isSpace(line[pos])) {
+        ++pos;
+      }
+
+      size_t id = 0;
+      size_t end = 0;
+      bool correct = true;
+
+      if (!lukashevich::detail::parseUnsigned(line, pos, id, end)) {
+        correct = false;
+      }
+
+      std::string info;
+
+      if (correct) {
+        info = lukashevich::detail::trim(line.substr(end));
+
+        if (info.empty()) {
+          correct = false;
+        }
+      }
+
+      if (correct && lukashevich::hasPerson(persons, id)) {
+        correct = false;
+      }
+
+      if (correct) {
+        lukashevich::Person person;
+        person.id = id;
+        person.info = info;
+
+        lukashevich::pushBack(persons, person);
+        ++accepted;
+      } else {
+        ++ignored;
+      }
+    }
+
+    if (input->bad()) {
+      std::cerr << "input error\n";
+      lukashevich::destroyArray(persons);
+      return 2;
+    }
+
+    if (inputFile.is_open()) {
+      inputFile.close();
+    }
+  } catch (const std::exception& error) {
+    static_cast< void >(error);
+    std::cerr << " error\n";
+    lukashevich::destroyArray(persons);
+    return 2;
+  }
 }
