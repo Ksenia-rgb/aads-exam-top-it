@@ -34,9 +34,11 @@ namespace tarasenko
   Database makeDatabase();
   int findPersonIndex(const Database& database, std::size_t id);
   bool hasPerson(const Database& database, std::size_t id);
+  bool hasPersonInfo(const Database& database, std::size_t id);
   void ensurePerson(Database& database, std::size_t id);
   void setPersonInfo(Database& database, std::size_t id, const std::string& info);
   void appendMeeting(Database& database, const Meeting& meeting);
+  bool mergeAnonPerson(Database& database, std::size_t anonId, std::size_t id);
 }
 
 #endif

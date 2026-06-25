@@ -69,6 +69,12 @@ bool tarasenko::hasPerson(const Database& database, std::size_t id)
   return findPersonIndex(database, id) >= 0;
 }
 
+bool tarasenko::hasPersonInfo(const Database& database, std::size_t id)
+{
+  const int index = findPersonIndex(database, id);
+  return (index >= 0) && database.persons[index].hasInfo;
+}
+
 void tarasenko::ensurePerson(Database& database, std::size_t id)
 {
   if (hasPerson(database, id)) {
@@ -107,3 +113,38 @@ void tarasenko::appendMeeting(Database& database, const Meeting& meeting)
   ++database.meetingCount;
 }
 
+bool tarasenko::mergeAnonPerson(Database& database, std::size_t anonId, std::size_t id)
+{
+  const int anonIndex = findPersonIndex(database, anonId);
+  const int personIndex = findPersonIndex(database, id);
+  if ((anonIndex < 0) || (personIndex < 0)) {
+    return false;
+  }
+  if (database.persons[anonIndex].hasInfo || !database.persons[personIndex].hasInfo) {
+    return false;
+  }
+
+  std::size_t writeIndex = 0;
+  for (std::size_t index = 0; index < database.meetingCount; ++index) {
+    Meeting meeting = database.meetings[index];
+    if (meeting.first == anonId) {
+      meeting.first = id;
+    }
+    if (meeting.second == anonId) {
+      meeting.second = id;
+    }
+    if (meeting.first != meeting.second) {
+      database.meetings[writeIndex] = meeting;
+      ++writeIndex;
+    }
+  }
+  database.meetingCount = writeIndex;
+
+  for (std::size_t index = static_cast< std::size_t >(anonIndex) + 1;
+      index < database.personCount;
+      ++index) {
+    database.persons[index - 1] = database.persons[index];
+  }
+  --database.personCount;
+  return true;
+}
