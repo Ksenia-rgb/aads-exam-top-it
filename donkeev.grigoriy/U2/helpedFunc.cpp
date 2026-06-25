@@ -158,3 +158,8 @@ donkeev::Person* donkeev::findPerson(const PersonList& list, size_t id)
   }
   return nullptr;
 }
+
+bool donkeev::personExists(const PersonList& list, size_t id)
+{
+  return findPerson(list, id) != nullptr;
+}

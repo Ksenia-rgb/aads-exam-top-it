@@ -2,13 +2,16 @@
 #include <iostream>
 
 #include "list.hpp"
+#include "helpedFunc.hpp"
 
 
 int main(int argc, char* argv[])
 {
   std::istream* input = &std::cin;
   std::ifstream inFile;
+  std::ifstream dataFile;
   std::string inFilename;
+  std::string dataFilename;
 
   int inCount = 0;
   int dataCount = 0;
@@ -24,8 +27,6 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  int inCount = 0;
-  int outCount = 0;
 
   for (int i = 1; i < argc; ++i)
   {
@@ -56,7 +57,7 @@ int main(int argc, char* argv[])
           return 1;
         }
         
-        std::string dataFilename = arg.substr(5);
+        dataFilename = arg.substr(5);
         if (dataFilename.empty())
         {
           std::cerr << "Invalid arguments: empty filename for data\n";
@@ -102,4 +103,12 @@ int main(int argc, char* argv[])
     
     inFile.close();
   }
+
+  dataFile.open(dataFilename);
+  if (!dataFile.is_open())
+  {
+    std::cerr << "Failed to open data file: " << dataFilename << "\n";
+    return 2;
+  }
+}
 
