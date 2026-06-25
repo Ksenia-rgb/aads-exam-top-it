@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   if (argc > 3)
   {
     std::cerr << "Invalid arguments\n";
-    return 2;
+    return 0;
   }
 
   Args args = parseArgs(argc, argv);
