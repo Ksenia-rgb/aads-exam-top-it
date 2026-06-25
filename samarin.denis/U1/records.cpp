@@ -1,72 +1,14 @@
 #include "records.hpp"
 
-#include <cctype>
 #include <cstddef>
 #include <istream>
 #include <ostream>
 #include <string>
-#include <utility>
+
+#include "parsing.hpp"
 
 namespace {
   using PersonNode = samarin::detail::list_node_t< samarin::Person >;
-
-  bool isSpaceChar(char symbol)
-  {
-    return std::isspace(static_cast< unsigned char >(symbol)) != 0;
-  }
-
-  bool isDigitChar(char symbol)
-  {
-    return std::isdigit(static_cast< unsigned char >(symbol)) != 0;
-  }
-
-  void skipSpaces(const std::string & text, std::size_t & position)
-  {
-    while (position < text.size() && isSpaceChar(text[position])) {
-      ++position;
-    }
-  }
-
-  std::string trim(const std::string & text)
-  {
-    std::size_t begin = 0;
-    skipSpaces(text, begin);
-    std::size_t end = text.size();
-    while (end > begin && isSpaceChar(text[end - 1])) {
-      --end;
-    }
-    return text.substr(begin, end - begin);
-  }
-
-  std::pair< bool, std::size_t > parseId(const std::string & line, std::size_t & position)
-  {
-    const std::size_t base = 10;
-    std::size_t id = 0;
-    bool hasDigit = false;
-    while (position < line.size() && isDigitChar(line[position])) {
-      id = id * base + static_cast< std::size_t >(line[position] - '0');
-      hasDigit = true;
-      ++position;
-    }
-    return std::make_pair(hasDigit, id);
-  }
-
-  bool parsePerson(const std::string & line, samarin::Person & person)
-  {
-    std::size_t position = 0;
-    skipSpaces(line, position);
-    const std::pair< bool, std::size_t > parsed = parseId(line, position);
-    if (!parsed.first) {
-      return false;
-    }
-    const std::string info = trim(line.substr(position));
-    if (info.empty()) {
-      return false;
-    }
-    person.id = parsed.second;
-    person.info = info;
-    return true;
-  }
 
   bool containsId(const samarin::detail::list_t< samarin::Person > & records, std::size_t id)
   {
@@ -85,7 +27,7 @@ samarin::counts_t samarin::readRecords(std::istream & input, detail::list_t< Per
   std::string line;
   while (std::getline(input, line)) {
     Person person{ 0, "" };
-    if (!parsePerson(line, person) || containsId(records, person.id)) {
+    if (!detail::parseRecord(line, person.id, person.info) || containsId(records, person.id)) {
       ++counts.ignored;
     } else {
       detail::pushBack(records, person);
