@@ -2,7 +2,7 @@
 #define COMMANDS_HPP
 
 #include <iostream>
-#include "../common/person.hpp"
+#include <person.hpp>
 
 namespace zubarev
 {

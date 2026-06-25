@@ -2,8 +2,9 @@
 #include <string>
 #include <fstream>
 #include <limits>
-#include "../common/functions.hpp"
-#include "../common/person.hpp"
+#include <functions.hpp>
+#include <person.hpp>
+#include "commands.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -58,7 +59,7 @@ int main(int argc, char* argv[])
 
       std::string info = line.substr(pos);
       if (info.empty())
-        continue; // ИСПРАВЛЕНИЕ: пропуск записей с пустым описанием
+        continue;
 
       if (contains(state.ids, id))
         continue;
@@ -142,7 +143,7 @@ int main(int argc, char* argv[])
       return 3;
     }
 
-    has_valid_data = true; // Фиксируем наличие данных для прохождения Empty Data File теста
+    has_valid_data = true; 
 
     if (!contains(state.ids, id1)) {
       zubarev::Person p;

@@ -1,8 +1,8 @@
 #include <cctype>
 #include <fstream>
 #include <stdexcept>
-#include "../common/functions.hpp"
-#include "../common/person.hpp"
+#include <functions.hpp>
+#include <person.hpp>
 #include "commands.hpp"
 
 void zubarev::cmd_anons(std::istream&, std::ostream& out, AppState& state)
