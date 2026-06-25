@@ -56,20 +56,20 @@ namespace
     return true;
   }
 
-    bool hasPerson(
-        const zhuravleva::DynamicArray< zhuravleva::Person > &persons,
-        size_t id)
+  bool hasPerson(
+      const zhuravleva::DynamicArray< zhuravleva::Person > &persons,
+      size_t id)
+  {
+    for (size_t i = 0; i < persons.size; ++i)
     {
-      for (size_t i = 0; i < persons.size; ++i)
+      if (persons.data[i].id == id)
       {
-        if (persons.data[i].id == id)
-        {
-          return true;
-        }
+        return true;
       }
-      return false;
     }
+    return false;
   }
+}
 
 bool zhuravleva::parseArgs(int argc, char *argv[], MeetArgs &args)
 {
@@ -178,6 +178,51 @@ void zhuravleva::addAnonymous(
     {
       Person person = {meets.data[i].second, ""};
       pushBack(persons, person);
+    }
+  }
+}
+
+void zhuravleva::processCommands(
+    std::istream &input,
+    std::ostream &output,
+    DynamicArray< Person > &persons,
+    DynamicArray< Meet > &meets)
+{
+  std::string command;
+  while (input >> command)
+  {
+    if (command == "anons")
+    {
+    }
+    else if (command == "desc")
+    {
+    }
+    else if (command == "redesc")
+    {
+    }
+    else if (command == "deanon")
+    {
+    }
+    else if (command == "meets")
+    {
+    }
+    else if (command == "commons")
+    {
+    }
+    else if (command == "less")
+    {
+    }
+    else if (command == "greater")
+    {
+    }
+    else if (command == "out-persons")
+    {
+    }
+    else
+    {
+      output << "<INVALID COMMAND>\n";
+      std::string skip;
+      std::getline(input, skip);
     }
   }
 }

@@ -31,6 +31,12 @@ namespace zhuravleva
   void addAnonymous(
       DynamicArray< Person > &persons,
       const DynamicArray< Meet > &meets);
+
+  void processCommands(
+    std::istream &input,
+    std::ostream &output,
+    DynamicArray< Person > &persons,
+    DynamicArray< Meet > &meets);
 }
 
 #endif

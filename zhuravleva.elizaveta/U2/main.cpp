@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
   }
 
   zhuravleva::addAnonymous(persons, meets);
+  zhuravleva::processCommands(std::cin, std::cout, persons, meets);
   zhuravleva::destroy(persons);
   zhuravleva::destroy(meets);
   return 0;
