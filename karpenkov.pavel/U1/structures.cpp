@@ -49,5 +49,19 @@ Person *hashTableGet(const HashTable *table, size_t id) {
 
   return nullptr;
 }
+OrderArray *createOrderArray(size_t initCapacity) {
+  OrderArray *arr = new OrderArray;
+  arr->data = new size_t[initCapacity];
+  arr->size = 0;
+  arr->capacity = initCapacity;
+  return arr;
+}
+void destroyOrderArray(OrderArray *arr) {
+  if (!arr) {
+    throw std::runtime_error("order is empty");
+  }
+  delete[] arr->data;
+  delete arr;
+}
 
 } // namespace karpenkov
