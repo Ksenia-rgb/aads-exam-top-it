@@ -117,6 +117,29 @@ public:
     }
     addRecord({id, description});
   }
+
+  void processInput(std::istream& input) {
+    std::string line;
+    while (std::getline(input, line)) {
+      processLine(line);
+    }
+  }
+
+  void outputResults(std::ostream& output) {
+    Node* current = head;
+    while (current) {
+      output << current->data.id << " " << current->data.info << "\n";
+      current = current->next;
+    }
+  }
+
+  size_t getValidCount() const {
+    return validCount;
+  }
+
+  size_t getIgnoredCount() const {
+    return ignoredCount;
+  }
 };
 
 }
