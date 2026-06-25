@@ -23,10 +23,17 @@ namespace zubarev
     bool* used;
     size_t capacity;
   };
+
   void init(PersonArray& arr);
   void destroy(PersonArray& arr);
   void resize(PersonArray& arr);
   void push(PersonArray& arr, const Person& value);
+
+  void init(HashSet& set);
+  void destroy(HashSet& set);
+  size_t hash(const HashSet& set, size_t value);
+  bool contains(const HashSet& set, size_t value);
+  void insert(HashSet& set, size_t value);
 
 }
 
