@@ -9,7 +9,7 @@
 namespace karpenko
 {
 
-  static bool parsePersonLine(const std::string &line, size_t &outId, std::string &outInfo)
+  static bool parsePersonLine(const std::string & line, size_t & outId, std::string & outInfo)
   {
     size_t pos = 0;
     while (pos < line.size() && std::isspace(static_cast< unsigned char >(line[pos])))
@@ -31,7 +31,7 @@ namespace karpenko
     size_t id;
     try
     {
-      id = static_cast<size_t>(std::stoul(idStr));
+      id = static_cast< size_t >(std::stoul(idStr));
     }
     catch (const std::exception &)
     {
@@ -62,7 +62,7 @@ namespace karpenko
     return true;
   }
 
-  bool loadPersons(PersonTable &table, const std::string &filename)
+  bool loadPersons(PersonTable & table, const std::string & filename)
   {
     std::ifstream file(filename.c_str());
     if (!file.is_open())
@@ -88,7 +88,7 @@ namespace karpenko
     return true;
   }
 
-  bool loadMeetings(PersonTable &table, const std::string &filename)
+  bool loadMeetings(PersonTable & table, const std::string & filename)
   {
     std::ifstream file(filename.c_str());
     if (!file.is_open())
@@ -117,7 +117,7 @@ namespace karpenko
       size_t id1;
       try
       {
-        id1 = static_cast<size_t>(std::stoul(num1));
+        id1 = static_cast< size_t >(std::stoul(num1));
       }
       catch (...)
       {
@@ -141,7 +141,7 @@ namespace karpenko
       size_t id2;
       try
       {
-        id2 = static_cast<size_t>(std::stoul(num2));
+        id2 = static_cast< size_t >(std::stoul(num2));
       }
       catch (...)
       {
@@ -165,7 +165,7 @@ namespace karpenko
       size_t time;
       try
       {
-        time = static_cast<size_t>(std::stoul(num3));
+        time = static_cast< size_t >(std::stoul(num3));
       }
       catch (...)
       {
@@ -186,7 +186,7 @@ namespace karpenko
         continue;
       }
 
-      PersonData *data1 = table.find(id1);
+      PersonData * data1 = table.find(id1);
       if (data1 == NULL)
       {
         PersonData empty;
@@ -201,7 +201,7 @@ namespace karpenko
       m1.time = time;
       listPushFront(data1->meetings, m1);
 
-      PersonData *data2 = table.find(id2);
+      PersonData * data2 = table.find(id2);
       if (data2 == NULL)
       {
         PersonData empty;
@@ -220,16 +220,16 @@ namespace karpenko
     return true;
   }
 
-  static MeetingInfo *getMeetingsArray(const ListNode<MeetingInfo> *head, size_t &count)
+  static MeetingInfo * getMeetingsArray(const ListNode< MeetingInfo > * head, size_t & count)
   {
     count = listSize(head);
     if (count == 0)
     {
       return NULL;
     }
-    MeetingInfo *arr = new MeetingInfo[count];
+    MeetingInfo * arr = new MeetingInfo[count];
     size_t i = 0;
-    const ListNode<MeetingInfo> *cur = head;
+    const ListNode< MeetingInfo > * cur = head;
     while (cur != NULL)
     {
       arr[i] = cur->data;
@@ -239,12 +239,12 @@ namespace karpenko
     return arr;
   }
 
-  static void freeMeetingsArray(MeetingInfo *arr)
+  static void freeMeetingsArray(MeetingInfo * arr)
   {
     delete[] arr;
   }
 
-  static void sortMeetings(MeetingInfo *arr, size_t count)
+  static void sortMeetings(MeetingInfo * arr, size_t count)
   {
     for (size_t i = 0; i < count; ++i)
     {
@@ -269,10 +269,10 @@ namespace karpenko
     }
   }
 
-  static void printSortedMeetings(const ListNode<MeetingInfo> *head, std::ostream &out)
+  static void printSortedMeetings(const ListNode< MeetingInfo > * head, std::ostream & out)
   {
     size_t count;
-    MeetingInfo *arr = getMeetingsArray(head, count);
+    MeetingInfo * arr = getMeetingsArray(head, count);
     if (count == 0)
     {
       freeMeetingsArray(arr);
@@ -286,45 +286,53 @@ namespace karpenko
     freeMeetingsArray(arr);
   }
 
-  void printAnons(const PersonTable &table, std::ostream &out)
+  void printAnons(const PersonTable & table, std::ostream & out)
   {
-    size_t *ids = new size_t[table.tableSize * 10];
+    size_t * ids = new size_t[table.tableSize * 10];
     size_t count = 0;
-    for (size_t i = 0; i < table.tableSize; ++i)
+    try
     {
-      const PersonTable::Node *cur = table.table[i];
-      while (cur != NULL)
+      for (size_t i = 0; i < table.tableSize; ++i)
       {
-        if (!cur->data.second.hasDescription)
+        const PersonTable::Node * cur = table.table[i];
+        while (cur != NULL)
         {
-          ids[count++] = cur->data.first;
-        }
-        cur = cur->next;
-      }
-    }
-    for (size_t i = 0; i < count; ++i)
-    {
-      for (size_t j = i + 1; j < count; ++j)
-      {
-        if (ids[i] > ids[j])
-        {
-          size_t tmp = ids[i];
-          ids[i] = ids[j];
-          ids[j] = tmp;
+          if (!cur->data.second.hasDescription)
+          {
+            ids[count++] = cur->data.first;
+          }
+          cur = cur->next;
         }
       }
+      for (size_t i = 0; i < count; ++i)
+      {
+        for (size_t j = i + 1; j < count; ++j)
+        {
+          if (ids[i] > ids[j])
+          {
+            size_t tmp = ids[i];
+            ids[i] = ids[j];
+            ids[j] = tmp;
+          }
+        }
+      }
+      for (size_t i = 0; i < count; ++i)
+      {
+        out << ids[i] << '\n';
+      }
     }
-    for (size_t i = 0; i < count; ++i)
+    catch (...)
     {
-      out << ids[i] << '\n';
+      delete[] ids;
+      throw;
     }
     delete[] ids;
   }
 
-  void deanon(PersonTable &table, size_t anonId, size_t newId)
+  void deanon(PersonTable & table, size_t anonId, size_t newId)
   {
-    PersonData *anonData = table.find(anonId);
-    PersonData *newPersonData = table.find(newId);
+    PersonData * anonData = table.find(anonId);
+    PersonData * newPersonData = table.find(newId);
     if (anonData == NULL || newPersonData == NULL)
     {
       return;
@@ -334,14 +342,14 @@ namespace karpenko
       return;
     }
 
-    ListNode<MeetingInfo> *cur = anonData->meetings;
+    ListNode< MeetingInfo > * cur = anonData->meetings;
     while (cur != NULL)
     {
-      ListNode<MeetingInfo> *next = cur->next;
+      ListNode< MeetingInfo > * next = cur->next;
       if (cur->data.otherId != newId)
       {
         listPushFront(newPersonData->meetings, cur->data);
-        PersonData *otherData = table.find(cur->data.otherId);
+        PersonData * otherData = table.find(cur->data.otherId);
         if (otherData != NULL)
         {
           MeetingInfo rev;
@@ -357,9 +365,9 @@ namespace karpenko
     table.remove(anonId);
   }
 
-  void printDescription(const PersonTable &table, size_t id, std::ostream &out)
+  void printDescription(const PersonTable & table, size_t id, std::ostream & out)
   {
-    const PersonData *data = table.find(id);
+    const PersonData * data = table.find(id);
     if (data == NULL)
     {
       out << "<INVALID COMMAND>\n";
@@ -375,9 +383,9 @@ namespace karpenko
     }
   }
 
-  void redesc(PersonTable &table, size_t id, const std::string &newDesc)
+  void redesc(PersonTable & table, size_t id, const std::string & newDesc)
   {
-    PersonData *data = table.find(id);
+    PersonData * data = table.find(id);
     if (data == NULL)
     {
       PersonData empty;
@@ -393,9 +401,9 @@ namespace karpenko
     }
   }
 
-  void printMeets(const PersonTable &table, size_t id, std::ostream &out)
+  void printMeets(const PersonTable & table, size_t id, std::ostream & out)
   {
-    const PersonData *data = table.find(id);
+    const PersonData * data = table.find(id);
     if (data == NULL)
     {
       out << "<INVALID COMMAND>\n";
@@ -404,10 +412,10 @@ namespace karpenko
     printSortedMeetings(data->meetings, out);
   }
 
-  void printCommons(const PersonTable &table, size_t id1, size_t id2, std::ostream &out)
+  void printCommons(const PersonTable & table, size_t id1, size_t id2, std::ostream & out)
   {
-    const PersonData *data1 = table.find(id1);
-    const PersonData *data2 = table.find(id2);
+    const PersonData * data1 = table.find(id1);
+    const PersonData * data2 = table.find(id2);
     if (data1 == NULL || data2 == NULL)
     {
       out << "<INVALID COMMAND>\n";
@@ -415,133 +423,161 @@ namespace karpenko
     }
 
     size_t count1 = listSize(data1->meetings);
-    size_t *ids1 = new size_t[count1];
+    size_t * ids1 = new size_t[count1];
     size_t idx = 0;
-    const ListNode<MeetingInfo> *cur = data1->meetings;
-    while (cur != NULL)
+    try
     {
-      ids1[idx++] = cur->data.otherId;
-      cur = cur->next;
-    }
-
-    size_t count2 = listSize(data2->meetings);
-    size_t *ids2 = new size_t[count2];
-    idx = 0;
-    cur = data2->meetings;
-    while (cur != NULL)
-    {
-      ids2[idx++] = cur->data.otherId;
-      cur = cur->next;
-    }
-
-    for (size_t i = 0; i < count1; ++i)
-    {
-      for (size_t j = i + 1; j < count1; ++j)
+      const ListNode< MeetingInfo > * cur = data1->meetings;
+      while (cur != NULL)
       {
-        if (ids1[i] > ids1[j])
+        ids1[idx++] = cur->data.otherId;
+        cur = cur->next;
+      }
+
+      size_t count2 = listSize(data2->meetings);
+      size_t * ids2 = new size_t[count2];
+      idx = 0;
+      cur = data2->meetings;
+      while (cur != NULL)
+      {
+        ids2[idx++] = cur->data.otherId;
+        cur = cur->next;
+      }
+
+      for (size_t i = 0; i < count1; ++i)
+      {
+        for (size_t j = i + 1; j < count1; ++j)
         {
-          size_t tmp = ids1[i];
-          ids1[i] = ids1[j];
-          ids1[j] = tmp;
+          if (ids1[i] > ids1[j])
+          {
+            size_t tmp = ids1[i];
+            ids1[i] = ids1[j];
+            ids1[j] = tmp;
+          }
         }
       }
-    }
-    for (size_t i = 0; i < count2; ++i)
-    {
-      for (size_t j = i + 1; j < count2; ++j)
+      for (size_t i = 0; i < count2; ++i)
       {
-        if (ids2[i] > ids2[j])
+        for (size_t j = i + 1; j < count2; ++j)
         {
-          size_t tmp = ids2[i];
-          ids2[i] = ids2[j];
-          ids2[j] = tmp;
+          if (ids2[i] > ids2[j])
+          {
+            size_t tmp = ids2[i];
+            ids2[i] = ids2[j];
+            ids2[j] = tmp;
+          }
         }
       }
-    }
 
-    size_t i = 0, j = 0;
-    while (i < count1 && j < count2)
-    {
-      if (ids1[i] == ids2[j])
+      size_t i = 0, j = 0;
+      while (i < count1 && j < count2)
       {
-        out << ids1[i] << '\n';
-        size_t val = ids1[i];
-        while (i < count1 && ids1[i] == val)
+        if (ids1[i] == ids2[j])
+        {
+          out << ids1[i] << '\n';
+          size_t val = ids1[i];
+          while (i < count1 && ids1[i] == val)
+          {
+            ++i;
+          }
+          while (j < count2 && ids2[j] == val)
+          {
+            ++j;
+          }
+        }
+        else if (ids1[i] < ids2[j])
+        {
           ++i;
-        while (j < count2 && ids2[j] == val)
+        }
+        else
+        {
           ++j;
+        }
       }
-      else if (ids1[i] < ids2[j])
-      {
-        ++i;
-      }
-      else
-      {
-        ++j;
-      }
-    }
 
+      delete[] ids2;
+    }
+    catch (...)
+    {
+      delete[] ids1;
+      throw;
+    }
     delete[] ids1;
-    delete[] ids2;
   }
 
-  void printLess(const PersonTable &table, size_t id, size_t time, std::ostream &out)
+  void printLess(const PersonTable & table, size_t id, size_t time, std::ostream & out)
   {
-    const PersonData *data = table.find(id);
+    const PersonData * data = table.find(id);
     if (data == NULL)
     {
       out << "<INVALID COMMAND>\n";
       return;
     }
     size_t count = listSize(data->meetings);
-    MeetingInfo *arr = new MeetingInfo[count];
+    MeetingInfo * arr = new MeetingInfo[count];
     size_t idx = 0;
-    const ListNode<MeetingInfo> *cur = data->meetings;
-    while (cur != NULL)
+    try
     {
-      if (cur->data.time < time)
+      const ListNode< MeetingInfo > * cur = data->meetings;
+      while (cur != NULL)
       {
-        arr[idx++] = cur->data;
+        if (cur->data.time < time)
+        {
+          arr[idx++] = cur->data;
+        }
+        cur = cur->next;
       }
-      cur = cur->next;
+      sortMeetings(arr, idx);
+      for (size_t i = 0; i < idx; ++i)
+      {
+        out << arr[i].otherId << ' ' << arr[i].time << '\n';
+      }
     }
-    sortMeetings(arr, idx);
-    for (size_t i = 0; i < idx; ++i)
+    catch (...)
     {
-      out << arr[i].otherId << ' ' << arr[i].time << '\n';
+      delete[] arr;
+      throw;
     }
     delete[] arr;
   }
 
-  void printGreater(const PersonTable &table, size_t id, size_t time, std::ostream &out)
+  void printGreater(const PersonTable & table, size_t id, size_t time, std::ostream & out)
   {
-    const PersonData *data = table.find(id);
+    const PersonData * data = table.find(id);
     if (data == NULL)
     {
       out << "<INVALID COMMAND>\n";
       return;
     }
     size_t count = listSize(data->meetings);
-    MeetingInfo *arr = new MeetingInfo[count];
+    MeetingInfo * arr = new MeetingInfo[count];
     size_t idx = 0;
-    const ListNode<MeetingInfo> *cur = data->meetings;
-    while (cur != NULL)
+    try
     {
-      if (cur->data.time > time)
+      const ListNode< MeetingInfo > * cur = data->meetings;
+      while (cur != NULL)
       {
-        arr[idx++] = cur->data;
+        if (cur->data.time > time)
+        {
+          arr[idx++] = cur->data;
+        }
+        cur = cur->next;
       }
-      cur = cur->next;
+      sortMeetings(arr, idx);
+      for (size_t i = 0; i < idx; ++i)
+      {
+        out << arr[i].otherId << ' ' << arr[i].time << '\n';
+      }
     }
-    sortMeetings(arr, idx);
-    for (size_t i = 0; i < idx; ++i)
+    catch (...)
     {
-      out << arr[i].otherId << ' ' << arr[i].time << '\n';
+      delete[] arr;
+      throw;
     }
     delete[] arr;
   }
 
-  void outPersons(const PersonTable &table, const std::string &filename)
+  void outPersons(const PersonTable & table, const std::string & filename)
   {
     std::ofstream file(filename.c_str());
     if (!file.is_open())
@@ -550,7 +586,7 @@ namespace karpenko
     }
     for (size_t i = 0; i < table.tableSize; ++i)
     {
-      const PersonTable::Node *cur = table.table[i];
+      const PersonTable::Node * cur = table.table[i];
       while (cur != NULL)
       {
         if (cur->data.second.hasDescription)

@@ -50,18 +50,25 @@ int main(int argc, char *argv[])
 
   karpenko::PersonTable table(1009);
 
-  if (hasIn)
+  try
   {
-    if (!karpenko::loadPersons(table, inFile))
+    if (hasIn)
     {
-      std::cerr << "Cannot open input file\n";
-      return 2;
+      if (!karpenko::loadPersons(table, inFile))
+      {
+        std::cerr << "Cannot open input file\n";
+        return 2;
+      }
+    }
+
+    if (!karpenko::loadMeetings(table, dataFile))
+    {
+      std::cerr << "Cannot open data file or invalid data format\n";
+      return 3;
     }
   }
-
-  if (!karpenko::loadMeetings(table, dataFile))
+  catch (...)
   {
-    std::cerr << "Cannot open data file or invalid data format\n";
     return 3;
   }
 
@@ -125,8 +132,8 @@ int main(int argc, char *argv[])
       size_t id1, id2;
       try
       {
-        id1 = static_cast< size_t >(std::stoul(s1.substr(p1)));
-        id2 = static_cast< size_t >(std::stoul(s2.substr(p2)));
+        id1 = static_cast<size_t>(std::stoul(s1.substr(p1)));
+        id2 = static_cast<size_t>(std::stoul(s2.substr(p2)));
       }
       catch (...)
       {
@@ -153,7 +160,7 @@ int main(int argc, char *argv[])
       size_t id;
       try
       {
-        id = static_cast< size_t >(std::stoul(args.substr(p)));
+        id = static_cast<size_t>(std::stoul(args.substr(p)));
       }
       catch (...)
       {
@@ -215,7 +222,7 @@ int main(int argc, char *argv[])
       size_t id;
       try
       {
-        id = static_cast< size_t >(std::stoul(args.substr(p)));
+        id = static_cast<size_t>(std::stoul(args.substr(p)));
       }
       catch (...)
       {
@@ -248,8 +255,8 @@ int main(int argc, char *argv[])
       size_t id1, id2;
       try
       {
-        id1 = static_cast< size_t >(std::stoul(s1.substr(p1)));
-        id2 = static_cast< size_t >(std::stoul(s2.substr(p2)));
+        id1 = static_cast<size_t>(std::stoul(s1.substr(p1)));
+        id2 = static_cast<size_t>(std::stoul(s2.substr(p2)));
       }
       catch (...)
       {
@@ -282,8 +289,8 @@ int main(int argc, char *argv[])
       size_t time, id;
       try
       {
-        time = static_cast< size_t >(std::stoul(sTime.substr(p1)));
-        id = static_cast< size_t >(std::stoul(sId.substr(p2)));
+        time = static_cast<size_t>(std::stoul(sTime.substr(p1)));
+        id = static_cast<size_t>(std::stoul(sId.substr(p2)));
       }
       catch (...)
       {
@@ -322,6 +329,8 @@ int main(int argc, char *argv[])
       std::cout << "<INVALID COMMAND>\n";
     }
   }
+
+  table.clear();
 
   return 0;
 }
