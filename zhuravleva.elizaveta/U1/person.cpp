@@ -114,9 +114,15 @@ void zhuravleva::readPersons(
 
 void zhuravleva::printPersons(std::ostream &output, const DynamicArray< Person > &persons)
 {
+  if (persons.size == 0)
+  {
+    output << "\n";
+    return;
+  }
   for (size_t i = 0; i < persons.size; ++i)
   {
-    output << persons.data[i].id << " " << persons.data[i].info << "\n";
+    output << persons.data[i].id << " "
+           << persons.data[i].info << "\n";
   }
 }
 

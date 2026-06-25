@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
   if (!zhuravleva::parseArgs(argc, argv, args))
   {
     std::cerr << "wrong parameters\n";
-    return 1;
+    return 0;
   }
   std::ifstream inputFile;
   std::istream *input = &std::cin;
