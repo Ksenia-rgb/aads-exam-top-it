@@ -51,8 +51,6 @@ int main(int argc, char* argv[])
         } else {
           ++ignored;
         }
-      } else {
-        ++ignored;
       }
     }
   } catch (const std::bad_alloc&) {

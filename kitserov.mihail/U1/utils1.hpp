@@ -12,6 +12,9 @@ namespace kitserov
     for (std::size_t i = 0; i < container.size_; ++i) {
       out << container.data_[i].id_ << ' ' << container.data_[i].info_ << '\n';
     }
+    if (container.size_ == 0) {
+      out << "\n";
+    }
   }
   bool readLine(const std::string& line, size_t& id, std::string& info)
   {
