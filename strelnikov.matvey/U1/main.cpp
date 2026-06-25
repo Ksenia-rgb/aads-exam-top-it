@@ -6,12 +6,7 @@
 #include <ostream>
 #include <string>
 #include "list.hpp"
-
-struct Person
-{
-  size_t id;
-  std::string info;
-};
+#include "person.hpp"
 
 bool containsId(List< Person > *l, size_t id)
 {
