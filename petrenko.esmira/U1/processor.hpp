@@ -58,6 +58,12 @@ private:
     return true;
   }
 
+  void skipWhitespace(const std::string& line, size_t& pos) {
+    while (pos < line.length() && std::isspace(line[pos])) {
+      pos++;
+    }
+  }
+
 public:
   DataProcessor() : head(nullptr), tail(nullptr), validCount(0), ignoredCount(0) {}
 
@@ -68,6 +74,48 @@ public:
       delete current;
       current = next;
     }
+  }
+
+  void processLine(const std::string& line) {
+    if (line.empty()) {
+      ignoredCount++;
+      return;
+    }
+    size_t start = 0;
+    skipWhitespace(line, start);
+    if (start >= line.length()) {
+      ignoredCount++;
+      return;
+    }
+    size_t idEnd = start;
+    while (idEnd < line.length() && !std::isspace(line[idEnd])) {
+      idEnd++;
+    }
+    std::string idStr = line.substr(start, idEnd - start);
+    size_t id;
+    if (!parseId(idStr, id)) {
+      ignoredCount++;
+      return;
+    }
+    if (isDuplicate(id)) {
+      ignoredCount++;
+      return;
+    }
+    size_t descStart = idEnd;
+    skipWhitespace(line, descStart);
+    if (descStart >= line.length()) {
+      ignoredCount++;
+      return;
+    }
+    std::string description = line.substr(descStart);
+    while (!description.empty() && std::isspace(description.back())) {
+      description.pop_back();
+    }
+    if (description.empty()) {
+      ignoredCount++;
+      return;
+    }
+    addRecord({id, description});
   }
 };
 
