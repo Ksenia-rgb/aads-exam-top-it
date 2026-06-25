@@ -12,6 +12,20 @@ namespace muraviev
     std::string info;
   };
 
+  struct PersonNode
+  {
+    Person person;
+    PersonNode* next;
+  };
+
+  struct PersonList
+  {
+    PersonNode* head;
+    PersonNode* tail;
+  };
+
+  void initList(PersonList& list);
+  void clearList(PersonList& list);
   bool parsePersonLine(const std::string& line, Person& person);
 }
 

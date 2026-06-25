@@ -2,6 +2,23 @@
 
 namespace muraviev
 {
+  void initList(PersonList& list)
+  {
+    list.head = nullptr;
+    list.tail = nullptr;
+  }
+
+  void clearList(PersonList& list)
+  {
+    while (list.head != nullptr)
+    {
+      PersonNode* const next = list.head->next;
+      delete list.head;
+      list.head = next;
+    }
+    list.tail = nullptr;
+  }
+
   bool parsePersonLine(const std::string& line, Person& person)
   {
     if (line.empty() || line[0] < '0' || line[0] > '9')
