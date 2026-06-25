@@ -28,7 +28,6 @@ namespace losev
     {
       ++pos;
     }
-
     if (pos >= line.length())
     {
       return result;
@@ -63,15 +62,9 @@ namespace losev
     std::string line;
     while (std::getline(in, line))
     {
-      if (line.empty())
-      {
-        ++ignoredCount;
-        continue;
-      }
       Person p = parseLine(line);
       if (p.id == 0 && p.info.empty())
       {
-        ++ignoredCount;
         continue;
       }
       if (p.info.empty())
@@ -104,7 +97,6 @@ namespace losev
     Args result;
     result.hasIn = false;
     result.hasOut = false;
-
     for (int i = 1; i < argc; ++i)
     {
       std::string arg = argv[i];
