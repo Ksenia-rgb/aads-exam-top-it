@@ -131,7 +131,15 @@ int main(int argc, char * argv[])
   }
   dataStream.close();
 
-  
+  std::string cmdLine;
+  while (std::getline(std::cin, cmdLine))
+  {
+    if (cmdLine.empty())
+    {
+      continue;
+    }
+    processCommand(cmdLine, persons, count, capacity, meetings, mCount);
+  }
 
   delete[] persons;
   delete[] meetings;
