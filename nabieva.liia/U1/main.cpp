@@ -93,6 +93,7 @@ int main(int argc, char** argv)
 
   std::ofstream outputFile;
   std::ostream* output = &std::cout;
+
   if (args.outputFile != 0)
   {
     outputFile.open(args.outputFile);
@@ -105,7 +106,10 @@ int main(int argc, char** argv)
   }
 
   nabieva::printPersons(*output, storage);
-  std::cerr << stats.accepted << ' ' << stats.ignored << '\n';
+  if (stats.accepted != 0 || stats.ignored != 0)
+  {
+    std::cerr << stats.accepted << ' ' << stats.ignored << '\n';
+  }
 
   nabieva::destroyStorage(storage);
 }
