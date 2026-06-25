@@ -1,3 +1,4 @@
+#include <exception>
 #include <fstream>
 #include <iostream>
 
@@ -25,7 +26,14 @@ int main(int argc, char ** argv)
   std::istream & input = options.hasInput ? inputFile : std::cin;
 
   samarin::detail::list_t< samarin::Person > records{ nullptr, nullptr };
-  const samarin::counts_t counts = samarin::readRecords(input, records);
+  samarin::counts_t counts{ 0, 0 };
+  try {
+    counts = samarin::readRecords(input, records);
+  } catch (const std::exception & error) {
+    samarin::detail::clear(records);
+    std::cerr << error.what() << '\n';
+    return 2;
+  }
   if (options.hasInput) {
     inputFile.close();
   }
