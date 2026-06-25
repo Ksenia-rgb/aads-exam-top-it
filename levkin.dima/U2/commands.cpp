@@ -139,4 +139,14 @@ namespace levkin {
       }
     }
   }
+  void meets(const DB& db, std::istream& is, std::ostream& os)
+  {
+    size_t id;
+    if (!(is >> id) || !hasPerson(db, id)) {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      return;
+    }
+    printFilterMeets(db, id, os, 0);
+  }
 }
