@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "utils.hpp"
 int main(int argc, char* argv[])
 {
@@ -52,10 +53,7 @@ int main(int argc, char* argv[])
     }
     output_stream = &file_out;
   }
-  for (size_t i = 0; i < persons.size; ++i) {
-    *output_stream << persons.data[i].first << " " << persons.data[i].second
-                   << "\n";
-  }
+  levkin::writeFromVec(persons, *output_stream);
   if (file_out.is_open()) {
     file_out.close();
   }

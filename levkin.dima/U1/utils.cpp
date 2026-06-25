@@ -1,62 +1,91 @@
-#include <iostream>
-#include <fstream>
 #include "utils.hpp"
-int main(int argc, char* argv[])
-{
-  if (argc > 3) {
-    return 1;
+#include <iostream>
+#include <string>
+#include <cctype>
+namespace levkin {
+  namespace {
+    bool isSpaceChar(char ch)
+    {
+      return std::isspace(static_cast< unsigned char >(ch));
+    }
+    bool isDigitChar(char ch)
+    {
+      return std::isdigit(static_cast< unsigned char >(ch));
+    }
   }
-  std::string in_file;
-  std::string out_file;
-  bool has_in = false;
-  bool has_out = false;
-  for (int i = 1; i < argc; ++i) {
-    std::string arg = argv[i];
-    if (arg.rfind("in:", 0) == 0) {
-      if (has_in)
-        return 1;
-      in_file = arg.substr(3);
-      has_in = true;
-    } else if (arg.rfind("out:", 0) == 0) {
-      if (has_out)
-        return 1;
-      out_file = arg.substr(4);
-      has_out = true;
+  Pair* reallocate(Vec& v)
+  {
+    size_t nw_cap = 0;
+    if (v.cap == 0) {
+      nw_cap = 1;
     } else {
-      return 1;
+      nw_cap = 2 * v.cap;
+    }
+    Pair* nw = new Pair[nw_cap];
+    for (size_t i = 0; i < v.size; i++) {
+      nw[i] = std::move(v.data[i]);
+    }
+    if (v.data != nullptr) {
+      delete[] v.data;
+    }
+    v.cap = nw_cap;
+    v.data = nw;
+    return nw;
+  }
+  void readToVec(Vec& v, std::istream& is, size_t& total, size_t& ignored)
+  {
+    std::string line;
+    while (std::getline(is, line)) {
+      size_t idx = 0;
+      while (idx < line.length() && isSpaceChar(line[idx])) {
+        idx++;
+      }
+      size_t id = 0;
+      bool has_digit = false;
+      while (idx < line.length() && isDigitChar(line[idx])) {
+        id = id * 10 + (line[idx] - '0');
+        has_digit = true;
+        idx++;
+      }
+      if (!has_digit) {
+        ignored++;
+        continue;
+      }
+      if (idx < line.length() && !isSpaceChar(line[idx])) {
+        ignored++;
+        continue;
+      }
+      while (idx < line.length() && isSpaceChar(line[idx])) {
+        idx++;
+      }
+      if (idx == line.length()) {
+        ignored++;
+        continue;
+      }
+      std::string name = line.substr(idx);
+      bool is_duplicate = false;
+      for (size_t i = 0; i < v.size; ++i) {
+        if (v.data[i].first == id) {
+          is_duplicate = true;
+          break;
+        }
+      }
+      if (is_duplicate) {
+        ignored++;
+        continue;
+      }
+      if (v.size >= v.cap) {
+        reallocate(v);
+      }
+      v.data[v.size] = std::make_pair(id, name);
+      v.size++;
+      total++;
     }
   }
-  levkin::Vec persons = {0, 0, nullptr};
-  size_t total = 0;
-  size_t ignored = 0;
-  std::istream* input_stream = &std::cin;
-  std::ifstream fileIs;
-  if (has_in) {
-    fileIs.open(in_file);
-    if (!fileIs.is_open()) {
-      return 2;
+  void writeFromVec(const Vec& v, std::ostream& os)
+  {
+    for (size_t i = 0; i < v.size; ++i) {
+      os << v.data[i].first << " " << v.data[i].second << "\n";
     }
-    input_stream = &fileIs;
   }
-  levkin::readToVec(persons, *input_stream, total, ignored);
-  if (fileIs.is_open()) {
-    fileIs.close();
-  }
-  std::ostream* output_stream = &std::cout;
-  std::ofstream file_out;
-  if (has_out) {
-    file_out.open(out_file);
-    if (!file_out.is_open()) {
-      delete[] persons.data;
-      return 2;
-    }
-    output_stream = &file_out;
-  }
-  levkin::writeFromVec(persons, *output_stream);
-  if (file_out.is_open()) {
-    file_out.close();
-  }
-  std::cerr << total << " " << ignored << "\n";
-  delete[] persons.data;
-  return 0;
 }
