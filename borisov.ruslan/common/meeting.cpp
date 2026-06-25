@@ -15,7 +15,6 @@ borisov::MeetingNode *borisov::readMeetings(std::istream &in)
       size_t duration = 0;
       if (!(in >> id2 >> duration))
       {
-        borisov::freeMeetings(head);
         throw std::runtime_error("invalid meeting data");
       }
       if (id1 == id2)
@@ -36,7 +35,6 @@ borisov::MeetingNode *borisov::readMeetings(std::istream &in)
     }
     if (!in.eof())
     {
-      borisov::freeMeetings(head);
       throw std::runtime_error("invalid meeting data");
     }
   }
