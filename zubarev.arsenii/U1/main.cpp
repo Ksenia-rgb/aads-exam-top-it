@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     return 1;
   }
   if (argc > 3) {
-    return 2;
+    return 0;
   }
 
   std::istream* input = &std::cin;
@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
   if (correct != 0 || ignored != 0) {
     std::cerr << correct << " " << ignored << '\n';
   } else {
-    std::cerr << '\n';
+    std::cout << '\n';
   }
 
   destroy(persons);
