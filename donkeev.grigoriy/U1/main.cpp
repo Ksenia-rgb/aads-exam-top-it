@@ -103,7 +103,6 @@ namespace donkeev
       std::string idStr = nextWord(line, pos);
       if (!isNumber(idStr))
       {
-        ++ignored;
         continue;
       }
       size_t id = std::stoull(idStr);
@@ -190,6 +189,9 @@ int main(int argc, char* argv[])
   std::ifstream inFile;
   std::ofstream outFile;
 
+  std::string inFilename;
+  std::string outFilename;
+
   if (argc > 3)
   {
     std::cerr << "Bad parametrs\n";
@@ -212,20 +214,12 @@ int main(int argc, char* argv[])
         return 1;
       }
 
-      std::string filename = arg.substr(3);
-      if (filename.empty())
+      inFilename = arg.substr(3);
+      if (inFilename.empty())
       {
         std::cerr << "Invalid arguments: empty filename for input\n";
         return 1;
       }
-
-      inFile.open(filename);
-      if (!inFile.is_open())
-      {
-        std::cerr << "Failed to open input file: " << filename << "\n";
-        return 2;
-      }
-      in = &inFile;
     }
     else if (arg.rfind("out:", 0) == 0)
     {
@@ -236,26 +230,40 @@ int main(int argc, char* argv[])
         return 1;
       }
 
-      std::string filename = arg.substr(4);
-      if (filename.empty())
+      outFilename = arg.substr(4);
+      if (outFilename.empty())
       {
         std::cerr << "Invalid arguments: empty filename for output\n";
         return 1;
       }
-
-      outFile.open(filename);
-      if (!outFile.is_open())
-      {
-        std::cerr << "Failed to open output file: " << filename << "\n";
-        return 2;
-      }
-      out = &outFile;
     }
     else
     {
       std::cerr << "Invalid arguments: unknown argument '" << arg << "'\n";
       return 1;
     }
+  }
+
+  if (!inFilename.empty())
+  {
+    inFile.open(inFilename);
+    if (!inFile.is_open())
+    {
+      std::cerr << "Failed to open input file: " << inFilename << "\n";
+      return 2;
+    }
+    in = &inFile;
+  }
+
+  if (!outFilename.empty())
+  {
+    outFile.open(outFilename);
+    if (!outFile.is_open())
+    {
+      std::cerr << "Failed to open output file: " << outFilename << "\n";
+      return 2;
+    }
+    out = &outFile;
   }
 
   donkeev::PersonList list;
