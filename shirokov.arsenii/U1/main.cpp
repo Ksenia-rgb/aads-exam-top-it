@@ -19,6 +19,7 @@ namespace shirokov
   void makeIn(const std::string&, std::ifstream&, std::istream**);
   void makeOut(const std::string&, std::ofstream&, std::ostream**);
   void expand(Person**, size_t, size_t&);
+  bool contains(const Person&, const Person*, size_t);
 }
 
 int main(int argc, char* argv[])
@@ -27,6 +28,7 @@ int main(int argc, char* argv[])
   std::ifstream fileIn;
   std::ostream* outPtr = &std::cout;
   std::ofstream fileOut;
+  bool inStatus = false, outStatus = false;
 
   if (argc > 1)
   {
@@ -42,6 +44,7 @@ int main(int argc, char* argv[])
         std::cerr << e.what() << '\n';
         return 1;
       }
+      inStatus = true;
     }
     else if (filename.compare(0, 4, "out:") == 0)
     {
@@ -54,6 +57,7 @@ int main(int argc, char* argv[])
         std::cerr << e.what() << '\n';
         return 1;
       }
+      outStatus = true;
     }
   }
 
@@ -62,6 +66,11 @@ int main(int argc, char* argv[])
     std::string filename = argv[2];
     if (filename.compare(0, 3, "in:") == 0)
     {
+      if (inStatus)
+      {
+        std::cerr << "Input file already exist" << '\n';
+        return 1;
+      }
       try
       {
         shirokov::makeIn(filename.substr(3), fileIn, &inPtr);
@@ -74,6 +83,11 @@ int main(int argc, char* argv[])
     }
     else if (filename.compare(0, 4, "out:") == 0)
     {
+      if (outStatus)
+      {
+        std::cerr << "Output file already exist" << '\n';
+        return 2;
+      }
       try
       {
         shirokov::makeOut(filename.substr(4), fileOut, &outPtr);
@@ -81,7 +95,7 @@ int main(int argc, char* argv[])
       catch (const std::runtime_error& e)
       {
         std::cerr << e.what() << '\n';
-        return 1;
+        return 2;
       }
     }
   }
@@ -98,7 +112,7 @@ int main(int argc, char* argv[])
     in >> std::ws;
     std::string info;
 
-    if (!std::getline(in, info))
+    if (!std::getline(in, info) || info.empty())
     {
       if (!in.eof())
       {
@@ -107,6 +121,13 @@ int main(int argc, char* argv[])
         continue;
       }
       break;
+    }
+
+    shirokov::Person person{id, info};
+
+    if (shirokov::contains(person, massive, size))
+    {
+      continue;
     }
 
     if (size == cap)
@@ -127,7 +148,7 @@ int main(int argc, char* argv[])
 
   if (!in && !in.eof())
   {
-    std::cerr << "Input format error occurred.\n";
+    std::cerr << "Input format error occurred" << '\n';
   }
 
   for (size_t i = 0; i < size; ++i)
@@ -152,7 +173,7 @@ void shirokov::makeIn(const std::string& filename, std::ifstream& fileIn, std::i
   }
   else
   {
-    throw std::runtime_error("Couldn't open the input file: " + filename);
+    throw std::runtime_error("Couldn't open the input file");
   }
 }
 
@@ -170,7 +191,7 @@ void shirokov::makeOut(const std::string& filename, std::ofstream& fileOut, std:
   }
   else
   {
-    throw std::runtime_error("Couldn't open the output file: " + filename);
+    throw std::runtime_error("Couldn't open the output file");
   }
 }
 
@@ -187,4 +208,16 @@ void shirokov::expand(Person** massive, size_t size, size_t& cap)
   delete[] *massive;
   *massive = newMassive;
   cap = newCap;
+}
+
+bool shirokov::contains(const Person& person, const Person* massive, size_t size)
+{
+  for (size_t i = 0; i < size; ++i)
+  {
+    if (massive[i].id == person.id)
+    {
+      return true;
+    }
+  }
+  return false;
 }
