@@ -78,8 +78,7 @@ int main(int argc, char * argv[])
     }
 
     if (successCount == 0 && ignoredCount == 0) {
-      std::cout << "\n";
-      return 0;
+      *outStream << "\n";
     }
 
     std::cerr << successCount << " " << ignoredCount << "\n";
@@ -89,7 +88,10 @@ int main(int argc, char * argv[])
   } catch (const std::invalid_argument& e) {
     madieva::destroyArray(persons);
     std::cerr << e.what() << "\n";
-    return 0;
+    if (std::string(e.what()) == "too_many_args") {
+      return 0;
+    }
+    return 2;
   } catch (const std::bad_alloc&) {
     madieva::destroyArray(persons);
     std::cerr << "out of memory" << "\n";
