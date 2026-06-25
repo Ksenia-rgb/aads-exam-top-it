@@ -57,6 +57,40 @@ int main(int argc, char* argv[])
     {
       inFile.close();
     }
+
+    std::ostream* outStream = &std::cout;
+    std::ofstream outFile;
+    if (!outFilename.empty())
+    {
+      outFile.open(outFilename);
+      if (!outFile.is_open())
+      {
+        petrov::destroyPersonArray(persons);
+        std::cerr << "Cannot open output file\n";
+        return 2;
+      }
+      outStream = &outFile;
+    }
+
+    try
+    {
+      petrov::writePersons(*outStream, persons);
+    }
+    catch (...)
+    {
+      petrov::destroyPersonArray(persons);
+      throw;
+    }
+
+    if (!outFilename.empty())
+    {
+      outFile.close();
+    }
+
+    petrov::destroyPersonArray(persons);
+
+    std::cerr << successCount << " " << ignoredCount << "\n";
+    return 0;
   }
   catch (...)
   {
