@@ -19,5 +19,6 @@ struct HashTable {
 HashTable *createHashTable(size_t initCapacity);
 void hashTableDestroy();
 void hashTableInsert(HashTable *table, const Person &person);
+Person *hashTableGet(const HashTable *table, size_t id);
 } // namespace karpenkov
 #endif
