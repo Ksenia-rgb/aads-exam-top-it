@@ -112,4 +112,15 @@ int main(int argc, char *argv[])
   if (ifl) {
     ifile.close();
   }
+
+  for (size_t i = 0; i < curr; ++i) {
+    out << base[i].id << ' ' << base[i].info << '\n';
+  }
+
+  delete[] base;
+  if (ofl) {
+    ofile.close();
+  }
+
+  std::cerr << curr << ' ' << ignored << '\n';
 }
