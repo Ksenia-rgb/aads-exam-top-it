@@ -2,6 +2,7 @@
 #include "meet.hpp"
 #include <istream>
 #include <stdexcept>
+#include <iomanip>
 
 namespace
 {
@@ -69,6 +70,7 @@ namespace
     }
     return false;
   }
+
 }
 
 bool zhuravleva::parseArgs(int argc, char *argv[], MeetArgs &args)
@@ -178,51 +180,6 @@ void zhuravleva::addAnonymous(
     {
       Person person = {meets.data[i].second, ""};
       pushBack(persons, person);
-    }
-  }
-}
-
-void zhuravleva::processCommands(
-    std::istream &input,
-    std::ostream &output,
-    DynamicArray< Person > &persons,
-    DynamicArray< Meet > &meets)
-{
-  std::string command;
-  while (input >> command)
-  {
-    if (command == "anons")
-    {
-    }
-    else if (command == "desc")
-    {
-    }
-    else if (command == "redesc")
-    {
-    }
-    else if (command == "deanon")
-    {
-    }
-    else if (command == "meets")
-    {
-    }
-    else if (command == "commons")
-    {
-    }
-    else if (command == "less")
-    {
-    }
-    else if (command == "greater")
-    {
-    }
-    else if (command == "out-persons")
-    {
-    }
-    else
-    {
-      output << "<INVALID COMMAND>\n";
-      std::string skip;
-      std::getline(input, skip);
     }
   }
 }
