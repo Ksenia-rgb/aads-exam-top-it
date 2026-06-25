@@ -1,6 +1,7 @@
 #include "person.hpp"
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
 namespace nabieva {
   struct ProgramArgs
@@ -8,6 +9,11 @@ namespace nabieva {
     const char* inputFile;
     const char* outputFile;
   };
+
+  bool startsWith(const char* value, const char* prefix)
+  {
+    return std::strncmp(value, prefix, std::strlen(prefix)) == 0;
+  }
 
   bool readArgs(int argc, char** argv, ProgramArgs& args)
   {
@@ -45,11 +51,10 @@ namespace nabieva {
     return true;
   }
 }
-}
 
 int main(int argc, char** argv)
 {
-  ProgramArgs args = { 0, 0 };
+  nabieva::ProgramArgs args = { 0, 0 };
   if (!readArgs(argc, argv, args))
   {
     return 1;
@@ -58,4 +63,39 @@ int main(int argc, char** argv)
   nabieva::PersonStorage storage;
   nabieva::initStorage(storage);
   nabieva::ReadStats stats = { 0, 0 };
+  std::istream* input = &std::cin;
+  if (args.inputFile != 0)
+  {
+    inputFile.open(args.inputFile);
+    if (!inputFile)
+    {
+      nabieva::destroyStorage(storage);
+      return 2;
+    }
+    input = &inputFile;
+  }
+
+  if (!nabieva::readPersons(*input, storage, stats))
+  {
+    nabieva::destroyStorage(storage);
+    return 2;
+  }
+
+  std::ofstream outputFile;
+  std::ostream* output = &std::cout;
+  if (args.outputFile != 0)
+  {
+    outputFile.open(args.outputFile);
+    if (!outputFile)
+    {
+      nabieva::destroyStorage(storage);
+      return 2;
+    }
+    output = &outputFile;
+  }
+
+  nabieva::printPersons(*output, storage);
+  std::cerr << stats.accepted << ' ' << stats.ignored << '\n';
+
+  nabieva::destroyStorage(storage);
 }
