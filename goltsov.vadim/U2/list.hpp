@@ -4,6 +4,16 @@
 
 namespace goltsov
 {
+  namespace detail
+  {
+    template < class T >
+    struct NodeHT
+    {
+      size_t key;
+      T value;
+    };
+  }
+
   template< class T >
   struct List
   {
@@ -11,6 +21,7 @@ namespace goltsov
     List* prev;
     List* next;
   };
+
   template< class T >
   void deleteList(List< T >* current)
   {
@@ -25,17 +36,19 @@ namespace goltsov
       }
       while (current)
       {
-        List* for_delete = current;
+        List< T >* for_delete = current;
         current = current->next;
         delete for_delete;
       }
     }
   }
+
   template< class T >
   List< T >* newListNode(size_t key, T value, List< T >* prev, List< T >* next)
   {
     return new List< T >{{key, value}, prev, next};
   }
+
   template< class T >
   struct HashTable
   {

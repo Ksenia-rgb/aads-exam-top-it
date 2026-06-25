@@ -3,7 +3,6 @@
 #include <iosfwd>
 #include <stdexcept>
 #include <functional>
-#include "structPerson.hpp"
 #include "list.hpp"
 
 namespace goltsov
@@ -20,6 +19,7 @@ namespace goltsov
     ht.size = size;
     return ht;
   }
+
   template< class T >
   void deleteHashTable(HashTable< T >& ht)
   {
@@ -29,6 +29,7 @@ namespace goltsov
     }
     delete[] ht.data;
   }
+
   template< class T >
   T& getFromHT(HashTable< T >& ht, size_t id)
   {
@@ -45,6 +46,21 @@ namespace goltsov
     }
     throw std::runtime_error("No key");
   }
+
+  template< class T >
+  bool existsInHT(HashTable< T >& ht, size_t id)
+  {
+    try
+    {
+      getFromHT(ht, id);
+      return true;
+    }
+    catch (...)
+    {
+      return false;
+    }
+  }
+
   template< class T >
   void insertToHT(HashTable< T >& ht, size_t id, T value)
   {
@@ -76,6 +92,7 @@ namespace goltsov
       ht.data[hash] = new_node;
     }
   }
+
   template< class T >
   void deleteFromHT(HashTable< T >& ht, size_t id)
   {
