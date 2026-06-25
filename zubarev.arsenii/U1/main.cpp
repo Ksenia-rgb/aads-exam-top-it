@@ -12,6 +12,9 @@ int main(int argc, char* argv[])
   if (!zubarev::detail::parse_args(argc, argv, in_name, out_name)) {
     return 1;
   }
+  if (argc > 3) {
+    return 2;
+  }
 
   std::istream* input = &std::cin;
   std::ifstream in_file;
@@ -24,16 +27,16 @@ int main(int argc, char* argv[])
     input = std::addressof(in_file);
   }
 
-  std::ostream* output = &std::cout;
-  std::ofstream out_file;
+  // std::ostream* output = &std::cout;
+  // std::ofstream out_file;
 
-  if (!out_name.empty()) {
-    out_file.open(out_name);
-    if (!out_file) {
-      return 2;
-    }
-    output = std::addressof(out_file);
-  }
+  // if (!out_name.empty()) {
+  //   out_file.open(out_name);
+  //   if (!out_file) {
+  //     return 2;
+  //   }
+  //   output = std::addressof(out_file);
+  // }
 
   zubarev::PersonArray persons;
   zubarev::HashSet ids;
@@ -48,15 +51,18 @@ int main(int argc, char* argv[])
   while (std::getline(*input, line)) {
     size_t pos = 0;
 
-    while (pos < line.size() && line[pos] == ' ') {
+    while (pos < line.size() && std::isspace(static_cast< unsigned char >(line[pos]))) {
       ++pos;
     }
 
-    size_t id = 0;
+    if (pos == line.size()) {
+      continue;
+    }
 
+    size_t id = 0;
     bool hasId = false;
 
-    while (pos < line.size() && line[pos] >= '0' && line[pos] <= '9') {
+    while (pos < line.size() && std::isdigit(static_cast< unsigned char >(line[pos]))) {
       hasId = true;
 
       id = id * 10 + line[pos] - '0';
@@ -64,30 +70,68 @@ int main(int argc, char* argv[])
       ++pos;
     }
 
-    while (pos < line.size() && line[pos] == ' ') {
+    if (!hasId) {
+      ++ignored;
+      continue;
+    }
+
+    if (pos < line.size() && !std::isspace(static_cast< unsigned char >(line[pos]))) {
+      ++ignored;
+      continue;
+    }
+
+    while (pos < line.size() && std::isspace(static_cast< unsigned char >(line[pos]))) {
       ++pos;
     }
 
-    if (!hasId || pos == line.size()) {
-      ignored++;
+    if (pos == line.size()) {
+      ++ignored;
       continue;
     }
 
-    if (zubarev::exists(persons, id)) {
+    if (zubarev::contains(ids, id)) {
       ignored++;
       continue;
     }
-
     zubarev::Person person;
 
     person.id = id;
     person.info = line.substr(pos);
 
-    push(persons, person);
+    zubarev::push(persons, person);
 
-    correct++;
+    zubarev::insert(ids, id);
+
+    ++correct;
+  }
+
+  std::ostream* output = &std::cout;
+  std::ofstream out_file;
+
+  if (!out_name.empty()) {
+    out_file.open(out_name, std::ios::trunc);
+
+    if (!out_file) {
+      destroy(persons);
+      destroy(ids);
+
+      return 2;
+    }
+
+    output = std::addressof(out_file);
+  }
+
+  for (size_t i = 0; i < persons.size; ++i) {
+    *output << persons.data[i].id << " " << persons.data[i].info << '\n';
+  }
+  if (correct != 0 || ignored != 0) {
+    std::cerr << correct << " " << ignored << '\n';
+  } else {
+    std::cerr << '\n';
   }
 
   destroy(persons);
   destroy(ids);
+
+  return 0;
 }
