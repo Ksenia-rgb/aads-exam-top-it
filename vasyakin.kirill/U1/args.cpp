@@ -40,6 +40,13 @@ vasyakin::Args vasyakin::parseArgs(int argc, char** argv)
         return res;
       }
 
+      std::string filename = vasyakin::stripPrefix(arg, inPrefix);
+      if (filename.empty())
+      {
+        res.valid = false;
+        return res;
+      }
+
       res.inFile = vasyakin::stripPrefix(arg, inPrefix);
       res.hasIn = true;
     }
@@ -50,6 +57,14 @@ vasyakin::Args vasyakin::parseArgs(int argc, char** argv)
         res.valid = false;
         return res;
       }
+
+      std::string filename = vasyakin::stripPrefix(arg, outPrefix);
+      if (filename.empty())
+      {
+        res.valid = false;
+        return res;
+      }
+
 
       res.outFile = vasyakin::stripPrefix(arg, outPrefix);
       res.hasOut = true;

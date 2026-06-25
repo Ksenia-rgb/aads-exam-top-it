@@ -122,6 +122,6 @@ int main(int argc, char** argv)
   catch (...)
   {
     cleanupResources(persons, seen);
-    return 2;
+    throw;
   }
 }
