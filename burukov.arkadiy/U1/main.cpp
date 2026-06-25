@@ -109,7 +109,7 @@ int main(int argc, char** argv)
   if (!args.valid)
   {
     std::cerr << "Invalid arguments" << "\n";
-    return 1;
+    return 2;
   }
   burukov::darray< burukov::Person > persons = burukov::makeArray< burukov::Person >(4);
   int code = 0;
