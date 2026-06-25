@@ -1,6 +1,8 @@
 #include "commands.hpp"
 #include "utils.hpp"
 #include "db.hpp"
+#include <fstream>
+
 namespace levkin {
   namespace {
     void findCommonElements(const Vec< size_t >& v1,
@@ -227,6 +229,28 @@ namespace levkin {
       freeVec(partners2);
       freeVec(common_ids);
       throw;
+    }
+  }
+  void outPersons(const DB& db, std::istream& is, std::ostream& os)
+  {
+    std::string filename;
+    if (!(is >> filename)) {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      return;
+    }
+
+    std::ofstream ofs(filename);
+    if (!ofs) {
+      os << "<INVALID COMMAND>\n";
+      return;
+    }
+
+    for (size_t i = 0; i < db.persons.size; ++i) {
+      if (!db.persons.data[i].second.empty()) {
+        ofs << db.persons.data[i].first << " " << db.persons.data[i].second
+            << "\n";
+      }
     }
   }
 }
