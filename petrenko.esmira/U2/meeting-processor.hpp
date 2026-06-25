@@ -301,6 +301,9 @@ public:
         if (other == id1 || other == id2) {
           continue;
         }
+        if (!findPerson(other)) {
+          continue;
+        }
         for (size_t j = 0; j < meetings.size(); j++) {
           if ((meetings[j].id1 == id2 || meetings[j].id2 == id2) &&
               !(meetings[j].id1 == 0 && meetings[j].id2 == 0)) {
