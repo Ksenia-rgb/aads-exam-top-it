@@ -11,6 +11,7 @@ int main(int argc, char* argv[])
 {
   std::string inputFile;
   std::string outputFile;
+  bool hasInput = false;
 
   for (int i = 1; i < argc; ++i)
   {
@@ -24,6 +25,7 @@ int main(int argc, char* argv[])
         return 1;
       }
       inputFile = arg.substr(3);
+      hasInput = true;
     }
     else if (arg.rfind("out:", 0) == 0)
     {
@@ -74,9 +76,11 @@ int main(int argc, char* argv[])
   size_t successful = 0;
   size_t ignored = 0;
   std::string line;
+  bool hasData = false;
 
   while (std::getline(*in, line))
   {
+    hasData = true;
     std::string trimmed = vishnyakov::trim(line);
 
     if (trimmed.empty())
@@ -132,14 +136,17 @@ int main(int argc, char* argv[])
     ++successful;
   }
 
+  if (hasData || hasInput)
+  {
+    std::cerr << successful << " " << ignored << "\n";
+  }
+
   for (vishnyakov::ListNode< vishnyakov::Person >* current = persons.begin();
        current != persons.end();
        current = current->next)
   {
     *out << current->data.id << " " << current->data.info << "\n";
   }
-
-  std::cerr << successful << " " << ignored << "\n";
 
   return 0;
 }
