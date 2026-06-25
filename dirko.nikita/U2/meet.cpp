@@ -61,6 +61,7 @@ void dirko::readMeets(std::istream &input, Vector< Meet > &meets)
     add(meets, meet);
   }
 }
+
 void dirko::removeSelfMeets(Vector< Meet > &meets)
 {
   Vector< Meet > filtered;
@@ -74,4 +75,32 @@ void dirko::removeSelfMeets(Vector< Meet > &meets)
 
   clear(meets);
   meets = filtered;
+}
+
+void dirko::cmdAnons(std::istream &, std::ostream &output, Vector< Person > &persons, Vector< Meet > &)
+{
+  Vector< size_t > anons;
+  init(anons);
+
+  for (size_t i = 0; i < persons.size; ++i) {
+    if (persons.data[i].info.empty()) {
+      add(anons, persons.data[i].id);
+    }
+  }
+
+  for (size_t i = 0; i < anons.size; ++i) {
+    for (size_t j = i + 1; j < anons.size; ++j) {
+      if (anons.data[j] < anons.data[i]) {
+        size_t temp = anons.data[i];
+        anons.data[i] = anons.data[j];
+        anons.data[j] = temp;
+      }
+    }
+  }
+
+  for (size_t i = 0; i < anons.size; ++i) {
+    output << anons.data[i] << '\n';
+  }
+
+  clear(anons);
 }
