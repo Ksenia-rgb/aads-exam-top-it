@@ -121,7 +121,6 @@ int main(int argc, char* argv[])
         ++fail;
         continue;
       }
-      ++fail;
       break;
     }
     while (in.peek() == ' ' || in.peek() == '\t')
@@ -140,7 +139,6 @@ int main(int argc, char* argv[])
         ++fail;
         continue;
       }
-      ++fail;
       break;
     }
 
