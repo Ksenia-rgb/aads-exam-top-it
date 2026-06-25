@@ -91,7 +91,7 @@ void lukashevich::sortIds(Array< size_t >& ids)
   for (size_t i = 0; i < ids.size_; ++i) {
     size_t minIndex = i;
 
-    for (size_t j = i + 1; j < ids.data_[minIndex]) {
+    for (size_t j = i + 1; j < ids.data_[minIndex]; ++j) {
       if (ids.data_[j] < ids.data_[minIndex]) {
         minIndex = j;
       }
@@ -106,4 +106,24 @@ void lukashevich::sortIds(Array< size_t >& ids)
 }
 
 void lukashevich::sortMeetingViews(Array< MeetingView >& views)
-{}
+{
+  for (size_t i = 0; i < views.size_; ++i) {
+    size_t minIndex = i;
+
+    for (size_t j = i + 1; j < views.size_; ++j) {
+      const bool lessId = views.data_[j].id < views.data_[minIndex].id;
+      const bool equalId = views.data_[j].id == views.data_[minIndex].id;
+      const bool lessTime = views.data_[j].time < views.data_[minIndex].time;
+
+      if (lessId || (equalId && lessTime)) {
+        minIndex = j;
+      }
+    }
+
+    if (minIndex != i) {
+      const MeetingView temp = views.data_[i];
+      views.data_[i] = views.data_[minIndex];
+      views.data_[minIndex] = temp;
+    }
+  }
+}
