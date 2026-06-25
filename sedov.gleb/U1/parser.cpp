@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cerrno>
 #include <climits>
+#include <cstdint>
 #include <cstddef>
 
 bool sedov::parseLine(const std::string & line, Person & person)
