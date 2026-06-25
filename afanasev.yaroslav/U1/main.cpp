@@ -32,12 +32,6 @@ int main(int argc, char * argv[])
 {
   using namespace afanasev;
 
-  if (argc > 3)
-  {
-    std::cerr << "Too many arguments\n";
-    return 1;
-  }
-
   std::string inFile, outFile;
   bool hasIn = false, hasOut = false;
 
@@ -67,7 +61,6 @@ int main(int argc, char * argv[])
   size_t count = 0;
   size_t capacity = 0;
   size_t ignored = 0;
-  bool lines_read = false;
   std::string line;
 
   while (std::getline(*in, line))
@@ -96,10 +89,9 @@ int main(int argc, char * argv[])
     inStream.close();
   }
 
-  bool useFile = hasOut && hasIn;
   std::ofstream outStream;
   std::ostream * out = &std::cout;
-  if (useFile)
+  if (hasOut)
   {
     outStream.open(outFile);
     if (!outStream.is_open())
@@ -116,12 +108,12 @@ int main(int argc, char * argv[])
     *out << persons[i].id << ' ' << persons[i].info << '\n';
   }
 
-  if (useFile)
+  if (hasOut)
   {
     outStream.close();
   }
 
-  if (lines_read)
+  if (count > 0 || ignored > 0)
   {
     std::cerr << count << ' ' << ignored << '\n';
   }
