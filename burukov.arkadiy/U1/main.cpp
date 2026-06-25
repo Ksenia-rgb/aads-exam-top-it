@@ -90,7 +90,7 @@ namespace
       }
     }
     std::ostream& out = args.hasOut ? static_cast< std::ostream& >(outFile) : std::cout;
-    if (stats.accepted > 0 || stats.ignored > 0)
+    if (persons.size > 0)
     {
       writeAll(out, persons);
     }
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
   if (!args.valid)
   {
     std::cerr << "Invalid arguments" << "\n";
-    return 1;
+    return 0;
   }
   burukov::darray< burukov::Person > persons = burukov::makeArray< burukov::Person >(4);
   int code = 0;
