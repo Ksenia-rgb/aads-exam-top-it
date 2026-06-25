@@ -1,4 +1,4 @@
-#include <fstream>
+		#include <fstream>
 #include <iostream>
 #include <string>
 #include "list.hpp"
@@ -481,6 +481,75 @@ void cmdCommons(const musorin::List< musorin::Person > & persons,
   musorin::clear(first);
   musorin::clear(second);
   musorin::clear(commons);
+}
+void rewriteMeetIds(musorin::List< musorin::Meet > & meets, std::size_t fromId,
+  std::size_t toId)
+{
+  for (musorin::detail::Node< musorin::Meet > * node = meets.head;
+    node != nullptr; node = node->next)
+  {
+    if (node->value.from == fromId)
+    {
+      node->value.from = toId;
+    }
+    if (node->value.to == fromId)
+    {
+      node->value.to = toId;
+    }
+  }
+}
+bool isSelfMeet(const musorin::Meet & meet)
+{
+  return meet.from == meet.to;
+}
+bool isPersonWithId(std::size_t id, const musorin::Person & person)
+{
+  return person.id == id;
+}
+void cmdDeanon(musorin::List< musorin::Person > & persons,
+  musorin::List< musorin::Meet > & meets,
+  const musorin::List< std::string > & args, std::ostream & out)
+{
+  if (args.size != 2)
+  {
+    printInvalid(out);
+    return;
+  }
+  std::size_t anonId = 0;
+  std::size_t targetId = 0;
+  if (!toId(args.head->value, anonId) || !toId(args.head->next->value, targetId))
+  {
+    printInvalid(out);
+    return;
+  }
+  if (anonId == targetId)
+  {
+    printInvalid(out);
+    return;
+  }
+  musorin::Person * anonPerson = findPerson(persons, anonId);
+  musorin::Person * targetPerson = findPerson(persons, targetId);
+  if (anonPerson == nullptr || targetPerson == nullptr)
+  {
+    printInvalid(out);
+    return;
+  }
+  if (!anonPerson->info.empty())
+  {
+    printInvalid(out);
+    return;
+  }
+  if (targetPerson->info.empty())
+  {
+    printInvalid(out);
+    return;
+  }
+  rewriteMeetIds(meets, anonId, targetId);
+  musorin::removeIf(meets, isSelfMeet);
+  const std::size_t idToRemove = anonId;
+  musorin::removeIf(persons, [idToRemove](const musorin::Person & person) {
+    return person.id == idToRemove;
+  });
 }
 bool parseRedescPayload(const std::string & line, std::size_t & id,
   std::string & description)

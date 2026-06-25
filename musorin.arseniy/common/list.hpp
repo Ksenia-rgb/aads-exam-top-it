@@ -63,5 +63,37 @@ void clear(List< T > & list)
   list.tail = nullptr;
   list.size = 0;
 }
+template< class T, class Pred >
+void removeIf(List< T > & list, Pred pred)
+{
+  detail::Node< T > * current = list.head;
+  detail::Node< T > * previous = nullptr;
+  while (current != nullptr)
+  {
+    detail::Node< T > * next = current->next;
+    if (pred(current->value))
+    {
+      if (previous == nullptr)
+      {
+        list.head = next;
+      }
+      else
+      {
+        previous->next = next;
+      }
+      if (next == nullptr)
+      {
+        list.tail = previous;
+      }
+      delete current;
+      --list.size;
+    }
+    else
+    {
+      previous = current;
+    }
+    current = next;
+  }
+}
 }
 #endif
