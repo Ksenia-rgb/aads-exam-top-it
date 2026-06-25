@@ -1,9 +1,9 @@
-#ifndef DYNARRAY_HPP
+k#ifndef DYNARRAY_HPP
 #define DYNARRAY_HPP
- 
+
 #include <cstddef>
 #include <utility>
- 
+
 namespace shigarev {
   template< class T >
   struct DynArray {
@@ -11,7 +11,7 @@ namespace shigarev {
     size_t size_;
     size_t capacity_;
   };
- 
+
   template< class T >
   DynArray< T > createDynArray(size_t capacity)
   {
@@ -22,7 +22,7 @@ namespace shigarev {
     }
     return result;
   }
- 
+
   template< class T >
   void destroyDynArray(DynArray< T >& arr)
   {
@@ -31,7 +31,7 @@ namespace shigarev {
     arr.size_ = 0;
     arr.capacity_ = 0;
   }
- 
+
   namespace detail {
     template< class T >
     void grow(DynArray< T >& arr)
@@ -51,7 +51,7 @@ namespace shigarev {
       arr.capacity_ = newCap;
     }
   }
- 
+
   template< class T >
   void pushBack(DynArray< T >& arr, const T& value)
   {
@@ -61,7 +61,7 @@ namespace shigarev {
     arr.data_[arr.size_] = value;
     ++arr.size_;
   }
- 
+
   template< class T >
   void pushBack(DynArray< T >& arr, T&& value)
   {
@@ -71,4 +71,29 @@ namespace shigarev {
     arr.data_[arr.size_] = std::move(value);
     ++arr.size_;
   }
+
+  template< class T >
+  const T& getAt(const DynArray< T >& arr, size_t index)
+  {
+    return arr.data_[index];
+  }
+
+  template< class T >
+  T& getAt(DynArray< T >& arr, size_t index)
+  {
+    return arr.data_[index];
+  }
+
+  template< class T, class Pred >
+  bool contains(const DynArray< T >& arr, Pred pred)
+  {
+    for (size_t i = 0; i < arr.size_; ++i) {
+      if (pred(arr.data_[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
+
+#endif
