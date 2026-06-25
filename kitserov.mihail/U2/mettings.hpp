@@ -3,8 +3,10 @@
 
 #include <string>
 #include <cstddef>
+#include <algorithm>
 namespace kitserov
 {
+  using Neighbor = std::pair< size_t, int >;
   struct Meeting {
     size_t id1_;
     size_t id2_;
@@ -56,7 +58,37 @@ namespace kitserov
     }
     removeSelfMeetings(c);
   }
-  std::pair< size_t, int >
+  Neighbor* getMeetingsForId(const MeetingsContainer& c, size_t id, size_t& count)
+  {
+    count = 0;
+    for (size_t i = 0; i < c.size_; ++i) {
+      if (c.data_[i].id1_ == id || c.data_[i].id2_ == id) {
+        ++count;
+      }
+    }
+    if (count == 0) {
+      return nullptr;
+    }
+    Neighbor* arr = new Neighbor[count];
+    size_t idx = 0;
+    for (size_t i = 0; i < c.size_; ++i) {
+        if (c.data_[i].id1_ == id) {
+            arr[idx++] = Neighbor{c.data_[i].id2_, c.data_[i].duration_};
+        } else if (c.data_[i].id2_ == id) {
+            arr[idx++] = Neighbor{c.data_[i].id1_, c.data_[i].duration_};
+        }
+    }
+    return arr;
+  }
+  void sortNeighborPairs(Neighbor* arr, size_t count) {
+    std::sort(arr, arr + count, [](const Neighbor& a, const Neighbor& b) {
+      if (a.first != b.first) {
+        return a.first < b.first;
+      }
+      return a.second < b.second;
+    });
+  }
+  
 }
 
 
