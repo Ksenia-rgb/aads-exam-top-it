@@ -91,10 +91,15 @@ void alekseev::readPersons(
 
 void alekseev::writePersons(std::ostream& output, const PersonArray& persons)
 {
-  for (size_t i = 0; i < persons.size; ++i)
+  if (persons.size > 0)
   {
-    output << persons.data[i].id << ' ' << persons.data[i].info << '\n';
+    output << persons.data[0].id << ' ' << persons.data[0].info;
   }
+  for (size_t i = 1; i < persons.size; ++i)
+  {
+    output << '\n' << persons.data[i].id << ' ' << persons.data[i].info;
+  }
+  output << '\n';
   output.flush();
   if (!output)
   {

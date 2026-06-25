@@ -62,6 +62,7 @@ int alekseev::runU1(
 {
   if (argc > 3)
   {
+    error << "Too many arguments\n";
     return 0;
   }
 
@@ -116,13 +117,10 @@ int alekseev::runU1(
         throw std::runtime_error("output close failure");
       }
     }
-    if (stats.hasInput)
+    error << stats.success << ' ' << stats.ignored << '\n';
+    if (!error)
     {
-      error << stats.success << ' ' << stats.ignored << '\n';
-      if (!error)
-      {
-        throw std::runtime_error("error output failure");
-      }
+      throw std::runtime_error("error output failure");
     }
   }
   catch (const std::exception&)
