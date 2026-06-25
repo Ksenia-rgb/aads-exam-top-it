@@ -106,7 +106,7 @@ int main(int argc, char** argv)
   }
 
   nabieva::printPersons(*output, storage);
-  if (stats.accepted == 0 || stats.ignored == 0)
+  if (stats.accepted == 0 && stats.ignored == 0)
   {
     std::cout << "\n";
   }
