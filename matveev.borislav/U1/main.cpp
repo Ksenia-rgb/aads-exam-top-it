@@ -123,7 +123,10 @@ int main(int argc, char **argv)
     matveev::writePerson(*output, people.data[i]);
     *output << '\n';
   }
-  std::cerr << validCount << ' ' << ignoredCount << '\n';
+  if (validCount != 0 || ignoredCount != 0)
+  {
+    std::cerr << validCount << ' ' << ignoredCount << '\n';
+  }
 
   return 0;
 }
