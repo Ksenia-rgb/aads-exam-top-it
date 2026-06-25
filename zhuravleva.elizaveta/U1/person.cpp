@@ -1,5 +1,5 @@
 #include "person.hpp"
-#include <iostream>
+#include <ostream>
 #include <istream>
 
 namespace
@@ -17,6 +17,20 @@ namespace
       ++pos;
     }
     return line.substr(pos);
+  }
+
+  bool startsWith(const std::string &line, const char *prefix)
+  {
+    size_t pos = 0;
+    while (prefix[pos] != '\0')
+    {
+      if (pos >= line.size() || line[pos] != prefix[pos])
+      {
+        return false;
+      }
+      ++pos;
+    }
+    return true;
   }
 }
 
@@ -79,4 +93,51 @@ void zhuravleva::readPersons(
       ++good;
     }
   }
+}
+
+void zhuravleva::printPersons(std::ostream &output, const DynamicArray< Person > &persons)
+{
+  for (size_t i = 0; i < persons.size; ++i)
+  {
+    output << persons.data[i].id << " " << persons.data[i].info << "\n";
+  }
+}
+
+bool zhuravleva::parseArgs(int argc, char *argv[], Args &args)
+{
+  args.inputFile = "";
+  args.outputFile = "";
+  args.hasInput = false;
+  args.hasOutput = false;
+  if (argc > 3)
+  {
+    return false;
+  }
+  for (int i = 1; i < argc; ++i)
+  {
+    const std::string arg(argv[i]);
+    if (startsWith(arg, "in:"))
+    {
+      if (args.hasInput || arg.size() == 3)
+      {
+        return false;
+      }
+      args.inputFile = arg.substr(3);
+      args.hasInput = true;
+    }
+    else if (startsWith(arg, "out:"))
+    {
+      if (args.hasOutput || arg.size() == 4)
+      {
+        return false;
+      }
+      args.outputFile = arg.substr(4);
+      args.hasOutput = true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  return true;
 }
