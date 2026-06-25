@@ -245,4 +245,43 @@ namespace lachugin
     }
   }
 
+  void less(const Vector< Meeting >& meetings, size_t time, size_t id)
+  {
+    Vector< MeetInfo > result;
+    initVector(result);
+
+    for (size_t i = 0; i < meetings.size; i++)
+    {
+      if (meetings.data[i].time >= time)
+      {
+        continue;
+      }
+
+      if (meetings.data[i].firstId == id)
+      {
+        MeetInfo info;
+        info.id = meetings.data[i].secondId;
+        info.time = meetings.data[i].time;
+        pushBack(result, info);
+      }
+      else if (meetings.data[i].secondId == id)
+      {
+        MeetInfo info;
+        info.id = meetings.data[i].firstId;
+        info.time = meetings.data[i].time;
+        pushBack(result, info);
+      }
+    }
+
+    sortMeetInfos(result);
+    sortMeetInfos(result);
+
+    for (size_t i = 0; i < result.size; i++)
+    {
+      std::cout << result.data[i].id << ' ' << result.data[i].time << '\n';
+    }
+
+    clearVector(result);
+  }
+
 }
