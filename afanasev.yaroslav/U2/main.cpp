@@ -13,6 +13,48 @@ int main(int argc, char * argv[])
   std::string inFile, dataFile;
   bool hasIn = false, hasData = false;
 
+  for (int i = 1; i < argc; ++i)
+  {
+    std::string arg = argv[i];
+    if (arg.rfind("in:", 0) == 0)
+    {
+      if (hasIn)
+      {
+        std::cerr << "Duplicate input argument\n";
+        return 1;
+      }
+      std::string name = arg.substr(3);
+      if (name.empty())
+      {
+        std::cerr << "Invalid argument: empty filename\n";
+        return 1;
+      }
+        hasIn = true;
+        inFile = name;
+      }
+      else if (arg.rfind("data:", 0) == 0)
+      {
+        if (hasData)
+        {
+          std::cerr << "Duplicate data argument\n";
+          return 1;
+        }
+        std::string name = arg.substr(5);
+        if (name.empty())
+        {
+          std::cerr << "Invalid argument: empty filename\n";
+          return 1;
+        }
+        hasData = true;
+        dataFile = name;
+      }
+      else
+      {
+      std::cerr << "Invalid argument\n";
+      return 1;
+    }
+  }
+
   if (!hasData)
   {
     std::cerr << "Missing data argument\n";
@@ -57,5 +99,7 @@ int main(int argc, char * argv[])
   }
 
 
+  delete[] persons;
+  delete[] meetings;
   return 0;
 }
