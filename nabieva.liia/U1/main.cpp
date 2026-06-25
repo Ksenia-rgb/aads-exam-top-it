@@ -12,7 +12,16 @@ namespace nabieva {
 
   bool startsWith(const char* value, const char* prefix)
   {
-    return std::strncmp(value, prefix, std::strlen(prefix)) == 0;
+    while (*prefix != '\0')
+    {
+      if (*value != *prefix)
+      {
+        return false;
+      }
+      ++value;
+      ++prefix;
+    }
+    return true;
   }
 
   bool readArgs(int argc, char** argv, ProgramArgs& args)
@@ -48,6 +57,7 @@ namespace nabieva {
         return false;
       }
     }
+
     return true;
   }
 }
