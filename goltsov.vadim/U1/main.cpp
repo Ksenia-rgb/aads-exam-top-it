@@ -43,6 +43,8 @@ namespace goltsov
         else
         {
           info.clear();
+          ++bad;
+          continue;
         }
         if (!info.empty())
         {
@@ -111,7 +113,7 @@ int main(int argc, char **argv)
   if (argc > 3)
   {
     std::cerr << "Many args\n";
-    return 0;
+    return 1;
   }
   for (int i = 1; i < argc; ++i)
   {
@@ -139,20 +141,26 @@ int main(int argc, char **argv)
   }
   goltsov::HashTable< goltsov::Person > ht = goltsov::newHT< goltsov::Person >(100);
   goltsov::List< goltsov::Person >* l = nullptr;
+  
   std::pair< size_t, size_t > res = goltsov::readPersons(ht, *is, &l);
+  
   if (!outFilename.empty())
   {
     outFile.open(outFilename, std::ios::trunc);
     if (!outFile.is_open())
     {
       std::cerr << "Cannot open output file\n";
+      goltsov::deleteHashTable(ht);
+      goltsov::deleteList(l);
       return 2;
     }
     os = &outFile;
   }
+  
   goltsov::printRes(*os, l);
   *os << '\n';
   std::cerr << res.first << ' ' << res.second << '\n';
+  
   goltsov::deleteHashTable(ht);
   goltsov::deleteList(l);
 }

@@ -23,11 +23,15 @@ namespace goltsov
   template< class T >
   void deleteHashTable(HashTable< T >& ht)
   {
-    for (size_t i = 0; i < ht.size; ++i)
+    if (ht.data)
     {
-      deleteList(ht.data[i]);
+      for (size_t i = 0; i < ht.size; ++i)
+      {
+        deleteList(ht.data[i]);
+      }
+      delete[] ht.data;
+      ht.data = nullptr;
     }
-    delete[] ht.data;
   }
   template< class T >
   T& getFromHT(HashTable< T >& ht, size_t id)
