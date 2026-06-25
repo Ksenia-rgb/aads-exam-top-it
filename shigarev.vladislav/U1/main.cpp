@@ -20,12 +20,13 @@ int main(int argc, char* argv[])
       return 2;
     }
   }
-  std::istream& in = args.hasInputFile
-      ? inputFile
-      : std::cin;
+  std::istream& in = args.hasInputFile ? inputFile : std::cin;
 
   shigarev::ReadResult result = shigarev::readPersons(in);
-  inputFile.close();
+
+  if (args.hasInputFile) {
+    inputFile.close();
+  }
 
   std::ofstream outputFile;
   if (args.hasOutputFile) {
@@ -36,13 +37,15 @@ int main(int argc, char* argv[])
       return 2;
     }
   }
-  std::ostream& out = args.hasOutputFile
-      ? outputFile
-      : std::cout;
+  std::ostream& out = args.hasOutputFile ? outputFile : std::cout;
 
   shigarev::writePersons(out, result.persons);
-  shigarev::writeStats(std::cerr, result.readCount,
-      result.ignoredCount);
+  shigarev::writeStats(std::cerr, result.readCount, result.ignoredCount);
   shigarev::destroyDynArray(result.persons);
+
+  if (args.hasOutputFile) {
+    outputFile.close();
+  }
+
   return 0;
 }
