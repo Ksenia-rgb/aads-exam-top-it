@@ -1,8 +1,47 @@
 #include "commands.hpp"
 #include "utils.hpp"
 #include "db.hpp"
-
 namespace levkin {
+  namespace {
+    void sortMeetings(Vec< Meeting >& vec)
+    {
+      for (size_t i = 0; i < vec.size; ++i) {
+        for (size_t j = i + 1; j < vec.size; ++j) {
+          if (vec.data[i].id1 > vec.data[j].id1
+              || (vec.data[i].id1 == vec.data[j].id1
+                  && vec.data[i].duration > vec.data[j].duration)) {
+            std::swap(vec.data[i], vec.data[j]);
+          }
+        }
+      }
+    }
+    void printFilterMeets(const DB& db,
+                          size_t id,
+                          std::ostream& os,
+                          int mode,
+                          size_t limit_dur = 0)
+    {
+      Vec< Meeting > user_meets{0, 0, nullptr};
+      for (size_t i = 0; i < db.meetings.size; ++i) {
+        const auto& m = db.meetings.data[i];
+        if (m.id1 == id || m.id2 == id) {
+          size_t partner = (m.id1 == id) ? m.id2 : m.id1;
+          if (mode == 1 && m.duration >= limit_dur)
+            continue;
+          if (mode == 2 && m.duration <= limit_dur)
+            continue;
+          Meeting nm{partner, id, m.duration};
+          pushBack(user_meets, nm);
+        }
+      }
+      sortMeetings(user_meets);
+      for (size_t i = 0; i < user_meets.size; ++i) {
+        os << user_meets.data[i].id1 << " " << user_meets.data[i].duration
+           << "\n";
+      }
+      freeVec(user_meets);
+    }
+  }
   void anons(const DB& db, std::ostream& os)
   {
     Vec< size_t > anon_ids;
@@ -11,15 +50,12 @@ namespace levkin {
         pushBack(anon_ids, db.persons.data[i].first);
       }
     }
-
     selectionSort(anon_ids);
-
     for (size_t i = 0; i < anon_ids.size; ++i) {
       os << anon_ids.data[i] << "\n";
     }
     freeVec(anon_ids);
   }
-
   void desc(const DB& db, std::istream& is, std::ostream& os)
   {
     size_t id;
@@ -31,7 +67,7 @@ namespace levkin {
     for (size_t i = 0; i < db.persons.size; ++i) {
       if (db.persons.data[i].first == id) {
         if (db.persons.data[i].second.empty())
-          os << "<NO DESCRIPTION>\n";
+          os << "<ANON>\n";
         else
           os << db.persons.data[i].second << "\n";
         break;

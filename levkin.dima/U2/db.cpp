@@ -1,6 +1,5 @@
 #include "db.hpp"
 #include "db.hpp"
-
 namespace levkin {
   void freeDB(DB& db)
   {
@@ -15,7 +14,6 @@ namespace levkin {
     }
     return false;
   }
-
   bool hasDescription(const DB& db, size_t id)
   {
     for (size_t i = 0; i < db.persons.size; ++i) {
@@ -25,7 +23,6 @@ namespace levkin {
     }
     return false;
   }
-
   void ensurePersonExists(DB& db, size_t id)
   {
     if (!hasPerson(db, id)) {

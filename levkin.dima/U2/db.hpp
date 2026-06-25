@@ -1,8 +1,7 @@
 #ifndef DB_HPP
-#define DB_HPP
+#define DB_HPP 
 #include <cstddef>
 #include "utils.hpp"
-
 namespace levkin {
   struct Meeting
   {
@@ -15,7 +14,6 @@ namespace levkin {
     Vec< levkin::Pair > persons;
     Vec< Meeting > meetings;
   };
-
   void freeDB(DB& db);
   bool hasPerson(const DB& db, size_t id);
   bool hasDescription(const DB& db, size_t id);
