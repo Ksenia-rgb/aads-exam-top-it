@@ -6,26 +6,29 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <cctype>
 namespace levkin {
-  namespace {
-    bool isSpaceChar(char ch);
-    bool isDigitChar(char ch);
-
+  inline bool isSpaceChar(char ch)
+  {
+    return std::isspace(static_cast< unsigned char >(ch));
+  }
+  inline bool isDigitChar(char ch)
+  {
+    return std::isdigit(static_cast< unsigned char >(ch));
   }
   using Pair = std::pair< size_t, std::string >;
-
   template < class T >
   struct Vec
   {
-    size_t size;
-    size_t cap;
-    T* data;
+    size_t size = 0;
+    size_t cap = 0;
+    T* data = nullptr;
   };
   template < class T >
-  Pair* reallocate(Vec< T >& v)
+  T* reallocate(Vec< T >& v)
   {
     size_t nw_cap = (v.cap == 0) ? 1 : 2 * v.cap;
-    Pair* nw = new Pair[nw_cap];
+    T* nw = new T[nw_cap];
     for (size_t i = 0; i < v.size; i++) {
       nw[i] = std::move(v.data[i]);
     }
@@ -36,7 +39,6 @@ namespace levkin {
     v.data = nw;
     return nw;
   }
-
   template < class T >
   void readToVec(Vec< T >& v, std::istream& is, size_t& total, size_t& ignored)
   {
@@ -45,7 +47,6 @@ namespace levkin {
       if (!line.empty() && line.back() == '\r') {
         line.pop_back();
       }
-
       bool is_only_spaces = true;
       for (char ch : line) {
         if (!isSpaceChar(ch)) {
@@ -114,7 +115,6 @@ namespace levkin {
       os << v.data[i].first << " " << v.data[i].second << "\n";
     }
   }
-
   template < class T >
   void pushBack(Vec< T >& v, const T& val)
   {
@@ -124,7 +124,6 @@ namespace levkin {
     v.data[v.size] = val;
     v.size++;
   }
-
   template < class T >
   void freeVec(Vec< T >& v)
   {
@@ -135,7 +134,6 @@ namespace levkin {
     v.size = 0;
     v.cap = 0;
   }
-
   void selectionSort(Vec< size_t >& vec);
 }
 #endif
