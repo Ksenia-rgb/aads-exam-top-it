@@ -42,6 +42,7 @@ namespace bukreev
 
     newNode->prev = fake;
     newNode->next = fake->next;
+    newNode->next->prev = newNode;
     fake->next = newNode;
   }
 
@@ -53,6 +54,7 @@ namespace bukreev
 
     newNode->next = fake;
     newNode->prev = fake->prev;
+    newNode->prev->next = newNode;
     fake->prev = newNode;
   }
 }
