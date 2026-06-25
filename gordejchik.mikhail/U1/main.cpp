@@ -4,78 +4,132 @@
 #include <cstddef>
 #include "dynarray.hpp"
 #include "person.hpp"
-#include "io.hpp"
 
-struct args_t {
-  std::string inFile_;
-  std::string outFile_;
-  bool hasIn_;
-  bool hasOut_;
-};
-
-static int parseArgs(int argc, char* argv[], args_t& args)
+static bool parseArgs(int argc, char* argv[], std::string& inFile, std::string& outFile)
 {
-  args.hasIn_ = false;
-  args.hasOut_ = false;
+  if (argc > 3) {
+    return false;
+  }
+  bool hasIn = false;
+  bool hasOut = false;
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
-    if (arg.size() > 3 && arg.compare(0, 3, "in:") == 0) {
-      if (args.hasIn_) {
-        return 1;
+    if (arg.rfind("in:", 0) == 0) {
+      if (hasIn) {
+        return false;
       }
-      args.inFile_ = arg.substr(3);
-      args.hasIn_ = true;
-    } else if (arg.size() > 4 && arg.compare(0, 4, "out:") == 0) {
-      if (args.hasOut_) {
-        return 1;
+      inFile = arg.substr(3);
+      hasIn = true;
+    } else if (arg.rfind("out:", 0) == 0) {
+      if (hasOut) {
+        return false;
       }
-      args.outFile_ = arg.substr(4);
-      args.hasOut_ = true;
+      outFile = arg.substr(4);
+      hasOut = true;
     } else {
-      return 1;
+      return false;
     }
   }
-  return 0;
+  return true;
 }
 
 int main(int argc, char* argv[])
 {
-  args_t args;
-  if (parseArgs(argc, argv, args) != 0) {
+  if (argc > 3) {
+    std::cerr << "Too many arguments" << "\n";
+    return 0;
+  }
+  std::string inFile;
+  std::string outFile;
+  if (!parseArgs(argc, argv, inFile, outFile)) {
     std::cerr << "Invalid arguments" << "\n";
     return 1;
   }
 
-  gordejchik::dynarray_t< gordejchik::Person > persons;
-  gordejchik::init(persons);
-  gordejchik::read_result_t counts;
-  counts.success_ = 0;
-  counts.ignored_ = 0;
-
-  if (args.hasIn_) {
-    std::ifstream fin(args.inFile_);
+  std::ifstream fin;
+  if (!inFile.empty()) {
+    fin.open(inFile);
     if (!fin.is_open()) {
       std::cerr << "Cannot open input file" << "\n";
       return 2;
     }
-    counts = gordejchik::readPersons(fin, persons);
-  } else {
-    counts = gordejchik::readPersons(std::cin, persons);
+  }
+  std::istream& input = inFile.empty() ? std::cin : fin;
+
+  gordejchik::dynarray_t< gordejchik::Person > persons;
+  gordejchik::init(persons);
+  size_t success = 0;
+  size_t ignored = 0;
+
+  std::string line;
+  while (std::getline(input, line)) {
+    size_t first = line.find_first_not_of(" \t");
+    if (first == std::string::npos) {
+      continue;
+    }
+    size_t space = line.find_first_of(" \t", first);
+    if (space == std::string::npos) {
+      ++ignored;
+      continue;
+    }
+    std::string idStr = line.substr(first, space - first);
+    size_t descStart = line.find_first_not_of(" \t", space);
+    if (descStart == std::string::npos) {
+      ++ignored;
+      continue;
+    }
+    std::string description = line.substr(descStart);
+    if (description.find_first_not_of(" \t") == std::string::npos) {
+      ++ignored;
+      continue;
+    }
+    size_t id = 0;
+    try {
+      size_t pos = 0;
+      unsigned long long raw = std::stoull(idStr, &pos);
+      if (pos != idStr.size()) {
+        ++ignored;
+        continue;
+      }
+      id = static_cast< size_t >(raw);
+    } catch (...) {
+      ++ignored;
+      continue;
+    }
+    bool duplicate = false;
+    for (size_t i = 0; i < persons.size_; ++i) {
+      if (persons.data_[i].id == id) {
+        duplicate = true;
+        break;
+      }
+    }
+    if (duplicate) {
+      ++ignored;
+      continue;
+    }
+    gordejchik::Person p;
+    p.id = id;
+    p.info = description;
+    gordejchik::pushBack(persons, p);
+    ++success;
   }
 
-  if (args.hasOut_) {
-    std::ofstream fout(args.outFile_);
+  std::ofstream fout;
+  if (!outFile.empty()) {
+    fout.open(outFile);
     if (!fout.is_open()) {
-      gordejchik::destroy(persons);
       std::cerr << "Cannot open output file" << "\n";
+      gordejchik::destroy(persons);
       return 2;
     }
-    gordejchik::writePersons(fout, persons);
-  } else {
-    gordejchik::writePersons(std::cout, persons);
+  }
+  std::ostream& output = outFile.empty() ? std::cout : fout;
+
+  for (size_t i = 0; i < persons.size_; ++i) {
+    output << persons.data_[i].id << " " << persons.data_[i].info << "\n";
   }
 
-  std::cerr << counts.success_ << " " << counts.ignored_ << "\n";
+  std::cerr << success << " " << ignored << "\n";
   gordejchik::destroy(persons);
   return 0;
 }
