@@ -232,9 +232,9 @@ int main(int argc, char* argv[])
 
   donkeev::PersonList list;
   size_t ignoredCount = 0;
-    
+
   donkeev::readingPersons(*in, list, ignoredCount);
-    
+
   donkeev::printResult(*out, list);
   std::cerr << list.size_ << " " << ignoredCount << "\n";
 
