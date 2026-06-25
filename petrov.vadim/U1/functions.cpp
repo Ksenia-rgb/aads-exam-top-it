@@ -114,6 +114,10 @@ void petrov::processStream(std::istream& in, Data& data)
 
 void petrov::printData(std::ostream& out, Data& data)
 {
+  if (data.saved_ == 0)
+  {
+    out << '\n';
+  }
   for (size_t i = 0; i < data.saved_; ++i)
   {
     out << data.data_[i].id << ' ' << data.data_[i].info << '\n';
