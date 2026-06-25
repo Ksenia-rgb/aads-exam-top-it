@@ -97,6 +97,5 @@ kuznetsov::Person kuznetsov::readPerson(std::istream& in)
 bool kuznetsov::equalPersons(const Person& a, const Person& b)
 {
   bool f = a.id == b.id;
-  f = f && a.info == b.info;
   return f;
 }
