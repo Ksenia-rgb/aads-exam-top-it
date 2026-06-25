@@ -55,4 +55,50 @@ namespace burukov
     return res;
   }
 
+  DataArgs parseDataArgs(int argc, char** argv)
+  {
+    DataArgs res{"", "", false, false, true};
+    const std::string inPrefix = "in:";
+    const std::string dataPrefix = "data:";
+    if (argc < 2 || argc - 1 > 2)
+    {
+      res.valid = false;
+      return res;
+    }
+    for (int i = 1; i < argc; ++i)
+    {
+      std::string arg(argv[i]);
+      if (startsWith(arg, inPrefix))
+      {
+        if (res.hasIn)
+        {
+          res.valid = false;
+          return res;
+        }
+        res.inFile = arg.substr(inPrefix.size());
+        res.hasIn = true;
+      }
+      else if (startsWith(arg, dataPrefix))
+      {
+        if (res.hasData)
+        {
+          res.valid = false;
+          return res;
+        }
+        res.dataFile = arg.substr(dataPrefix.size());
+        res.hasData = true;
+      }
+      else
+      {
+        res.valid = false;
+        return res;
+      }
+    }
+    if (!res.hasData)
+    {
+      res.valid = false;
+    }
+    return res;
+  }
+
 }
