@@ -40,19 +40,19 @@ bool malashenko::read_line(std::istream &in, std::string &line)
   return !line.empty();
 }
 
-bool malashenko::parse_line(const std::string &line, size_t &id, std::string &info)
+size_t malashenko::parse_line(const std::string &line, size_t &id, std::string &info)
 {
   size_t len = line.size();
   if (len == 0)
   {
-    return false;
+    return 2;
   }
 
   size_t pos = 0;
 
   if (!std::isdigit(static_cast<unsigned char>(line[pos])))
   {
-    return false;
+    return 0;
   }
 
   while (pos < len && std::isdigit(static_cast<unsigned char>(line[pos])))
@@ -67,19 +67,19 @@ bool malashenko::parse_line(const std::string &line, size_t &id, std::string &in
   }
   catch (...)
   {
-    return false;
+    return 0;
   }
 
-  while (pos < len && line[pos] == ' ')
+  while (pos < len && (line[pos] == ' '  || line[pos] == '\t' || line[pos] == '\v' || line[pos] == '\f'))
   {
     ++pos;
   }
 
   if (pos >= len)
   {
-    return false;
+    return 0;
   }
 
   info = line.substr(pos);
-  return true;
+  return 1;
 }

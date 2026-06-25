@@ -78,8 +78,8 @@ int main(int argc, char ** argv)
   {
     size_t id;
     std::string info;
-
-    if (parse_line(line, id, info))
+    size_t res = parse_line(line, id, info);
+    if (res == 1)
     {
       if (containsId(persons, id))
       {
@@ -91,6 +91,10 @@ int main(int argc, char ** argv)
         pushBack(persons, p);
         ++success;
       }
+    }
+    else if (res == 2)
+    {
+      continue;
     }
     else
     {
