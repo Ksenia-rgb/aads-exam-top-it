@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 
 namespace losev
@@ -13,6 +14,14 @@ namespace losev
   {
     Person data;
     Node* next;
+  };
+
+  struct Args
+  {
+    std::string inFile;
+    std::string outFile;
+    bool hasIn;
+    bool hasOut;
   };
 
   Node* createNode(const Person& person)
@@ -154,6 +163,41 @@ namespace losev
       out << current->data.id << " " << current->data.info << "\n";
       current = current->next;
     }
+  }
+
+  Args parseArgs(int argc, char* argv[])
+  {
+    Args result;
+    result.hasIn = false;
+    result.hasOut = false;
+    for (int i = 1; i < argc; ++i)
+    {
+      std::string arg = argv[i];
+
+      if (arg.substr(0, 3) == "in:")
+      {
+        if (result.hasIn)
+        {
+          throw std::invalid_argument("Duplicate in: argument");
+        }
+        result.inFile = arg.substr(3);
+        result.hasIn = true;
+      }
+      else if (arg.substr(0, 4) == "out:")
+      {
+        if (result.hasOut)
+        {
+          throw std::invalid_argument("Duplicate out: argument");
+        }
+        result.outFile = arg.substr(4);
+        result.hasOut = true;
+      }
+      else
+      {
+        throw std::invalid_argument("Invalid argument: " + arg);
+      }
+    }
+    return result;
   }
 }
 
