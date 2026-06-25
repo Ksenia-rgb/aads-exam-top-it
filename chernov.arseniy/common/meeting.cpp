@@ -76,6 +76,9 @@ bool chernov::detail::shouldSwap(const Meeting & a, const Meeting & b, size_t id
 void chernov::sortMeetingsForOutput(Vector< Meeting > & meetings, size_t id)
 {
   size_t n = meetings.size;
+  if (n < 2) {
+    return;
+  }
   for (size_t i = 0; i < n - 1; ++i) {
     bool swapped = false;
     for (size_t j = 0; j < n - i - 1; ++j) {
