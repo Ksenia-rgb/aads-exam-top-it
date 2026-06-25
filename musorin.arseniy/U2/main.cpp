@@ -86,6 +86,10 @@ void loadPersons(std::istream & in, musorin::List< musorin::Person > & persons)
   std::string line;
   while (std::getline(in, line))
   {
+    if (line.empty())
+    {
+      continue;
+    }
     musorin::Person person{0, ""};
     if (!musorin::parseLine(line, person))
     {
@@ -199,44 +203,6 @@ bool extractCommand(const std::string & line, std::string & command, std::string
   rest = line.substr(pos);
   return true;
 }
-void runCommands(musorin::List< musorin::Person > & persons, std::istream & in,
-  std::ostream & out)
-{
-  std::string line;
-  while (std::getline(in, line))
-  {
-    std::string command;
-    std::string rest;
-    if (!extractCommand(line, command, rest))
-    {
-      continue;
-    }
-    musorin::List< std::string > args;
-    musorin::initList(args);
-    splitLine(rest, args);
-    printInvalid(out);
-    musorin::clear(args);
-  }
-  if (command == "anons")
-    {
-      if (args.size != 0)
-      {
-        printInvalid(out);
-      }
-      else
-      {
-        cmdAnons(persons, out)
-      }
-    }
-    else if (command == "desc")
-    {
-      cmdDesc(persons, args, out);
-    }
-    else
-    {
-      printInvalid(out);
-    }
-}
 musorin::Person * findPerson(musorin::List< musorin::Person > & persons, std::size_t id)
 {
   for (musorin::detail::Node< musorin::Person > * node = persons.head;
@@ -342,6 +308,180 @@ void cmdDesc(musorin::List< musorin::Person > & persons,
     out << person->info << '\n';
   }
 }
+struct Partner
+{
+  std::size_t id;
+  std::size_t duration;
+};
+bool lessPartner(const Partner & a, const Partner & b)
+{
+  if (a.id != b.id)
+  {
+    return a.id < b.id;
+  }
+  return a.duration < b.duration;
+}
+void collectMeets(const musorin::List< musorin::Meet > & meets, std::size_t personId,
+  musorin::List< Partner > & result)
+{
+  for (const musorin::detail::Node< musorin::Meet > * node = meets.head;
+    node != nullptr; node = node->next)
+  {
+    const musorin::Meet & meet = node->value;
+    if (meet.from == personId)
+    {
+      Partner partner{meet.to, meet.duration};
+      musorin::pushBack(result, partner);
+    }
+    else if (meet.to == personId)
+    {
+      Partner partner{meet.from, meet.duration};
+      musorin::pushBack(result, partner);
+    }
+  }
+}
+void printPartners(const musorin::List< Partner > & partners, std::ostream & out)
+{
+  for (const musorin::detail::Node< Partner > * node = partners.head;
+    node != nullptr; node = node->next)
+  {
+    out << node->value.id << ' ' << node->value.duration << '\n';
+  }
+}
+void cmdMeets(const musorin::List< musorin::Person > & persons,
+  const musorin::List< musorin::Meet > & meets,
+  const musorin::List< std::string > & args, std::ostream & out)
+{
+  if (args.size != 1)
+  {
+    printInvalid(out);
+    return;
+  }
+  std::size_t id = 0;
+  if (!toId(args.head->value, id))
+  {
+    printInvalid(out);
+    return;
+  }
+  if (!hasPerson(persons, id))
+  {
+    printInvalid(out);
+    return;
+  }
+  musorin::List< Partner > collected;
+  musorin::initList(collected);
+  collectMeets(meets, id, collected);
+  sortList(collected, lessPartner);
+  printPartners(collected, out);
+  musorin::clear(collected);
+}
+void cmdFilterByDuration(const musorin::List< musorin::Person > & persons,
+  const musorin::List< musorin::Meet > & meets,
+  const musorin::List< std::string > & args, std::ostream & out, bool greater)
+{
+  if (args.size != 2)
+  {
+    printInvalid(out);
+    return;
+  }
+  std::size_t threshold = 0;
+  std::size_t id = 0;
+  if (!toId(args.head->value, threshold) || !toId(args.head->next->value, id))
+  {
+    printInvalid(out);
+    return;
+  }
+  if (!hasPerson(persons, id))
+  {
+    printInvalid(out);
+    return;
+  }
+  musorin::List< Partner > collected;
+  musorin::initList(collected);
+  collectMeets(meets, id, collected);
+  musorin::List< Partner > filtered;
+  musorin::initList(filtered);
+  for (const musorin::detail::Node< Partner > * node = collected.head;
+    node != nullptr; node = node->next)
+  {
+    const bool keep = greater ? (node->value.duration > threshold)
+      : (node->value.duration < threshold);
+    if (keep)
+    {
+      musorin::pushBack(filtered, node->value);
+    }
+  }
+  sortList(filtered, lessPartner);
+  printPartners(filtered, out);
+  musorin::clear(collected);
+  musorin::clear(filtered);
+}
+bool listHasId(const musorin::List< std::size_t > & ids, std::size_t id)
+{
+  for (const musorin::detail::Node< std::size_t > * node = ids.head;
+    node != nullptr; node = node->next)
+  {
+    if (node->value == id)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+void cmdCommons(const musorin::List< musorin::Person > & persons,
+  const musorin::List< musorin::Meet > & meets,
+  const musorin::List< std::string > & args, std::ostream & out)
+{
+  if (args.size != 2)
+  {
+    printInvalid(out);
+    return;
+  }
+  std::size_t id1 = 0;
+  std::size_t id2 = 0;
+  if (!toId(args.head->value, id1) || !toId(args.head->next->value, id2))
+  {
+    printInvalid(out);
+    return;
+  }
+  if (!hasPerson(persons, id1) || !hasPerson(persons, id2))
+  {
+    printInvalid(out);
+    return;
+  }
+  musorin::List< Partner > first;
+  musorin::initList(first);
+  collectMeets(meets, id1, first);
+  musorin::List< Partner > second;
+  musorin::initList(second);
+  collectMeets(meets, id2, second);
+  musorin::List< std::size_t > commons;
+  musorin::initList(commons);
+  for (const musorin::detail::Node< Partner > * a = first.head; a != nullptr; a = a->next)
+  {
+    if (listHasId(commons, a->value.id))
+    {
+      continue;
+    }
+    for (const musorin::detail::Node< Partner > * b = second.head; b != nullptr; b = b->next)
+    {
+      if (a->value.id == b->value.id)
+      {
+        musorin::pushBack(commons, a->value.id);
+        break;
+      }
+    }
+  }
+  sortList(commons, lessSizeT);
+  for (const musorin::detail::Node< std::size_t > * node = commons.head;
+    node != nullptr; node = node->next)
+  {
+    out << node->value << '\n';
+  }
+  musorin::clear(first);
+  musorin::clear(second);
+  musorin::clear(commons);
+}
 bool parseRedescPayload(const std::string & line, std::size_t & id,
   std::string & description)
 {
@@ -438,6 +578,69 @@ void cmdOutPersons(const musorin::List< musorin::Person > & persons,
     }
   }
 }
+void runCommands(musorin::List< musorin::Person > & persons,
+  const musorin::List< musorin::Meet > & meets,
+  std::istream & in, std::ostream & out)
+{
+  std::string line;
+  while (std::getline(in, line))
+  {
+    std::string command;
+    std::string rest;
+    if (!extractCommand(line, command, rest))
+    {
+      continue;
+    }
+    musorin::List< std::string > args;
+    musorin::initList(args);
+    splitLine(rest, args);
+    if (command == "anons")
+    {
+      if (args.size != 0)
+      {
+        printInvalid(out);
+      }
+      else
+      {
+        cmdAnons(persons, out);
+      }
+    }
+    else if (command == "desc")
+    {
+      cmdDesc(persons, args, out);
+    }
+    else if (command == "redesc")
+    {
+      cmdRedesc(persons, rest, out);
+    }
+    else if (command == "out-persons")
+    {
+      cmdOutPersons(persons, args, out);
+    }
+    else if (command == "meets")
+    {
+      cmdMeets(persons, meets, args, out);
+    }
+    else if (command == "less")
+    {
+      cmdFilterByDuration(persons, meets, args, out, false);
+    }
+    else if (command == "greater")
+    {
+      cmdFilterByDuration(persons, meets, args, out, true);
+    }
+    else if (command == "commons")
+    {
+      cmdCommons(persons, meets, args, out);
+    }
+    else
+    {
+      printInvalid(out);
+    }
+    musorin::clear(args);
+  }
+}
+}
 int main(int argc, char * argv[])
 {
   Options options{"", "", false};
@@ -477,6 +680,7 @@ int main(int argc, char * argv[])
     musorin::clear(meets);
     return 3;
   }
+  runCommands(persons, meets, std::cin, std::cout);
   musorin::clear(persons);
   musorin::clear(meets);
   return 0;
