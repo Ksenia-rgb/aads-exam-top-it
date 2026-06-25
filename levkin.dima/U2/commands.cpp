@@ -42,9 +42,9 @@ namespace levkin {
       freeVec(user_meets);
     }
   }
-  void anons(const DB& db, std::ostream& os)
+  oid anons(const DB& db, std::ostream& os)
   {
-    Vec< size_t > anon_ids;
+    Vec< size_t > anon_ids{0, 0, nullptr};
     for (size_t i = 0; i < db.persons.size; ++i) {
       if (db.persons.data[i].second.empty()) {
         pushBack(anon_ids, db.persons.data[i].first);
@@ -56,6 +56,7 @@ namespace levkin {
     }
     freeVec(anon_ids);
   }
+
   void desc(const DB& db, std::istream& is, std::ostream& os)
   {
     size_t id;
