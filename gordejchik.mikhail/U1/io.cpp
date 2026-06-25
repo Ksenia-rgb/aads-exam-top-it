@@ -17,3 +17,32 @@ static bool hasId(const gordejchik::dynarray_t< gordejchik::person_t >& arr, siz
   }
   return false;
 }
+
+static bool parseLine(const std::string& line, size_t& id, std::string& info)
+{
+  if (line.empty()) {
+    return false;
+  }
+  size_t pos = 0;
+  try {
+    unsigned long long raw = std::stoull(line, &pos);
+    id = static_cast< size_t >(raw);
+  } catch (...) {
+    return false;
+  }
+  if (pos == line.size()) {
+    return false;
+  }
+  if (line[pos] != ' ' && line[pos] != '\t') {
+    return false;
+  }
+  size_t descStart = pos;
+  while (descStart < line.size() && (line[descStart] == ' ' || line[descStart] == '\t')) {
+    ++descStart;
+  }
+  if (descStart == line.size()) {
+    return false;
+  }
+  info = line.substr(descStart);
+  return true;
+}
