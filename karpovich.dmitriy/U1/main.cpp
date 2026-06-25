@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -16,25 +17,28 @@ int main(int argc, char **argv)
   std::string inputFileName;
   std::string outputFileName;
 
-  for (int i = 1; i < argc; ++i) {
-    std::string argument = argv[i];
-    if (argument.compare(0, 3, "in:") == 0) {
-      if (hasInputFile) {
+  try {
+    for (size_t i = 1; i < static_cast< size_t >(argc); ++i) {
+      std::string argument = argv[i];
+      if (argument.compare(0, 3, "in:") == 0) {
+        if (hasInputFile) {
+          return 1;
+        }
+        hasInputFile = true;
+        inputFileName = argument.substr(3);
+      } else if (argument.compare(0, 4, "out:") == 0) {
+        if (hasOutputFile) {
+          return 1;
+        }
+        hasOutputFile = true;
+        outputFileName = argument.substr(4);
+      } else {
         return 1;
       }
-      hasInputFile = true;
-      inputFileName = argument.substr(3);
-    } else if (argument.compare(0, 4, "out:") == 0) {
-      if (hasOutputFile) {
-        return 1;
-      }
-      hasOutputFile = true;
-      outputFileName = argument.substr(4);
-    } else {
-      return 1;
     }
+  } catch (...) {
+    return 1;
   }
-
   karpovich::Vector< karpovich::Person > persons;
   karpovich::initVector(persons);
 
@@ -61,11 +65,7 @@ int main(int argc, char **argv)
         karpovich::writePersons(output, persons);
       }
       std::cout << "in file " << outputFileName << '\n';
-      std::ifstream result(outputFileName);
-      std::string line;
-      while (std::getline(result, line)) {
-        std::cout << line << '\n';
-      }
+      karpovich::writePersons(std::cout, persons);
     } else {
       karpovich::writePersons(std::cout, persons);
     }
