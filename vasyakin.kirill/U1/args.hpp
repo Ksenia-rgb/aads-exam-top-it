@@ -5,7 +5,7 @@
 
 namespace vasyakin
 {
-  bool hasPrefix(const std::string& arg, const std::string& prefix);
+  bool hasPrefix(const std::string& arg, const std::string& prefix) noexcept;
   std::string stripPrefix(const std::string& arg, const std::string& prefix);
 
   struct Args

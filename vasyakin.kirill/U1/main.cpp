@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include "person.hpp"
 #include "array.hpp"
 #include "hashtable.hpp"
@@ -34,7 +35,7 @@ int main(int argc, char** argv)
   try
   {
     {
-      std::istream* inStream = &std::cin;
+      std::istream* inStream = std::addressof(std::cin);
       std::ifstream inFile;
 
       if (args.hasIn)
@@ -46,7 +47,7 @@ int main(int argc, char** argv)
           return 2;
         }
 
-        inStream = &inFile;
+        inStream = std::addressof(inFile);
       }
 
       std::string line;
@@ -71,7 +72,7 @@ int main(int argc, char** argv)
     }
 
     {
-      std::ostream* outStream = &std::cout;
+      std::ostream* outStream = std::addressof(std::cout);
       std::ofstream outFile;
 
       if (args.hasOut)
@@ -82,7 +83,7 @@ int main(int argc, char** argv)
           cleanupResources(persons, seen);
           return 2;
         }
-        outStream = &outFile;
+        outStream = std::addressof(outFile);
       }
 
       for (size_t i = 0; i < persons.size; ++i)

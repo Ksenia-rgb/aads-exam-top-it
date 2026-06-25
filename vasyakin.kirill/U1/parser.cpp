@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <climits>
 #include <cstddef>
+#include <cstdint>
 
 bool vasyakin::parseLine(const std::string& line, vasyakin::Person& person)
 {

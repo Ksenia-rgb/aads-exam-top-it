@@ -21,7 +21,7 @@ namespace vasyakin
   };
 
   template< class K >
-  size_t hashKey(K key, size_t cap)
+  size_t hashKey(K key, size_t cap) noexcept
   {
     return static_cast< size_t >(key) % cap;
   }
@@ -55,7 +55,7 @@ namespace vasyakin
   }
 
   template< class K >
-  bool findInBucket(listNode< hashCell< K > >* head, K key)
+  bool findInBucket(const listNode< hashCell< K > >* head, K key) noexcept
   {
     for (listNode< hashCell< K > >* cur = head; cur; cur = cur->next)
     {
@@ -69,7 +69,7 @@ namespace vasyakin
   }
 
   template< class K >
-  bool containsHashTable(const hashTable< K >& ht, K key)
+  bool containsHashTable(const hashTable< K >& ht, K key) noexcept
   {
     if (!ht.buckets)
     {

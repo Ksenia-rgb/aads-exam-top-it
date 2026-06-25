@@ -1,6 +1,6 @@
 #include "args.hpp"
 
-bool vasyakin::hasPrefix(const std::string& arg, const std::string& prefix)
+bool vasyakin::hasPrefix(const std::string& arg, const std::string& prefix) noexcept
 {
   if (arg.size() < prefix.size())
   {
