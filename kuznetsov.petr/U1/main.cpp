@@ -98,18 +98,21 @@ int main(int argc, char** argv)
 kuznetsov::Person kuznetsov::readPerson(std::istream& in, bool& success)
 {
   size_t id;
-  std::string inf;
   in >> id;
-  char c = ' ';
-  while (in.peek() == ' ') {
-    in.get(c);
+  if (!in) {
+    success = false;
+    return {};
   }
-  if (!in || c == '\n') {
+  while (in.peek() == ' ' || in.peek() == '\t') {
+    in.ignore();
+  }
+  std::string inf;
+  std::getline(in, inf);
+  if (inf.empty()) {
     in.setstate(std::ios::failbit);
     success = false;
     return {};
   }
-  in >> inf;
   success = true;
   return Person{id, inf};
 }
