@@ -18,8 +18,8 @@ namespace kondrat
 
   struct ProgramArgs
   {
-    const char * inputName;
-    const char * outputName;
+    const char * input;
+    const char * output;
   };
 
   bool startsWith(const char * value, const char * prefix);
@@ -37,6 +37,42 @@ bool kondrat::startsWith(const char * value, const char * prefix)
     ++value;
     ++prefix;
   }
+  return true;
+}
+
+bool kondrat::parseArgs(int argc, char ** argv, ProgramArgs & args)
+{
+  args.input = nullptr;
+  args.output = nullptr;
+  if (argc > 3)
+  {
+    return false;
+  }
+
+  for (int i = 1; i < argc; ++i)
+  {
+    if (startsWith(argv[i], "in:"))
+    {
+      if (args.input != nullptr || argv[i][3] == '\0')
+      {
+        return false;
+      }
+      args.input = argv[i] + 3;
+    }
+    else if (startsWith(argv[i], "out:"))
+    {
+      if (args.output != nullptr || argv[i][4] == '\0')
+      {
+        return false;
+      }
+      args.output = argv[i] + 4;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   return true;
 }
 
