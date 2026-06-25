@@ -3,9 +3,9 @@
 #include <string>
 #include <cctype>
 
+#include <parser.hpp>
+#include <person.hpp>
 #include "args.hpp"
-#include "parser.hpp"
-#include "person.hpp"
 
 namespace
 {
