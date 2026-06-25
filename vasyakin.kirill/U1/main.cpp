@@ -110,7 +110,10 @@ int main(int argc, char** argv)
       }
     }
 
-    std::cerr << successCount << " " << ignoreCount << "\n";
+    if (successCount > 0 || ignoreCount > 0)
+    {
+      std::cerr << successCount << " " << ignoreCount << "\n";
+    }
 
     cleanupResources(persons, seen);
 

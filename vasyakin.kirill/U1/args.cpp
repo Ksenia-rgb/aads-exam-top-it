@@ -19,7 +19,7 @@ vasyakin::Args vasyakin::parseArgs(int argc, char** argv)
 {
   Args res{"", "", false, false, true};
 
-  if (argc - 1 > 2)
+  if (argc > 3)
   {
     res.valid = false;
     return res;
