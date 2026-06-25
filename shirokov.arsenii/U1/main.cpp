@@ -112,11 +112,17 @@ int main(int argc, char* argv[])
   while (in)
   {
     in >> id;
-    if (!in && !in.eof())
+    if (!in)
     {
-      in.clear();
-      in.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
-      continue;
+      if (!in.eof())
+      {
+        in.clear();
+        in.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
+        ++fail;
+        continue;
+      }
+      ++fail;
+      break;
     }
     while (in.peek() == ' ' || in.peek() == '\t')
     {
@@ -131,10 +137,11 @@ int main(int argc, char* argv[])
       {
         in.clear();
         in.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
+        ++fail;
         continue;
       }
-      break;
       ++fail;
+      break;
     }
 
     if (info.empty())
