@@ -47,3 +47,50 @@ void lavrentev::readfile(std::string name, lavrentev::Person notes[], size_t ids
     lavrentev::readData(std::cin, notes, ids, currentSize, maxSize);
   }
 }
+
+bool lavrentev::parseArgs(int argc, char* argv[], std::string inFile, std::string outFile)
+{
+  if (argc > 3)
+  {
+    return false;
+  }
+
+  bool hasIn = false;
+  bool hasOut = false;
+
+  for (int i = 1; i < argc; ++i)
+  {
+    std::string arg = argv[i];
+    if (arg.rfind("in:", 0) == 0)
+    {
+      if (hasIn)
+      {
+        return false;
+      }
+      hasIn = true;
+      inFile = arg.substr(3);
+      if (inFile.empty())
+      {
+        return false;
+      }
+    }
+    else if (arg.rfind("out:", 0) == 0)
+    {
+      if (hasOut)
+      {
+        return false;
+      }
+      hasOut = true;
+      outFile = arg.substr(4);
+      if (outFile.empty())
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+  return true;
+}

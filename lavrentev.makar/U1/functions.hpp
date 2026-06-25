@@ -10,6 +10,7 @@ namespace lavrentev
   bool exists(size_t id, size_t ids[], size_t size);
   void readData(std::istream& in, Person notes[], size_t ids[], size_t& currentSize, size_t maxSize);
   void readfile(std::string name, Person notes[], size_t ids[], size_t maxSize);
+  bool parseArgs(int argc, char* argv[], std::string inFile, std::string outFile);
 }
 
 #endif

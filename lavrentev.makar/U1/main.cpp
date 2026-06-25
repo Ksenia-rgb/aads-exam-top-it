@@ -1,25 +1,37 @@
 #include <iostream>
+#include <fstream>
 #include "functions.hpp"
 
 int main(int argc, char* argv[])
 {
-  if (argc != 2 && argc != 0)
+  std::string in, out;
+  if (!lavrentev::parseArgs(argc, argv, in, out))
   {
     std::cerr << "Input processing error" << "\n";
     return 1;
   }
 
-  size_t size = 10;
-  lavrentev::Person* notes = new lavrentev::Person[size];
-  size_t* ids = new size_t[size];
+  size_t cap = 10;
+  size_t size = 0;
+  lavrentev::Person* notes = new lavrentev::Person[cap];
+  size_t* ids = new size_t[cap];
 
-  try
+  if (!in.empty())
   {
-    lavrentev::readfile(argv[1], notes, ids, size);
+    std::ifstream fileIn(in);
+    if (!fileIn.is_open())
+    {
+      delete[] notes;
+      delete[] ids;
+      std::cerr << "File open error\n";
+      return 2;
+    }
+    lavrentev::readData(fileIn, notes, ids, size, cap);
   }
-  catch (const std::runtime_error&)
+  else
   {
-    std::cerr << "Input processing error" << "\n";
-    return 2;
+    lavrentev::readData(std::cin, notes, ids, size, cap);
   }
+
+  
 }
