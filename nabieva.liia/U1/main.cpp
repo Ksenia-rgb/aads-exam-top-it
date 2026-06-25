@@ -109,7 +109,7 @@ int main(int argc, char** argv)
   {
     std::cerr << stats.accepted << ' ' << stats.ignored;
   }
-  std::cout << '\n';
+  std::cerr << '\n';
 
   nabieva::destroyStorage(storage);
 }
