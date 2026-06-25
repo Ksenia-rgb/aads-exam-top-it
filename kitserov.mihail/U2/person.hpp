@@ -7,23 +7,27 @@ namespace kitserov
 {
   struct Person
   {
-    size_t id;
-    std::string info;
+    size_t id_;
+    std::string info_;
   };
   struct PersonsContainer
   {
-    Person* data;
-    size_t size;
-    size_t capacity;
+    Person* data_;
+    size_t size_;
+    size_t capacity_;
   };
-  void destroy(PersonsContainer storage)
+  template< class Container >
+  void destroy(Container storage)
   {
-    delete[] storage.data;
+    delete[] storage.data_;
+    storage.data_ = nullptr;
+    storage.size_ = 0;
+    storage.capacity_ = 0;
   }
   bool contains(const PersonsContainer& container, size_t id)
   {
-    for (size_t i = 0; i < container.size; ++i) {
-      if (container.data[i].id == id) {
+    for (size_t i = 0; i < container.size_; ++i) {
+      if (container.data_[i].id_ == id) {
         return true;
       }
     }
@@ -34,25 +38,25 @@ namespace kitserov
     if (contains(container, id)) {
       return false;
     }
-    if (container.size == container.capacity) {
-      size_t new_cap = (container.capacity == 0) ? 8 : container.capacity * 2;
+    if (container.size_ == container.capacity_) {
+      size_t new_cap = (container.capacity_ == 0) ? 8 : container.capacity_ * 2;
       Person* new_data = new Person[new_cap];
       try {
-        for (size_t i = 0; i < container.size; ++i) {
-          new_data[i] = container.data[i];
+        for (size_t i = 0; i < container.size_; ++i) {
+          new_data[i] = container.data_[i];
         }
-        new_data[container.size] = Person{id, info};
+        new_data[container.size_] = Person{id, info};
       } catch (...) {
         delete[] new_data;
         throw; 
       }
-      delete[] container.data;
-      container.data = new_data;
-      container.capacity = new_cap;
+      delete[] container.data_;
+      container.data_ = new_data;
+      container.capacity_ = new_cap;
     } else {
-      container.data[container.size] = Person{id, info};
+      container.data_[container.size_] = Person{id, info};
     }
-    container.size++;
+    container.size_++;
     return true;
   }
 }
