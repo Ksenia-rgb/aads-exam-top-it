@@ -54,7 +54,21 @@ namespace
     }
     return true;
   }
-}
+
+    bool hasPerson(
+        const zhuravleva::DynamicArray< zhuravleva::Person > &persons,
+        size_t id)
+    {
+      for (size_t i = 0; i < persons.size; ++i)
+      {
+        if (persons.data[i].id == id)
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
 
 bool zhuravleva::parseArgs(int argc, char *argv[], Args &args)
 {
@@ -132,15 +146,34 @@ void zhuravleva::readMeets(
   std::string line;
   while (std::getline(input, line))
   {
-    if (line.empty())
-    {
-      continue;
-    }
-    Meet meet = {0, 0, 0};
     if (isEmptyLine(line))
     {
       continue;
     }
+    Meet meet = {0, 0, 0};
+    if (!readMeet(line, meet))
+    {
+      throw std::invalid_argument("invalid meet");
+    }
     pushBack(meets, meet);
+  }
+}
+
+void zhuravleva::addAnonymous(
+    DynamicArray< Person > &persons,
+    const DynamicArray< Meet > &meets)
+{
+  for (size_t i = 0; i < meets.size; ++i)
+  {
+    if (!hasPerson(persons, meets.data[i].first))
+    {
+      Person person = {meets.data[i].first, ""};
+      pushBack(persons, person);
+    }
+    if (!hasPerson(persons, meets.data[i].second))
+    {
+      Person person = {meets.data[i].second, ""};
+      pushBack(persons, person);
+    }
   }
 }
