@@ -2,9 +2,12 @@
 #define STRUCTPERSON_HPP
 #include <iosfwd>
 #include <string>
-struct Person
+namespace goltsov
 {
-  size_t id;
-  std::string info;
-};
+  struct Person
+  {
+    size_t id;
+    std::string info;
+  };
+}
 #endif
