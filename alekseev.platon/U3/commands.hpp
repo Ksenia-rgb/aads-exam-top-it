@@ -39,6 +39,37 @@ namespace alekseev
       const DatedMeetingArray& meetings,
       const DateArray& dates,
       const RangeState& range);
+  bool handleCommons(
+      const std::string& arguments,
+      std::ostream& output,
+      const PersonArray& persons,
+      const DatedMeetingArray& meetings,
+      const DateArray& dates,
+      const RangeState& range);
+  bool handleLess(
+      const std::string& arguments,
+      std::ostream& output,
+      const PersonArray& persons,
+      const DatedMeetingArray& meetings,
+      const DateArray& dates,
+      const RangeState& range);
+  bool handleGreater(
+      const std::string& arguments,
+      std::ostream& output,
+      const PersonArray& persons,
+      const DatedMeetingArray& meetings,
+      const DateArray& dates,
+      const RangeState& range);
+  bool handleRedesc(
+      const std::string& arguments,
+      PersonArray& persons);
+  bool handleDeanon(
+      const std::string& arguments,
+      PersonArray& persons,
+      DatedMeetingArray& meetings);
+  bool handleOutPersons(
+      const std::string& arguments,
+      const PersonArray& persons);
   bool handleRange(
       const std::string& arguments,
       std::ostream& output,
