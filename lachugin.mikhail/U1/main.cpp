@@ -22,8 +22,6 @@ int main(int argc, char* argv[])
   bool hasInput = false;
   bool hasOutput = false;
 
-
-
   for (int i = 1; i < argc; i++)
   {
     std::string arg = argv[i];
@@ -100,13 +98,21 @@ int main(int argc, char* argv[])
     output = &outputFile;
   }
 
-  for (size_t i = 0; i < size; i++)
+  if (size == 0)
   {
-    *output << persons[i].id << ' ' << persons[i].info << '\n';
+    *output << '\n';
   }
-  if (success == 0 && ignored == 0)
+  else
   {
-    std::cerr << '\n';
+    for (size_t i = 0; i < size; i++)
+    {
+      *output << persons[i].id << ' ' << persons[i].info << '\n';
+    }
+  }
+
+  if (success != 0 || ignored != 0)
+  {
+    std::cerr << success << ' ' << ignored << '\n';
   }
   else
   {
