@@ -148,7 +148,7 @@ int main(int argc, char * argv[])
   {
     writeRecords(std::cout, records);
   }
-  
+
   if (accepted != 0 || ignored != 0)
   {
     std::cerr << accepted << ' ' << ignored << '\n';
