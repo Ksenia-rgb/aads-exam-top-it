@@ -1,8 +1,10 @@
 #ifndef TASK_HPP
 #define TASK_HPP
 #include <string>
+#include <stdexcept>
 #include <cstddef>
 #include <utility>
+#include <iostream>
 
 namespace permyakov
 {
@@ -47,7 +49,46 @@ namespace permyakov
     addAfter(tmpLst, val);
   }
 
-  std::pair< size_t, size_t > input(std::istream & in, list< Person > & lst);
+  std::pair< size_t, size_t > input(std::istream & in, list< Person > & lst)
+  {
+    std::pair< size_t, size_t > res = {0, 0};
+    std::string line;
+    while (std::getline(in, line)) {
+      if (line.empty()) {
+        res.second()++;
+        continue;
+      }
+      Person pers;
+      std::string idP;
+      std::string infoP;
+      for (size_t i = 0; i < line.length(); ++i) {
+        char c = line[i];
+        if (!pers.id) {
+          if (c != ' ') {
+            idP += c;
+          } else {
+            try {
+              pers.id = std::stoll(idP);
+            } catch (...) {
+              break;
+            }
+          }
+        } else if (infoP.isEmpty() && c == ' ') {
+          continue
+        } else {
+          infoP += c;
+        }
+      }
+      if (!pers.id || pers.info.idEmpty()) {
+        res.second()++;
+        continue;
+      }
+      addToEnd(lst, pers);
+      res.first()++;
+    }
+    return result;
+  }
+
   void output(std::osream & out, list< Person > & lst);
 }
 
