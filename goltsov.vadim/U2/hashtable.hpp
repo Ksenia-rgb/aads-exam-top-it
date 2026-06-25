@@ -2,57 +2,26 @@
 #define HASHTABLE_HPP
 #include <iosfwd>
 #include <stdexcept>
-#include "structPerson.hpp"
 #include <functional>
+#include "structPerson.hpp"
+#include "list.hpp"
 
 namespace goltsov
 {
   namespace detail
   {
+    template < class T >
     struct NodeHT
     {
       size_t key;
-      Person value;
+      T value;
     };
   }
-  struct List
+  template< class T >
+  HashTable< T > newHT(size_t size)
   {
-    detail::NodeHT data;
-    List* prev;
-    List* next;
-  };
-  void deleteList(List* current)
-  {
-    if (current)
-    {
-      if (current->prev)
-      {
-        while (current->prev)
-        {
-          current = current->prev;
-        }
-      }
-      while (current)
-      {
-        List* for_delete = current;
-        current = current->next;
-        delete for_delete;
-      }
-    }
-  }
-  List* newListNode(size_t key, Person value, List* prev, List* next)
-  {
-    return new List{{key, value}, prev, next};
-  }
-  struct HashTable
-  {
-    List** data;
-    size_t size;
-  };
-  HashTable newHT(size_t size)
-  {
-    HashTable ht;
-    ht.data = new List*[size];
+    HashTable< T > ht;
+    ht.data = new List< T >*[size];
     for (size_t i = 0; i < size; ++i)
     {
       ht.data[i] = nullptr;
@@ -60,7 +29,8 @@ namespace goltsov
     ht.size = size;
     return ht;
   }
-  void deleteHashTable(HashTable& ht)
+  template< class T >
+  void deleteHashTable(HashTable< T >& ht)
   {
     for (size_t i = 0; i < ht.size; ++i)
     {
@@ -68,11 +38,12 @@ namespace goltsov
     }
     delete[] ht.data;
   }
-  Person& getPerson(HashTable& ht, size_t id)
+  template< class T >
+  T& getFromHT(HashTable< T >& ht, size_t id)
   {
     std::hash< size_t > hasher;
     size_t hash = hasher(id) % ht.size;
-    List* node = ht.data[hash];
+    List< T >* node = ht.data[hash];
     while (node)
     {
       if (node->data.key == id)
@@ -83,11 +54,12 @@ namespace goltsov
     }
     throw std::runtime_error("No key");
   }
-  void insertPerson(HashTable& ht, size_t id, Person value)
+  template< class T >
+  void insertToHT(HashTable< T >& ht, size_t id, T value)
   {
     std::hash< size_t > hasher;
     size_t hash = hasher(id) % ht.size;
-    List* node = ht.data[hash];
+    List< T >* node = ht.data[hash];
     while (node && node->next)
     {
       if (node->data.key == id)
@@ -103,7 +75,7 @@ namespace goltsov
         throw std::runtime_error("Key in table");
       }
     }
-    List* new_node = newListNode(id, value, node, nullptr);
+    List< T >* new_node = newListNode(id, value, node, nullptr);
     if (new_node->prev)
     {
       new_node->prev->next = new_node;
@@ -113,11 +85,12 @@ namespace goltsov
       ht.data[hash] = new_node;
     }
   }
-  void deletePerson(HashTable& ht, size_t id)
+  template< class T >
+  void deleteFromHT(HashTable< T >& ht, size_t id)
   {
     std::hash< size_t > hasher;
     size_t hash = hasher(id) % ht.size;
-    List* node = ht.data[hash];
+    List< T >* node = ht.data[hash];
     while (node)
     {
       if (node->data.key == id)
