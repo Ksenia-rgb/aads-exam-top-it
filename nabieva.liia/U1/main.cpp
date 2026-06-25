@@ -62,6 +62,7 @@ int main(int argc, char** argv)
   nabieva::ProgramArgs args = { 0, 0 };
   if (argc > 3)
   {
+    std::cerr << "too many arg\n";
     return 0;
   }
   if (!readArgs(argc, argv, args))
@@ -105,11 +106,11 @@ int main(int argc, char** argv)
   }
 
   nabieva::printPersons(*output, storage);
-  if (stats.accepted != 0 || stats.ignored != 0)
+  if (stats.accepted == 0 || stats.ignored == 0)
   {
-    std::cerr << stats.accepted << ' ' << stats.ignored;
+    std::cout << "\n";
   }
-  std::cerr << '\n';
-
+  std::cerr << stats.accepted << ' ' << stats.ignored << "\n";
   nabieva::destroyStorage(storage);
+  return 0;
 }
