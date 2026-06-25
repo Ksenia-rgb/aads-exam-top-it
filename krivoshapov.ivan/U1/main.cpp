@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   if (argc > 3)
   {
     std::cerr << "Invalid arguments\n";
-    return 1;
+    return 2;
   }
 
   Args args = parseArgs(argc, argv);
@@ -83,6 +83,13 @@ int main(int argc, char **argv)
 
   if (args.outFile != nullptr)
   {
+    std::cout << "in file " << args.outFile << '\n';
+  }
+
+  krivoshapov::writePersons(std::cout, persons);
+
+  if (args.outFile != nullptr)
+  {
     std::ofstream outStream;
     outStream.open(args.outFile);
     if (!outStream.is_open())
@@ -94,12 +101,11 @@ int main(int argc, char **argv)
     krivoshapov::writePersons(outStream, persons);
     outStream.close();
   }
-  else
-  {
-    krivoshapov::writePersons(std::cout, persons);
-  }
 
-  std::cerr << result.valid << ' ' << result.ignored << '\n';
+  if (result.valid + result.ignored > 0)
+  {
+    std::cerr << result.valid << ' ' << result.ignored << '\n';
+  }
 
   krivoshapov::destroy(persons);
   return 0;
