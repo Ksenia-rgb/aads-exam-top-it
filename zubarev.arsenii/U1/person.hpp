@@ -14,4 +14,11 @@ namespace zubarev
     size_t capacity;
   };
 
+  struct HashSet
+{
+  size_t* data;
+  bool* used;
+  size_t capacity;
+};
+
 }
