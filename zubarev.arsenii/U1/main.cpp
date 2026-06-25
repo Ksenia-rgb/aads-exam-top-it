@@ -53,7 +53,6 @@ int main(int argc, char* argv[])
     }
 
     if (pos == line.size()) {
-      ++ignored;
       continue;
     }
 
@@ -107,7 +106,7 @@ int main(int argc, char* argv[])
   std::ofstream out_file;
 
   if (!out_name.empty()) {
-    out_file.open(out_name);
+    out_file.open(out_name, std::ios::trunc);
 
     if (!out_file) {
       destroy(persons);
@@ -122,8 +121,9 @@ int main(int argc, char* argv[])
   for (size_t i = 0; i < persons.size; ++i) {
     *output << persons.data[i].id << " " << persons.data[i].info << '\n';
   }
-
-  std::cerr << correct << " " << ignored << '\n';
+  if (correct != 0 || ignored != 0) {
+    std::cerr << correct << " " << ignored << '\n';
+  }
 
   destroy(persons);
   destroy(ids);
