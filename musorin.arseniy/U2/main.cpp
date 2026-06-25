@@ -219,6 +219,111 @@ void runCommands(musorin::List< musorin::Person > & persons, std::istream & in,
   }
   (void)persons;
 }
+musorin::Person * findPerson(musorin::List< musorin::Person > & persons, std::size_t id)
+{
+  for (musorin::detail::Node< musorin::Person > * node = persons.head;
+    node != nullptr; node = node->next)
+  {
+    if (node->value.id == id)
+    {
+      return &node->value;
+    }
+  }
+  return nullptr;
+}
+template< class T, class Compare >
+void sortList(musorin::List< T > & list, Compare cmp)
+{
+  if (list.size < 2)
+  {
+    return;
+  }
+  musorin::List< T > sorted;
+  musorin::initList(sorted);
+  musorin::detail::Node< T > * current = list.head;
+  while (current != nullptr)
+  {
+    musorin::detail::Node< T > * next = current->next;
+    musorin::detail::Node< T > * prev = nullptr;
+    musorin::detail::Node< T > * scan = sorted.head;
+    while (scan != nullptr && cmp(scan->value, current->value))
+    {
+      prev = scan;
+      scan = scan->next;
+    }
+    current->next = scan;
+    if (prev == nullptr)
+    {
+      sorted.head = current;
+    }
+    else
+    {
+      prev->next = current;
+    }
+    if (scan == nullptr)
+    {
+      sorted.tail = current;
+    }
+    ++sorted.size;
+    current = next;
+  }
+  list.head = sorted.head;
+  list.tail = sorted.tail;
+  list.size = sorted.size;
+}
+bool lessSizeT(const std::size_t & a, const std::size_t & b)
+{
+  return a < b;
+}
+void cmdAnons(const musorin::List< musorin::Person > & persons, std::ostream & out)
+{
+  musorin::List< std::size_t > ids;
+  musorin::initList(ids);
+  for (const musorin::detail::Node< musorin::Person > * node = persons.head;
+    node != nullptr; node = node->next)
+  {
+    if (node->value.info.empty())
+    {
+      musorin::pushBack(ids, node->value.id);
+    }
+  }
+  sortList(ids, lessSizeT);
+  for (const musorin::detail::Node< std::size_t > * node = ids.head;
+    node != nullptr; node = node->next)
+  {
+    out << node->value << '\n';
+  }
+  musorin::clear(ids);
+}
+void cmdDesc(musorin::List< musorin::Person > & persons,
+  const musorin::List< std::string > & args, std::ostream & out)
+{
+  if (args.size != 1)
+  {
+    printInvalid(out);
+    return;
+  }
+  std::size_t id = 0;
+  if (!toId(args.head->value, id))
+  {
+    printInvalid(out);
+    return;
+  }
+  musorin::Person * person = findPerson(persons, id);
+  if (person == nullptr)
+  {
+    printInvalid(out);
+    return;
+  }
+  if (person->info.empty())
+  {
+    out << "<ANON>\n";
+  }
+  else
+  {
+    out << person->info << '\n';
+  }
+}
 }
 int main(int argc, char * argv[])
 {
