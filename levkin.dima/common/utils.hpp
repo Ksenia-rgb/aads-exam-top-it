@@ -135,5 +135,7 @@ namespace levkin {
     v.size = 0;
     v.cap = 0;
   }
+
+  void selectionSort(Vec< size_t >& vec);
 }
 #endif
