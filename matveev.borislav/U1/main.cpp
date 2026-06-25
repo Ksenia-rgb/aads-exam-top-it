@@ -143,5 +143,17 @@ int main(int argc, char **argv)
     *output << '\n';
   }
 
+  if (people.size == 0)
+  {
+    *output << '\n';
+  }
+  else
+  {
+    for (size_t i = 0; i < people.size; ++i)
+    {
+      matveev::writePerson(*output, people.data[i]);
+      *output << '\n';
+    }
+  }
   return 0;
 }
