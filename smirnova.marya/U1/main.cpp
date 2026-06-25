@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "input_handler.hpp"
 #include "person.hpp"
@@ -22,7 +23,7 @@ int main(int argc, char* argv[]) {
       } else if (arg.rfind("out:", 0) == 0) {
         outputFileName = arg.substr(4);
         hasOutputFile = true;
-      } else if (argc > 3) {
+      } else {
         std::cerr << "Invalid arguments." << std::endl;
         return 0;
       }
@@ -36,8 +37,14 @@ int main(int argc, char* argv[]) {
     smirnova::processInput(inputHandler.getInputStream(), persons, validEntries, ignoredEntries);
 
     if (hasOutputFile) {
-      std::cout << "in file " << outputFileName << '\n';
-      smirnova::printPersons(persons, std::cout);
+      std::ofstream output(outputFileName.c_str());
+
+      if (!output) {
+        std::cerr << "Failed to open output file." << std::endl;
+        return 2;
+      }
+
+      smirnova::printPersons(persons, output);
     } else {
       smirnova::printPersons(persons, std::cout);
 
