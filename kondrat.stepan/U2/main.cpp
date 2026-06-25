@@ -46,6 +46,9 @@ namespace kondrat
   void reserve(Storage< T > & storage, size_t capacity);
   template< class T >
   void pushBack(Storage< T > & storage, const T & value);
+  template< class T, class Compare >
+  void sort(Storage< T > & storage, Compare compare);
+  bool lessSize(size_t lhs, size_t rhs);
   bool isBlank(const std::string & line);
   bool parsePerson(const std::string & line, Person & person);
   Person * findPerson(PersonStorage & storage, size_t id);
@@ -54,6 +57,8 @@ namespace kondrat
   void readPersons(std::istream & input, PersonStorage & storage);
   bool parseMeeting(const std::string & line, Meeting & meeting);
   bool readMeetings(std::istream & input, MeetingStorage & meetings, PersonStorage & persons);
+  void printAnons(std::ostream & output, const PersonStorage & persons);
+  void processCommands(std::istream & input, std::ostream & output, const PersonStorage & persons);
 }
 
 bool kondrat::parseArgs(int argc, char ** argv, ProgramArgs & args)
@@ -144,6 +149,28 @@ void kondrat::pushBack(Storage< T > & storage, const T & value)
 
   storage.data[storage.size] = value;
   ++storage.size;
+}
+
+template< class T, class Compare >
+void kondrat::sort(Storage< T > & storage, Compare compare)
+{
+  for (size_t i = 0; i < storage.size; ++i)
+  {
+    for (size_t j = i + 1; j < storage.size; ++j)
+    {
+      if (compare(storage.data[j], storage.data[i]))
+      {
+        const T tmp = storage.data[i];
+        storage.data[i] = storage.data[j];
+        storage.data[j] = tmp;
+      }
+    }
+  }
+}
+
+bool kondrat::lessSize(size_t lhs, size_t rhs)
+{
+  return lhs < rhs;
 }
 
 bool kondrat::isBlank(const std::string & line)
@@ -323,6 +350,49 @@ bool kondrat::readMeetings(std::istream & input, MeetingStorage & meetings, Pers
   return true;
 }
 
+void kondrat::printAnons(std::ostream & output, const PersonStorage & persons)
+{
+  Storage< size_t > ids = {};
+  initStorage(ids);
+  try
+  {
+    for (size_t i = 0; i < persons.size; ++i)
+    {
+      if (!persons.data[i].described)
+      {
+        pushBack(ids, persons.data[i].id);
+      }
+    }
+    sort(ids, lessSize);
+    for (size_t i = 0; i < ids.size; ++i)
+    {
+      output << ids.data[i] << '\n';
+    }
+  }
+  catch (...)
+  {
+    destroyStorage(ids);
+    throw;
+  }
+  destroyStorage(ids);
+}
+
+void kondrat::processCommands(std::istream & input, std::ostream & output, const PersonStorage & persons)
+{
+  std::string command;
+  while (input >> command)
+  {
+    if (command == "anons")
+    {
+      printAnons(output, persons);
+    }
+    else
+    {
+      output << "<INVALID COMMAND>\n";
+    }
+  }
+}
+
 int main(int argc, char ** argv)
 {
   kondrat::ProgramArgs args = {};
@@ -369,6 +439,7 @@ int main(int argc, char ** argv)
       std::cerr << "<INVALID DATA>\n";
       return 3;
     }
+    kondrat::processCommands(std::cin, std::cout, persons);
   }
   catch (...)
   {
