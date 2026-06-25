@@ -213,6 +213,7 @@ int main(int argc, char ** argv)
 {
   if (argc > 3)
   {
+    std::cerr << "<INVALID COMMAND>\n";
     return 0;
   }
 
@@ -264,10 +265,7 @@ int main(int argc, char ** argv)
   try
   {
     kondrat::printPersons(*output, storage);
-    if (storage.size != 0 || ignored != 0)
-    {
-      std::cerr << storage.size << ' ' << ignored << '\n';
-    }
+    std::cerr << storage.size << ' ' << ignored << '\n';
   }
   catch (...)
   {
