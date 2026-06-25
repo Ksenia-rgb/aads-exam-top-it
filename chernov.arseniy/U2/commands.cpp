@@ -50,18 +50,28 @@ bool chernov::processDeanon(size_t anonId,
   return true;
 }
 
-bool chernov::processRedesc(size_t id,
-  const std::string & description,
-  Vector< Person > & persons,
-  Vector< size_t > & allIds)
+bool chernov::processRedesc(Vector< Person > & persons,
+  Vector< size_t > & allIds,
+  size_t id,
+  const std::string & description)
 {
+  bool existsInAllIds = false;
+  for (size_t i = 0; i < allIds.size; ++i) {
+    if (allIds.data[i] == id) {
+      existsInAllIds = true;
+      break;
+    }
+  }
+  if (!existsInAllIds) {
+    return false;
+  }
+
   size_t idx = findById(persons, id);
   if (idx != persons.size) {
     persons.data[idx].info = description;
   } else {
     Person p{id, description};
     pushBack(persons, p);
-    addUniqueId(allIds, id);
   }
   return true;
 }

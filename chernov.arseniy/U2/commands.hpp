@@ -13,7 +13,7 @@ namespace chernov {
     Vector< Person > & persons,
     Vector< Meeting > & meetings,
     Vector< size_t > & allIds);
-  bool processRedesc(size_t id, const std::string & description, Vector< Person > & persons, Vector< size_t > & allIds);
+  bool processRedesc(Vector< Person > & persons, Vector< size_t > & allIds, size_t id, const std::string & description);
 
 }
 #endif
