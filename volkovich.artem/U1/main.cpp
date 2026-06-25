@@ -14,7 +14,7 @@ struct Person {
 
 int main(int argc, char* argv[]) {
   if (argc > 3) {
-    std::cerr << "Too many args";
+    std::cerr << "Too many args\n";
     return 0;
   }
   std::istream* input = &std::cin;
@@ -36,24 +36,24 @@ int main(int argc, char* argv[]) {
 
       if (type == "in") {
         if (in == 1) {
-          std::cerr << "Double in";
+          std::cerr << "Double in\n";
           return 1;
         }
         file_in.open(arg);
         if (!file_in) {
-          std::cerr << "Cannot open file";
+          std::cerr << "Cannot open file\n";
           return 2;
         }
         input = &file_in;
         in = 1;
       } else if (type == "out") {
         if (out == 1) {
-          std::cerr << "Double out";
+          std::cerr << "Double out\n";
           return 1;
         }
         file_out.open(arg);
         if (!file_out) {
-          std::cerr << "Cannot open file";
+          std::cerr << "Cannot open file\n";
           return 2;
         }
         output = &file_out;
@@ -105,6 +105,6 @@ int main(int argc, char* argv[]) {
   if (ids.isEmpty()) {
     *output << '\n';
   }
-  std::cerr << not_ignored << ' ' << ignored;
+  std::cerr << not_ignored << ' ' << ignored << '\n';
   return 0;
 }
