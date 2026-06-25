@@ -128,8 +128,8 @@ int main(int argc, char* argv[])
   if (correct != 0 || ignored != 0) {
     std::cerr << correct << " " << ignored << '\n';
   } else {
-    std::cout << '\n';
     std::cerr << "0 0" << '\n';
+    return 0;
   }
 
   destroy(persons);
