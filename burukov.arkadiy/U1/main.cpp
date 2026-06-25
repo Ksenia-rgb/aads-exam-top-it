@@ -108,7 +108,6 @@ int main(int argc, char** argv)
     std::cerr << "Too many arguments\n";
     return 0;
   }
-  
   burukov::Args args = burukov::parseArgs(argc, argv);
   if (!args.valid)
   {
