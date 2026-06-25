@@ -8,11 +8,17 @@ namespace donkeev
     std::string info;
   };
 
-  struct PersonArray
+  struct PersonNode
   {
-    std::pair< size_t, Person* > data;
+    std::pair< size_t, Person* > data_;
+    PersonTree* neext_;
+    PersonTree* prev_;
+  };
+  struct PersonTree
+  {
+    PersonNode* head_;
+    PersonNode* tail_;
     size_t size;
-    size_t capacity;
   };
 }
 int main()
