@@ -18,7 +18,6 @@ namespace {
 bool shigarev::parseArgs(int argc, const char* const* argv, Args& args)
 {
   args = {"", "", false, false};
-
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
     if (startsWith(arg, "in:", IN_PREFIX_LEN)) {
