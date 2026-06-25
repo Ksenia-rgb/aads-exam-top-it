@@ -124,5 +124,16 @@ namespace levkin {
     v.data[v.size] = val;
     v.size++;
   }
+
+  template < class T >
+  void freeVec(Vec< T >& v)
+  {
+    if (v.data != nullptr) {
+      delete[] v.data;
+      v.data = nullptr;
+    }
+    v.size = 0;
+    v.cap = 0;
+  }
 }
 #endif
