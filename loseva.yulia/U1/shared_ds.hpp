@@ -49,72 +49,6 @@ struct Person {
   std::string info = "";
 };
 
-struct Meet {
-  std::size_t id1 = 0;
-  std::size_t id2 = 0;
-  int time = 0;
-};
-
-struct Date {
-  int d = 0;
-  int m = 0;
-  int y = 0;
-};
-
-struct MeetWithDate {
-  Meet meet;
-  Date date;
-};
-
-struct Period {
-  Date start;
-  Date end;
-  bool is_empty = true;
-};
-
-struct RangeStack {
-  Period* data = nullptr;
-  std::size_t size = 0;
-  std::size_t capacity = 0;
-};
-
-void init(RangeStack& st)
-{
-  st.data = nullptr;
-  st.size = 0;
-  st.capacity = 0;
-}
-
-void destroy(RangeStack& st)
-{
-  delete[] st.data;
-  st.data = nullptr;
-  st.size = 0;
-  st.capacity = 0;
-}
-
-void push(RangeStack& st, const Period& val)
-{
-  if (st.size == st.capacity) {
-    const std::size_t new_cap = (st.capacity == 0) ? 1 : st.capacity * 2;
-    Period* new_data = new Period[new_cap];
-    for (std::size_t i = 0; i < st.size; ++i) {
-      new_data[i] = st.data[i];
-    }
-    delete[] st.data;
-    st.data = new_data;
-    st.capacity = new_cap;
-  }
-  st.data[st.size++] = val;
-}
-
-void pop(RangeStack& st)
-{
-  if (st.size > 0) {
-    st.size--;
-  }
-}
-
 bool has_person(const Array< Person >& arr, const std::size_t id)
 {
   for (std::size_t i = 0; i < arr.size; ++i) {
@@ -123,20 +57,6 @@ bool has_person(const Array< Person >& arr, const std::size_t id)
     }
   }
   return false;
-}
-
-int compare_dates(const Date& a, const Date& b)
-{
-  if (a.y != b.y) {
-    return (a.y < b.y) ? -1 : 1;
-  }
-  if (a.m != b.m) {
-    return (a.m < b.m) ? -1 : 1;
-  }
-  if (a.d != b.d) {
-    return (a.d < b.d) ? -1 : 1;
-  }
-  return 0;
 }
 
 }
