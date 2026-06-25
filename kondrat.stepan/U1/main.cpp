@@ -264,9 +264,13 @@ int main(int argc, char ** argv)
 
   try
   {
-    kondrat::printPersons(*output, storage);
-    if (storage.size != 0 || ignored != 0)
+    if (storage.size == 0 && ignored == 0)
     {
+      *output << '\n';
+    }
+    else
+    {
+      kondrat::printPersons(*output, storage);
       std::cerr << storage.size << ' ' << ignored << '\n';
     }
   }
