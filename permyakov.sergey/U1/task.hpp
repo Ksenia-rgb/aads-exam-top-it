@@ -52,14 +52,16 @@ namespace permyakov
   {
     std::pair< size_t, size_t > res = {0, 0};
     std::string line;
+    Person pers;
     while (std::getline(in, line)) {
       if (line.empty()) {
         res.second++;
         continue;
       }
-      Person pers;
       std::string idP;
       std::string infoP;
+      pers.id = 0;
+      pers.info = infoP;
       for (size_t i = 0; i < line.length(); ++i) {
         char c = line[i];
         if (!pers.id) {
@@ -78,11 +80,17 @@ namespace permyakov
           infoP += c;
         }
       }
+      pers.info = infoP;
       if (!pers.id || pers.info.empty()) {
         res.second++;
         continue;
       }
-      addToEnd(lst, pers);
+      try {
+        addToEnd(lst, pers);
+      } catch (...) {
+        clear(lst);
+        throw;
+      }
       res.first++;
     }
     return res;
