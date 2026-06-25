@@ -28,6 +28,7 @@ namespace zubarev
   void destroy(PersonArray& arr);
   void resize(PersonArray& arr);
   void push(PersonArray& arr, const Person& value);
+  bool exists(const PersonArray&, size_t);
 
   void init(HashSet& set);
   void destroy(HashSet& set);
