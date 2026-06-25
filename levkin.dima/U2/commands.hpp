@@ -1,5 +1,5 @@
 #ifndef COMMANDS_HPP
-#define COMMANDS_HPP 
+#define COMMANDS_HPP
 #include <iosfwd>
 namespace levkin {
   class DB;
@@ -14,5 +14,9 @@ namespace levkin {
   void outPersons(const DB& db, std::istream& is, std::ostream& os);
 
   void runInteractiveLoop(DB& db, std::istream& is, std::ostream& os);
+  bool parseArguments(int argc,
+                      char* argv[],
+                      std::string& data_file,
+                      std::string& in_file);
 }
 #endif

@@ -11,5 +11,12 @@ int main(int argc, char* argv[])
     std::cerr << "Error: Invalid number of arguments.\n";
     return 1;
   }
-  std::cout << "levkin.dima" << "\n";
+  std::string data_file;
+  std::string in_file;
+
+  using namespace levkin;
+  if (!parseArguments(argc, argv, data_file, in_file)) {
+    return 1;
+  }
+  
 }
