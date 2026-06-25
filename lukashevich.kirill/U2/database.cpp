@@ -61,7 +61,18 @@ void lukashevich::addMeeting(Database& database, size_t first,
 }
 
 bool lukashevich::hasMeetingWith(const Database& database, size_t id, size_t other)
-{}
+{
+  for (size_t i = 0; i < database.meetings.size_; ++i) {
+    const Meeting& meeting = database.meetings.data_[i];
+
+    if (((meeting.first == id) && (meeting.second == other))
+      || (meeting.first == other) && (meeting.second == id)) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 bool lukashevich::pushUniqueId(Array< size_t >& ids, size_t id)
 {}
