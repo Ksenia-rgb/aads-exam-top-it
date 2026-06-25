@@ -25,3 +25,34 @@ void lukashevich::addAnonPerson(Database& database, size_t id)
 
   pushBack(database.persons, person);
 }
+
+bool lukashevich::addDescribedPerson(Database& database,
+  size_t id, const std::string& info)
+{
+  if (hasPerson(database.persons, id)) {
+    return false;
+  }
+
+  Person person;
+  person.id = id;
+  person.info = info;
+  person.hasInfo = true;
+
+  pushBack(database.persons, person);
+  return true;
+}
+
+void lukashevich::addMeeting(Database& database, size_t first, size_t second, size_t time)
+{}
+
+bool lukashevich::hasMeetingWith(const Database& database, size_t id, size_t other)
+{}
+
+bool lukashevich::pushUniqueId(Array< size_t >& ids, size_t id)
+{}
+
+void lukashevich::sortIds(Array< size_t >& ids)
+{}
+
+void lukashevich::sortMeetingViews(Array< MeetingView >& views)
+{}
