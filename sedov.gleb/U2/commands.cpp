@@ -358,5 +358,6 @@ void sedov::runCommands(std::istream & in, std::ostream & out, Graph *& root)
     {
       out << "<INVALID COMMAND>\n";
     }
+    out << "\n";
   }
 }
