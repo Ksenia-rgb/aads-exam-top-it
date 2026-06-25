@@ -71,7 +71,6 @@ int main(int argc, char* argv[])
     }
   }
 
-  // 2. Парсинг файла встреч (обязательный параметр)
   std::ifstream data_file(data_name);
   if (!data_file) {
     std::cerr << "Failed to open data file\n";
@@ -125,7 +124,6 @@ int main(int argc, char* argv[])
     while (pos < line.size() && std::isspace(static_cast< unsigned char >(line[pos])))
       ++pos;
 
-    // Чтение длительности встречи
     size_t duration = 0;
     bool has_dur = false;
     while (pos < line.size() && std::isdigit(static_cast< unsigned char >(line[pos]))) {
@@ -150,7 +148,6 @@ int main(int argc, char* argv[])
       return 3;
     }
 
-    // Если этих физлиц еще нет в системе, регистрируем их как <ANON> за O(1) через Хэш-таблицу
     if (!contains(state.ids, id1)) {
       zubarev::Person p;
       p.id = id1;
