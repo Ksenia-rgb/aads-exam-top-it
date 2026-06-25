@@ -52,7 +52,6 @@ namespace levkin {
         idx++;
       }
       if (!has_digit || overflow) {
-        ignored++;
         continue;
       }
       if (idx < line.length() && !isSpaceChar(line[idx])) {
