@@ -41,6 +41,21 @@ struct Person
     size_t size_;
   };
 
+  struct CommandNode
+  {
+    std::string name;
+    void(*cmd)(MeetingList&, PersonList&, std::ostream&);
+    CommandNode* next_;
+    CommandNode* prev_;
+  };
+
+  struct CommandList
+  {
+    CommandNode* head_;
+    CommandNode* tail_;
+    size_t size;
+  };
+
 }
 
 #endif
