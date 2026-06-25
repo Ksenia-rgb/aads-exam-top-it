@@ -108,7 +108,30 @@ namespace donkeev
       }
       size_t id = std::stoull(idStr);
 
-      std::string description = nextWord(line, pos);
+      while (pos < line.length() && (line[pos] == ' ' || line[pos] == '\t'))
+      {
+        ++pos;
+      }
+
+      if (pos >= line.length())
+      {
+        ++ignored;
+        continue;
+      }
+
+      size_t end = line.length();
+      while (end > pos && (line[end - 1] == ' ' || line[end - 1] == '\t'))
+      {
+        --end;
+      }
+
+      if (end <= pos)
+      {
+        ++ignored;
+        continue;
+      }
+
+      std::string description = line.substr(pos, end - pos);
       if (description.empty())
       {
         ++ignored;
