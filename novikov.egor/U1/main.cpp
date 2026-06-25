@@ -55,7 +55,6 @@ int main(int argc, char *argv[])
   for (size_t i = 0; i < seen.capacity; ++i) {
     seen.data[i] = nullptr;
   }
-  size_t id;
   std::string info;
   std::string line;
   size_t successCount = 0;
