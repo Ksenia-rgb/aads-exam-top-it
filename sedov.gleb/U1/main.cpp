@@ -31,6 +31,7 @@ int main(int argc, char ** argv)
   sedov::Vector< sedov::Person > persons = sedov::makeVec< sedov::Person >(4);
   sedov::hashTable< size_t > seen = sedov::makeHashTable< size_t >(16);
   size_t ignoreCount = 0;
+  bool hasInput = false;
   try
   {
     {
@@ -49,6 +50,7 @@ int main(int argc, char ** argv)
       std::string line;
       while (std::getline(* inStream, line))
       {
+        hasInput = true;
         if (line.empty())
         {
           continue;
@@ -85,13 +87,16 @@ int main(int argc, char ** argv)
         * outStream << persons.data[i].id << " " << persons.data[i].info << "\n";
       }
     }
-    std::cerr << persons.size << " " << ignoreCount << "\n";
+    if (hasInput)
+    {
+      std::cerr << persons.size << " " << ignoreCount << "\n";
+    }
     cleanupResources(persons, seen);
     return 0;
   }
   catch (...)
   {
     cleanupResources(persons, seen);
-    return 2;
+    throw;
   }
 }
