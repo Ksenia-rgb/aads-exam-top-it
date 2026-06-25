@@ -30,4 +30,10 @@ int main(int argc, char ** argv)
       return 2;
     }
   }
+
+  std::istream & input = inFile.empty() ? std::cin : fin;
+  std::ostream & output = outFile.empty() ? std::cout : fout;
+
+  Vector< Person > persons;
+  init(persons);
 }
