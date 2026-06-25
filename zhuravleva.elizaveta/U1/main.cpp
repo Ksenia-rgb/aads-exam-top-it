@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
   if (!zhuravleva::parseArgs(argc, argv, args))
   {
     std::cerr << "wrong parameters\n";
-    return 0;
+    return 1;
   }
   std::ifstream inputFile;
   std::istream *input = &std::cin;
@@ -53,12 +53,13 @@ int main(int argc, char *argv[])
     }
     output = &outputFile;
   }
-
   zhuravleva::printPersons(*output, persons);
-  if (good != 0 || bad != 0)
-{
+  if (persons.size == 0)
+  {
+    *output << "\n";
+  }
   std::cerr << good << " " << bad << "\n";
-}
+
   zhuravleva::destroy(persons);
   return 0;
 }
