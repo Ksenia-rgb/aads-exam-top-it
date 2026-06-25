@@ -1,6 +1,11 @@
 #include "processor.hpp"
 
 int main(int argc, char* argv[]) {
+  if (argc > 3) {
+    std::cerr << "Error: Too many arguments" << "\n";
+    return 1;
+  }
+
   std::string inputFilename;
   std::string outputFilename;
   for (int i = 1; i < argc; i++) {
@@ -49,11 +54,7 @@ int main(int argc, char* argv[]) {
   processor.outputResults(*outputStream);
   size_t valid = processor.getValidCount();
   size_t ignored = processor.getIgnoredCount();
-  if (valid > 0 || ignored > 0) {
-    std::cerr << valid << " " << ignored << "\n";
-  } else {
-    return 1;
-  }
+  std::cerr << valid << " " << ignored << "\n";
   if (outputFile.is_open()) {
     outputFile.close();
   }
