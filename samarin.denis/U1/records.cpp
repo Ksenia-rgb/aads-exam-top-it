@@ -17,13 +17,17 @@ namespace {
     return std::isdigit(static_cast< unsigned char >(symbol)) != 0;
   }
 
-  std::string trimFront(const std::string & text)
+  std::string trim(const std::string & text)
   {
     std::size_t begin = 0;
     while (begin < text.size() && isSpaceChar(text[begin])) {
       ++begin;
     }
-    return text.substr(begin);
+    std::size_t end = text.size();
+    while (end > begin && isSpaceChar(text[end - 1])) {
+      --end;
+    }
+    return text.substr(begin, end - begin);
   }
 
   bool parsePerson(const std::string & line, samarin::Person & person)
@@ -43,7 +47,7 @@ namespace {
     if (!hasDigit) {
       return false;
     }
-    const std::string info = trimFront(line.substr(position));
+    const std::string info = trim(line.substr(position));
     if (info.empty()) {
       return false;
     }
