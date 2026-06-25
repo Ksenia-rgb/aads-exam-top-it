@@ -1,5 +1,6 @@
 #include <iostream>
 #include <exception>
+#include <fstream>
 
 namespace donkeev
 {
@@ -126,9 +127,117 @@ namespace donkeev
       pushBack(list, pers);
     }
   }
+
+  void printResult(std::ostream& out, donkeev::PersonList& list)
+  {
+      donkeev::PersonNode* current = list.head_;
+      while (current)
+      {
+        out << current->data->id << " " << current->data->info << "\n";
+        current = current->next_;
+      }
+  }
+
+  void clearList(PersonList& list)
+  {
+    PersonNode* current = list.head_;
+    while (current)
+    {
+      PersonNode* next = current->next_;
+      delete current->data;
+      delete current;
+      current = next;
+    }
+    list.head_ = nullptr;
+    list.tail_ = nullptr;
+    list.size_ = 0;
+  }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+  std::istream* in = &std::cin;
+  std::ostream* out = &std::cout;
+    
+  std::ifstream inFile;
+  std::ofstream outFile;
 
+  if (argc > 3)
+  {
+    std::cerr << "Bad parametrs\n";
+    return 1;
+  }
+
+  int inCount = 0;
+  int outCount = 0;
+  
+  for (int i = 1; i < argc; ++i)
+  {
+    std::string arg = argv[i];
+        
+    if (arg.rfind("in:", 0) == 0)
+    {
+      ++inCount;
+      if (inCount > 1)
+      {
+        std::cerr << "Invalid arguments: multiple input files specified\n";
+        return 1;
+      }
+      
+      std::string filename = arg.substr(3);
+      if (filename.empty())
+      {
+        std::cerr << "Invalid arguments: empty filename for input\n";
+        return 1;
+      }
+      
+      inFile.open(filename);
+      if (!inFile.is_open())
+      {
+        std::cerr << "Failed to open input file: " << filename << "\n";
+        return 2;
+      }
+      in = &inFile;
+    }
+    else if (arg.rfind("out:", 0) == 0)
+    {
+      ++outCount;
+      if (outCount > 1)
+      {
+        std::cerr << "Invalid arguments: multiple output files specified\n";
+        return 1;
+      }
+      
+      std::string filename = arg.substr(4);
+      if (filename.empty())
+      {
+        std::cerr << "Invalid arguments: empty filename for output\n";
+        return 1;
+      }
+      
+      outFile.open(filename);
+      if (!outFile.is_open())
+      {
+        std::cerr << "Failed to open output file: " << filename << "\n";
+        return 2;
+      }
+      out = &outFile;
+    }
+    else
+    {
+      std::cerr << "Invalid arguments: unknown argument '" << arg << "'\n";
+      return 1;
+    }
+  }
+
+  donkeev::PersonList list;
+  size_t ignoredCount = 0;
+    
+  donkeev::readingPersons(*in, list, ignoredCount);
+    
+  donkeev::printResult(*out, list);
+  std::cerr << list.size_ << " " << ignoredCount << "\n";
+
+  donkeev::clearList(list);
+  return 0;
 }
