@@ -501,18 +501,18 @@ bool shaykhraziev::executeOutPersons(U2Storage& storage,
     const std::string& line,
     std::ostream& result)
 {
+  static_cast< void >(result);
   std::string filename;
   if (!parseFileCommand(line, "out-persons", filename))
   {
     return false;
   }
-  std::ofstream output(filename.c_str());
+  std::ofstream output(filename.c_str(), std::ios::app);
   if (!output)
   {
     return false;
   }
   writePersons(output, storage.persons);
-  writePersons(result, storage.persons);
   return true;
 }
 
