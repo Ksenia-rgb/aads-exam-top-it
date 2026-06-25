@@ -36,4 +36,52 @@ int main(int argc, char ** argv)
 
   Vector< Person > persons;
   init(persons);
+
+  size_t success = 0;
+  size_t ignored = 0;
+  std::string line;
+
+  while (std::getline(input, line)) {
+    size_t first = line.find_first_not_of(" \t");
+    if (first == std::string::npos) {
+      continue;
+    }
+
+    size_t space = line.find_first_of(" \t", first);
+    if (space == std::string::npos) {
+      ++ignored;
+      continue;
+    }
+
+    std::string idStr = line.substr(first, space - first);
+
+    size_t descStart = line.find_first_not_of(" \t", space);
+    if (descStart == std::string::npos) {
+      ++ignored;
+      continue;
+    }
+
+    std::string description = line.substr(descStart);
+    if (description.find_first_not_of(" \t") == std::string::npos) {
+      ++ignored;
+      continue;
+    }
+
+    size_t id;
+    try {
+      id = std::stoull(idStr);
+    } catch (...) {
+      ++ignored;
+      continue;
+    }
+
+    if (findById(persons, id) != persons.size) {
+      ++ignored;
+      continue;
+    }
+
+    Person p{id, description};
+    pushBack(persons, p);
+    ++success;
+  }
 }
