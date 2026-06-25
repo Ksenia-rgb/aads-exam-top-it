@@ -1,5 +1,7 @@
 #include <cstddef>
+#include <fstream>
 #include <iostream>
+#include <string>
 
 namespace alisov
 {
@@ -127,6 +129,48 @@ int main(int argc, char *argv[])
   if (argc > 3) {
     return 1;
   }
+  std::ifstream f_in;
+  if (has_in) {
+    f_in.open(in_file);
+    if (!f_in.is_open()) {
+      return 2;
+    }
+  }
+  std::istream &input = has_in ? f_in : std::cin;
   alisov::Vector< alisov::Person > people;
   alisov::init(people);
+  size_t success_count = 0;
+  size_t ignore_count = 0;
+  std::string line = "";
+  while (std::getline(input, line)) {
+    alisov::Person p;
+    if (alisov::parse_person(line, p)) {
+      if (alisov::id_unique(people, p.id)) {
+        alisov::push_back(people, p);
+        ++success_count;
+      } else {
+        ++ignore_count;
+      }
+    } else {
+      ++ignore_count;
+    }
+  }
+  if (has_in) {
+    f_in.close();
+  }
+  std::ofstream f_out;
+  if (has_out) {
+    f_out.open(out_file);
+    if (!f_out.is_open()) {
+      return 2;
+    }
+  }
+  std::ostream &output = has_out ? f_out : std::cout;
+  for (size_t i = 0; i < people.size; ++i) {
+    output << people.data[i].id << " " << people.data[i].info << "\n";
+  }
+  if (has_out) {
+    f_out.close();
+  }
+  std::cerr << success_count << " " << ignore_count << "\n";
 }
