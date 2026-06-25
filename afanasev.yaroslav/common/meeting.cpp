@@ -37,4 +37,32 @@ namespace afanasev
     }
     meetings[count++] = meeting;
   }
+
+  void replacePersonInMeetings(Meeting * meetings, size_t count, size_t oldId, size_t newId)
+  {
+    for (size_t i = 0; i < count; ++i)
+    {
+      if (meetings[i].id1 == oldId)
+      {
+        meetings[i].id1 = newId;
+      }
+      if (meetings[i].id2 == oldId)
+      {
+        meetings[i].id2 = newId;
+      }
+    }
+  }
+
+  void removeSelfMeetings(Meeting *& meetings, size_t & count)
+  {
+    size_t write = 0;
+    for (size_t i = 0; i < count; ++i)
+    {
+      if (meetings[i].id1 != meetings[i].id2)
+      {
+        meetings[write++] = meetings[i];
+      }
+    }
+    count = write;
+  }
 }

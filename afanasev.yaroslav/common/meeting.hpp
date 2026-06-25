@@ -12,8 +12,10 @@ namespace afanasev
     int duration;
   };
 
-  bool parseMeeting(const std::string& line, Meeting& meeting);
-  void addMeeting(Meeting*& meetings, size_t& count, size_t& capacity, const Meeting& meeting);
+  bool parseMeeting(const std::string & line, Meeting & meeting);
+  void addMeeting(Meeting *& meetings, size_t & count, size_t & capacity, const Meeting & meeting);
+  void replacePersonInMeetings(Meeting * meetings, size_t count, size_t oldId, size_t newId);
+  void removeSelfMeetings(Meeting *& meetings, size_t & count);
 }
 
 #endif

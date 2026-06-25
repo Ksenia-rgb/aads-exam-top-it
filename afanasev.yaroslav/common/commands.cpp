@@ -8,6 +8,22 @@
 
 namespace afanasev
 {
+  bool isValidId(const Person* persons, size_t count, size_t id)
+  {
+    return findPersonIndex(persons, count, id) != -1;
+  }
+
+  bool isAnon(const Person* persons, size_t count, size_t id)
+  {
+    int idx = findPersonIndex(persons, count, id);
+    if (idx == -1)
+    {
+      return true;
+    }
+    return persons[idx].info.empty();
+  }
+
+
   void cmdAnons(std::istringstream &, Person *& persons, size_t & count, size_t &,
     Meeting *&, size_t &)
   {
@@ -34,6 +50,26 @@ namespace afanasev
     void (*handler)(std::istringstream &,
       Person *&, size_t &, size_t &, Meeting *&, size_t &);
   };
+
+  void cmdDeanonymize(std::istringstream & iss, Person *& persons, size_t & count,
+    size_t & capacity,Meeting *& meetings, size_t & mCount)
+  {
+    size_t anonId, id;
+    if (!(iss >> anonId >> id))
+    {
+      std::cout << "<INVALID COMMAND>\n";
+      return;
+    }
+    if (!isValidId(persons, count, anonId) || !isValidId(persons, count, id) ||
+      !isAnon(persons, count, anonId) || isAnon(persons, count, id))
+    {
+      std::cout << "<INVALID COMMAND>\n";
+      return;
+    }
+    replacePersonInMeetings(meetings, mCount, anonId, id);
+    removeSelfMeetings(meetings, mCount);
+    removePersonById(persons, count, anonId);
+  }
 
   const Command commands[] =
   {
