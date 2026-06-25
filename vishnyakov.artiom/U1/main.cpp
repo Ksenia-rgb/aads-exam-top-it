@@ -5,6 +5,7 @@
 #include "person.hpp"
 #include "list.hpp"
 #include "hash.hpp"
+#include "string_utils.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -76,49 +77,41 @@ int main(int argc, char* argv[])
 
   while (std::getline(*in, line))
   {
-    if (line.empty())
+    std::string trimmed = vishnyakov::trim(line);
+
+    if (trimmed.empty())
     {
       continue;
     }
 
     size_t pos = 0;
-    while (pos < line.length() && std::isspace(line[pos]))
-    {
-      ++pos;
-    }
-
-    if (pos >= line.length())
-    {
-      continue;
-    }
-
     size_t id = 0;
     bool validId = true;
 
-    while (pos < line.length() && std::isdigit(line[pos]))
+    while (pos < trimmed.length() && std::isdigit(trimmed[pos]))
     {
-      id = id * 10 + (line[pos] - '0');
+      id = id * 10 + (trimmed[pos] - '0');
       ++pos;
     }
 
-    if (pos == 0 || !validId)
+    if (pos == 0)
     {
       ++ignored;
       continue;
     }
 
-    while (pos < line.length() && std::isspace(line[pos]))
+    while (pos < trimmed.length() && std::isspace(trimmed[pos]))
     {
       ++pos;
     }
 
-    if (pos >= line.length())
+    if (pos >= trimmed.length())
     {
       ++ignored;
       continue;
     }
 
-    std::string info = line.substr(pos);
+    std::string info = trimmed.substr(pos);
 
     if (info.empty())
     {
