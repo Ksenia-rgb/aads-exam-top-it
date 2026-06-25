@@ -8,6 +8,16 @@ static void stripCr(std::string& line)
   }
 }
 
+static bool isBlank(const std::string& line)
+{
+  for (size_t i = 0; i < line.size(); ++i) {
+    if (line[i] != ' ' && line[i] != '\t') {
+      return false;
+    }
+  }
+  return true;
+}
+
 static bool hasId(const gordejchik::dynarray_t< gordejchik::Person >& arr, size_t id)
 {
   for (size_t i = 0; i < arr.size_; ++i) {
@@ -20,9 +30,6 @@ static bool hasId(const gordejchik::dynarray_t< gordejchik::Person >& arr, size_
 
 static bool parseLine(const std::string& line, size_t& id, std::string& info)
 {
-  if (line.empty()) {
-    return false;
-  }
   size_t pos = 0;
   try {
     unsigned long long raw = std::stoull(line, &pos);
@@ -47,23 +54,24 @@ static bool parseLine(const std::string& line, size_t& id, std::string& info)
   return true;
 }
 
-gordejchik::read_result_t gordejchik::readPersons(std::istream& in, dynarray_t< Person >& arr)
+gordejchik::read_result_t gordejchik::readPersons(std::istream& in,
+    dynarray_t< Person >& arr)
 {
   read_result_t result;
   result.success_ = 0;
   result.ignored_ = 0;
   std::string line;
   while (std::getline(in, line)) {
-      stripCr(line);
-      if (line.empty()) {
-        continue;
-      }
-      size_t id = 0;
-      std::string info;
-      if (!parseLine(line, id, info)) {
-        ++result.ignored_;
-        continue;
-      }
+    stripCr(line);
+    if (isBlank(line)) {
+      continue;
+    }
+    size_t id = 0;
+    std::string info;
+    if (!parseLine(line, id, info)) {
+      ++result.ignored_;
+      continue;
+    }
     if (hasId(arr, id)) {
       ++result.ignored_;
       continue;

@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
   if (args.hasIn_) {
     std::ifstream fin(args.inFile_);
     if (!fin.is_open()) {
-      std::cerr << "Не получается открыть input файл" << "\n";
+      std::cerr << "Cannot open input file" << "\n";
       return 2;
     }
     counts = gordejchik::readPersons(fin, persons);
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
     std::ofstream fout(args.outFile_);
     if (!fout.is_open()) {
       gordejchik::destroy(persons);
-      std::cerr << "Не получается открыть output файл" << "\n";
+      std::cerr << "Cannot open output file" << "\n";
       return 2;
     }
     gordejchik::writePersons(fout, persons);
