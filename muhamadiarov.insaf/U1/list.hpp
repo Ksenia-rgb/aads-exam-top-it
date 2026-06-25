@@ -1,8 +1,12 @@
 #ifndef LIST_HPP
 #define LIST_HPP
+#include <iostream>
 
 namespace muhamadiarov
 {
+  template< class T >
+  class Queue;
+
   template< class T >
   struct Node
   {
@@ -15,22 +19,25 @@ namespace muhamadiarov
   struct List
   {
     List() noexcept;
-    void pushFront(const T& data);
-    void popBack(const T& data) noexcept;
+    void pushBack(const T& data);
+    void popFront() noexcept;
     size_t size() const noexcept;
-  private
+  private:
     Node< T >* head_;
     size_t size_;
+    friend class Queue< T >;
   };
 }
+
+namespace muh = muhamadiarov;
 
 template< class T >
 muh::List< T >::List() noexcept:
   head_(nullptr),
-  size(0)
+  size_(0)
 {}
 
-template <class T>
+template<class T>
 void muh::List< T >::pushBack(const T& value)
 {
   Node< T >* newNode = new Node< T >{value, nullptr, nullptr};
@@ -58,7 +65,7 @@ void muh::List< T >::pushBack(const T& value)
   }
 }
 
-template <class T>
+template<class T>
 void muh::List< T >::popFront() noexcept
 {
   if (!head_)
@@ -83,7 +90,7 @@ void muh::List< T >::popFront() noexcept
 }
 
 template< class T >
-size_t size() const
+size_t muh::List< T >::size() const noexcept
 {
   return size_;
 }

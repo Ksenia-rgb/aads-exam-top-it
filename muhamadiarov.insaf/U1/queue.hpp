@@ -1,11 +1,11 @@
 #ifndef QUEUE_HPP
 #define QUEUE_HPP
-#include <list.hpp>
+#include "list.hpp"
 
 namespace muhamadiarov
 {
-  template < class T >
-  class Queque
+  template< class T >
+  class Queue
   {
   public:
     bool empty() const noexcept;
@@ -20,8 +20,8 @@ namespace muhamadiarov
 
 namespace muh = muhamadiarov;
 
-template <class T>
-bool muh::Queque< T >::empty() const noexcept
+template<class T>
+bool muh::Queue< T >::empty() const noexcept
 {
   if (data_.size() == 0)
   {
@@ -30,26 +30,26 @@ bool muh::Queque< T >::empty() const noexcept
   return false;
 }
 
-template <class T>
-T& muh::Queque< T >::top() noexcept
+template<class T>
+T& muh::Queue< T >::top() noexcept
 {
-  return head_.data_;
+  return data_.head_->data_;
 }
 
-template <class T>
-void muh::Queque< T >::push(const T& val)
+template<class T>
+void muh::Queue< T >::push(const T& val)
 {
   data_.pushBack(val);
 }
 
-template <class T>
-void muh::Queque< T >::pop() noexcept
+template<class T>
+void muh::Queue< T >::pop() noexcept
 {
   data_.popFront();
 }
 
-template <class T>
-size_t muh::Queque< T >::size() const noexcept
+template<class T>
+size_t muh::Queue< T >::size() const noexcept
 {
   return data_.size();
 }

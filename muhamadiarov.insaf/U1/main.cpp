@@ -2,6 +2,8 @@
 #include <fstream>
 #include <limits>
 #include <string>
+#include <utility>
+#include "queue.hpp"
 
 namespace muhamadiarov
 {
@@ -15,34 +17,51 @@ namespace muhamadiarov
 int main(int argc, char *argv[])
 {
   namespace muh = muhamadiarov;
+  
+  size_t id;
+  std::string data;
+  muh::Queue< muh::Person > queue;
+  if (argc == 2)
+  { 
+    std::ifstream file(argv[1]);
+    if (!file.is_open())
+    {
+      std::cerr << "Can't open file\n";
+      return 1;
+    }
 
-  if (argc != 2)
+    try
+    {
+      while (file >> id >> data)
+      {
+        queue.push({id, data});
+      }
+    }
+    catch (const std::exception& e)
+    {
+      std::cerr << "Incorrect data: " << e.what() << '\n';
+      return 1;
+    }
+    file.close();
+  }
+  else if (argc == 1)
+  {
+    while (std::cin >> id >> data)
+    {
+      queue.push({id, data});
+    }
+  }
+  else
   {
     std::cerr << "Incorrect usage\n";
     return 1;
   }
 
-  std::ifstream file(argv[1]);
-  if (!file.is_open())
+  for (size_t i = 0; i < queue.size(); ++i)
   {
-    std::cerr << "Can't open file\n";
-    return 1;
+    muh::Person& person = queue.top();
+    std::cout << person.id << ' ' << person.info << '\n';
+    queue.pop();
   }
-
-  int id;
-  std::string data;
-  try
-  {
-    while ()
-    {
-    }
-  }
-  catch (const std::exception& e)
-  {
-    std::cerr << "Error loading graph: " << e.what() << '\n';
-    return 1;
-  }
-  file.close();
-
   return 0;
 }
