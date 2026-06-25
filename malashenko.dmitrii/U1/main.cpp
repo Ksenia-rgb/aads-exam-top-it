@@ -1,6 +1,11 @@
 #include <iostream>
+#include <cstddef>
+#include <string>
 
-int main()
+namespace malashenko
 {
-  std::cout << "malashenko.dmitrii\n";
+  struct Person {
+    size_t id;
+    std::string info;
+  };
 }
