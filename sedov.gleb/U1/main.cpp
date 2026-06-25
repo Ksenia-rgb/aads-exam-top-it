@@ -21,14 +21,13 @@ int main(int argc, char ** argv)
 {
   if (argc > 3)
   {
-    std::cerr << "Too many arguments\n";
     return 0;
   }
   sedov::Args args = sedov::parseArgs(argc, argv);
   if (!args.valid)
   {
     std::cerr << "Invalid arguments\n";
-    return 0;
+    return 1;
   }
   sedov::Vector< sedov::Person > persons = sedov::makeVec< sedov::Person >(4);
   sedov::hashTable< size_t > seen = sedov::makeHashTable< size_t >(16);
