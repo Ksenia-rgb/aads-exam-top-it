@@ -302,41 +302,41 @@ int main(int argc, char* argv[])
       date.month = month;
       date.year = year;
 
-      if (dateLess(date, currentRange.end))
+      if (!dateLess(date, currentRange.end))
       {
-        Range prev = currentRange;
-        rangeHistory.pushBack(prev);
+        std::cout << "<INVALID COMMAND>\n";
+        continue;
+      }
 
-        Date newStart;
-        newStart.day = day;
-        newStart.month = month;
-        newStart.year = year;
+      Range prev = currentRange;
+      rangeHistory.pushBack(prev);
 
-        bool found = false;
-        for (ListNode< Meeting >* node = meetings.begin(); node != meetings.end(); node = node->next)
+      Date newStart = date;
+
+      bool found = false;
+      for (ListNode< Meeting >* node = meetings.begin(); node != meetings.end(); node = node->next)
+      {
+        if (!dateLess(node->data.date, newStart))
         {
-          if (!dateLess(node->data.date, newStart) && !dateLess(node->data.date, currentRange.start))
+          if (!found || dateLess(node->data.date, newStart))
           {
-            if (!found || dateLess(node->data.date, newStart))
-            {
-              newStart = node->data.date;
-              found = true;
-            }
+            newStart = node->data.date;
+            found = true;
           }
         }
+      }
 
-        if (found)
-        {
-          currentRange.start = newStart;
-        }
-        else
+      if (found)
+      {
+        currentRange.start = newStart;
+        if (dateLess(currentRange.end, currentRange.start))
         {
           currentRange.empty = true;
         }
       }
       else
       {
-        std::cout << "<INVALID COMMAND>\n";
+        currentRange.empty = true;
       }
     }
     else if (command == "before")
@@ -355,38 +355,43 @@ int main(int argc, char* argv[])
       date.month = month;
       date.year = year;
 
-      if (dateLess(currentRange.start, date))
+      if (!dateLess(currentRange.start, date))
       {
-        Range prev = currentRange;
-        rangeHistory.pushBack(prev);
+        std::cout << "<INVALID COMMAND>\n";
+        continue;
+      }
 
-        Date newEnd;
-        newEnd.day = day;
-        newEnd.month = month;
-        newEnd.year = year;
+      Range prev = currentRange;
+      rangeHistory.pushBack(prev);
 
-        bool found = false;
-        for (ListNode< Meeting >* node = meetings.begin(); node != meetings.end(); node = node->next)
+      Date newEnd = date;
+
+      bool found = false;
+      for (ListNode< Meeting >* node = meetings.begin(); node != meetings.end(); node = node->next)
+      {
+        if (!dateLess(newEnd, node->data.date))
         {
-          if (dateLess(node->data.date, newEnd) && !dateLess(currentRange.end, node->data.date))
+          if (!found || dateLess(newEnd, node->data.date))
           {
-            if (!found || dateLess(newEnd, node->data.date))
-            {
-              newEnd = node->data.date;
-              found = true;
-            }
+            newEnd = node->data.date;
+            found = true;
           }
         }
+      }
 
-        if (found)
-        {
-          currentRange.end = newEnd;
-        }
-        else
+      if (found)
+      {
+        currentRange.end = newEnd;
+        if (dateLess(currentRange.end, currentRange.start))
         {
           currentRange.empty = true;
         }
       }
+      else
+      {
+        currentRange.empty = true;
+      }
+    }
       else
       {
         std::cout << "<INVALID COMMAND>\n";
@@ -405,7 +410,6 @@ int main(int argc, char* argv[])
     }
     else
     {
-      // Команды из U2
       if (command == "anons")
       {
         List< size_t > anonIds;
