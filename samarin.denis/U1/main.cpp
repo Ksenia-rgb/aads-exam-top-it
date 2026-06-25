@@ -26,7 +26,6 @@ int main(int argc, char ** argv)
 
   samarin::detail::list_t< samarin::Person > records{ nullptr, nullptr };
   const samarin::counts_t counts = samarin::readRecords(input, records);
-  static_cast< void >(counts);
   if (options.hasInput) {
     inputFile.close();
   }
@@ -43,6 +42,7 @@ int main(int argc, char ** argv)
   std::ostream & output = options.hasOutput ? outputFile : std::cout;
 
   samarin::writeRecords(output, records);
+  std::cerr << counts.accepted << ' ' << counts.ignored << '\n';
 
   samarin::detail::clear(records);
   return 0;
