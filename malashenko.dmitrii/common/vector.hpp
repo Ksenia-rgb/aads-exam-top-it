@@ -1,7 +1,7 @@
-#include <iostream>
+#ifndef VECTOR_HPP
+#define VECTOR_HPP
+
 #include <cstddef>
-#include <fstream>
-#include <string>
 
 
 namespace malashenko
@@ -47,3 +47,5 @@ namespace malashenko
     vec.capacity = 0;
   }
 }
+
+#endif
