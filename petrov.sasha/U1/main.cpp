@@ -1,7 +1,18 @@
-#include <iostream>
+#include "person.hpp"
 
-int main()
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdexcept>
+#include <new>
+
+namespace petrov
 {
+
 }
 
+int main(int argc, char* argv[])
+{
+  
+}
 
