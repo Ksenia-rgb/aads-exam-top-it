@@ -332,6 +332,14 @@ void vasyakin::detail::cmdOutPersons(std::istream& in, std::ostream& out, Graph*
     out << "<INVALID COMMAND>\n";
     return;
   }
+
+  std::ofstream file(filename.c_str());
+  if (!file)
+  {
+    out << "<INVALID COMMAND>\n";
+    return;
+  }
+
   auto visitor = [&out](size_t id, const Vertex& vertex)
   {
     if (vertex.described)
@@ -398,5 +406,7 @@ void vasyakin::runCommands(std::istream& in, std::ostream& out, Graph*& root)
     {
       out << "<INVALID COMMAND>\n";
     }
+
+    out << '\n';
   }
 }
