@@ -96,3 +96,52 @@ int chernov::readMeetings(const std::string & filename, Vector< Meeting > & meet
   }
   return 0;
 }
+
+int chernov::readPersonsFromFile(const std::string & filename, Vector< Person > & persons)
+{
+  std::ifstream fin(filename);
+  if (!fin.is_open()) {
+    std::cerr << "Cannot open input file\n";
+    return 2;
+  }
+
+  std::string line;
+  while (std::getline(fin, line)) {
+    size_t first = line.find_first_not_of(" \t");
+    if (first == std::string::npos) {
+      continue;
+    }
+
+    size_t space = line.find_first_of(" \t", first);
+    if (space == std::string::npos) {
+      continue;
+    }
+
+    std::string idStr = line.substr(first, space - first);
+    size_t descStart = line.find_first_not_of(" \t", space);
+    if (descStart == std::string::npos) {
+      continue;
+    }
+
+    std::string description = line.substr(descStart);
+    if (description.find_first_not_of(" \t") == std::string::npos) {
+      continue;
+    }
+
+    size_t id;
+    try {
+      id = std::stoull(idStr);
+    } catch (...) {
+      continue;
+    }
+
+    if (findById(persons, id) != persons.size) {
+      continue;
+    }
+
+    Person p{id, description};
+    pushBack(persons, p);
+  }
+
+  return 0;
+}
