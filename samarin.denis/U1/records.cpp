@@ -18,12 +18,17 @@ namespace {
     return std::isdigit(static_cast< unsigned char >(symbol)) != 0;
   }
 
+  void skipSpaces(const std::string & text, std::size_t & position)
+  {
+    while (position < text.size() && isSpaceChar(text[position])) {
+      ++position;
+    }
+  }
+
   std::string trim(const std::string & text)
   {
     std::size_t begin = 0;
-    while (begin < text.size() && isSpaceChar(text[begin])) {
-      ++begin;
-    }
+    skipSpaces(text, begin);
     std::size_t end = text.size();
     while (end > begin && isSpaceChar(text[end - 1])) {
       --end;
@@ -47,9 +52,7 @@ namespace {
   bool parsePerson(const std::string & line, samarin::Person & person)
   {
     std::size_t position = 0;
-    while (position < line.size() && isSpaceChar(line[position])) {
-      ++position;
-    }
+    skipSpaces(line, position);
     const std::pair< bool, std::size_t > parsed = parseId(line, position);
     if (!parsed.first) {
       return false;
