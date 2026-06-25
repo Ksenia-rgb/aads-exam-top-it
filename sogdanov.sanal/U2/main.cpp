@@ -44,7 +44,6 @@ namespace sogdanov {
   }
 
   PersonRecord* getOrCreatePerson(HashTable< size_t, size_t >& indexMap, Vector< PersonRecord* >& registry, const size_t id) {
-    size_t index = 0;
     for (size_t i = 0; i < indexMap.capacity; ++i) {
       if (indexMap.occupied[i] && indexMap.keys[i] == id) {
         return registry.data[indexMap.values[i]];
