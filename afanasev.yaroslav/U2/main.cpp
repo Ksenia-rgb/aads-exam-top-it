@@ -1,5 +1,6 @@
 #include <person.hpp>
 #include <meeting.hpp>
+#include <commands.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>

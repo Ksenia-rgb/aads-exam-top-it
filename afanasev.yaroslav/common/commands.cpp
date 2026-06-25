@@ -4,9 +4,30 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 
 namespace afanasev
 {
+  void cmdAnons(std::istringstream &, Person *& persons, size_t & count, size_t &,
+    Meeting *&, size_t &)
+  {
+    size_t * anonIds = new size_t[count];
+    size_t anonCount = 0;
+    for (size_t i = 0; i < count; ++i)
+    {
+      if (persons[i].info.empty())
+      {
+        anonIds[anonCount++] = persons[i].id;
+      }
+    }
+    std::sort(anonIds, anonIds + anonCount);
+    for (size_t i = 0; i < anonCount; ++i)
+    {
+      std::cout << anonIds[i] << '\n';
+    }
+    delete[] anonIds;
+  }
+
   struct Command
   {
     const char * name;
