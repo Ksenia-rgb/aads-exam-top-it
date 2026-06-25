@@ -128,6 +128,9 @@ int main(int argc, char *argv[])
   for (size_t i = 0; i < curr; ++i) {
     out << base[i].id << ' ' << base[i].info << '\n';
   }
+  if (curr == 0) {
+    out << '\n';
+  }
 
   delete[] base;
   if (ofl) {
