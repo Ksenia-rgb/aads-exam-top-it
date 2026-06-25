@@ -42,6 +42,19 @@ namespace kitserov
     }
     return true;
   }
+  template< class Stream, class File >
+  bool chooseStream(Stream* stream, File& file, bool& set, std::string& arg, size_t substr)
+  {
+    if (set) {
+      return false;
+    }
+    file.open(arg.substr(substr));
+    if (!file.is_open()) {
+      return false;
+    }
+    stream = &file;
+    set = true;
+  }
 }
 
 #endif
