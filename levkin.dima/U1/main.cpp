@@ -60,13 +60,14 @@ int main(int argc, char* argv[])
   if (file_out.is_open()) {
     file_out.close();
   }
-  std::cerr << total << " " << ignored << "\n";
   if (persons.data != nullptr) {
     delete[] persons.data;
   }
 
   if (total == 0) {
-      std::cout << "\n";
+    ignored = 0;
+    std::cout << "\n";
   }
+  std::cerr << total << " " << ignored << "\n";
   return 0;
 }

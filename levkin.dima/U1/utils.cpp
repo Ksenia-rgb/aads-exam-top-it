@@ -35,6 +35,17 @@ namespace levkin {
       if (!line.empty() && line.back() == '\r') {
         line.pop_back();
       }
+
+      bool is_only_spaces = true;
+      for (char ch : line) {
+        if (!isSpaceChar(ch)) {
+          is_only_spaces = false;
+          break;
+        }
+      }
+      if (line.empty() || is_only_spaces) {
+        continue;
+      }
       size_t idx = 0;
       while (idx < line.length() && isSpaceChar(line[idx])) {
         idx++;
