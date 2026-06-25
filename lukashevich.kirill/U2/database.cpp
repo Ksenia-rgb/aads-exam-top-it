@@ -75,7 +75,23 @@ bool lukashevich::hasMeetingWith(const Database& database, size_t id, size_t oth
 }
 
 bool lukashevich::pushUniqueId(Array< size_t >& ids, size_t id)
-{}
+{
+  for (size_t i = 0; i < ids.size_; ++i) {
+    size_t minIndex = i;
+
+    for (size_t j = i + 1; j < ids.data_[minIndex]) {
+      if (ids.data_[j] < ids.data_[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    if (minIndex != i) {
+      const size_t temp = ids.data_[i];
+      ids.data_[i] = ids.data_[minIndex];
+      ids.data_[minIndex] = temp;
+    }
+  }
+}
 
 void lukashevich::sortIds(Array< size_t >& ids)
 {}
