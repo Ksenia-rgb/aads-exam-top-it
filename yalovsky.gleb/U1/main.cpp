@@ -29,12 +29,6 @@ int main(int argc, char** argv)
   std::string outputName;
   bool hasInput = false;
   bool hasOutput = false;
-  const int maxArguments = 2;
-  if (argc - 1 > maxArguments)
-  {
-    std::cerr << "invalid arguments" << '\n';
-    return yalovsky::statusBadArgs;
-  }
   for (int i = 1; i < argc; ++i)
   {
     const std::string arg = argv[i];
@@ -63,6 +57,12 @@ int main(int argc, char** argv)
       std::cerr << "invalid arguments" << '\n';
       return yalovsky::statusBadArgs;
     }
+  }
+
+  if (argc - 1 > 2)
+  {
+    std::cerr << "invalid arguments" << '\n';
+    return yalovsky::statusBadArgs;
   }
 
   yalovsky::Array< yalovsky::Person > persons = yalovsky::makeArray< yalovsky::Person >();
