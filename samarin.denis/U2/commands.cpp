@@ -197,6 +197,60 @@ namespace {
     }
   }
 
+  void removeSelfMeetings(samarin::Dataset & data)
+  {
+    MeetingNode ** link = std::addressof(data.meetings.head);
+    MeetingNode * tail = nullptr;
+    while (*link != nullptr) {
+      if ((*link)->value.first == (*link)->value.second) {
+        MeetingNode * const dead = *link;
+        *link = dead->next;
+        delete dead;
+      } else {
+        tail = *link;
+        link = std::addressof((*link)->next);
+      }
+    }
+    data.meetings.tail = tail;
+  }
+
+  void removePerson(samarin::Dataset & data, std::size_t id)
+  {
+    PersonNode ** link = std::addressof(data.persons.head);
+    PersonNode * tail = nullptr;
+    while (*link != nullptr) {
+      if ((*link)->value.id == id) {
+        PersonNode * const dead = *link;
+        *link = dead->next;
+        delete dead;
+      } else {
+        tail = *link;
+        link = std::addressof((*link)->next);
+      }
+    }
+    data.persons.tail = tail;
+  }
+
+  void doDeanon(std::ostream & out, samarin::Dataset & data, std::size_t anonId, std::size_t namedId)
+  {
+    samarin::Person * const anon = samarin::findPerson(data, anonId);
+    samarin::Person * const named = samarin::findPerson(data, namedId);
+    if (anon == nullptr || named == nullptr || anon->named || !named->named || anonId == namedId) {
+      printInvalid(out);
+      return;
+    }
+    for (MeetingNode * node = data.meetings.head; node != nullptr; node = node->next) {
+      if (node->value.first == anonId) {
+        node->value.first = namedId;
+      }
+      if (node->value.second == anonId) {
+        node->value.second = namedId;
+      }
+    }
+    removeSelfMeetings(data);
+    removePerson(data, anonId);
+  }
+
   void executeLine(std::ostream & out, samarin::Dataset & data, const std::string & line)
   {
     std::size_t position = 0;
@@ -249,6 +303,14 @@ namespace {
       std::size_t second = 0;
       if (parseNumber(nextWord(line, position), first) && parseNumber(nextWord(line, position), second)) {
         doCommons(out, data, first, second);
+      } else {
+        printInvalid(out);
+      }
+    } else if (command == "deanon") {
+      std::size_t anonId = 0;
+      std::size_t namedId = 0;
+      if (parseNumber(nextWord(line, position), anonId) && parseNumber(nextWord(line, position), namedId)) {
+        doDeanon(out, data, anonId, namedId);
       } else {
         printInvalid(out);
       }
