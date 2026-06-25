@@ -12,5 +12,7 @@ namespace levkin {
   void less(const DB& db, std::istream& is, std::ostream& os);
   void greater(const DB& db, std::istream& is, std::ostream& os);
   void outPersons(const DB& db, std::istream& is, std::ostream& os);
+
+  void runInteractiveLoop(DB& db, std::istream& is, std::ostream& os);
 }
 #endif

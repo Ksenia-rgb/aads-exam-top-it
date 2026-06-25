@@ -253,4 +253,33 @@ namespace levkin {
       }
     }
   }
+  void runInteractiveLoop(DB& db, std::istream& is, std::ostream& os)
+  {
+    std::string cmd;
+    while (is >> cmd) {
+      if (cmd == "anons") {
+        anons(db, os);
+      } else if (cmd == "deanon") {
+        deanon(db, is, os);
+      } else if (cmd == "redesc") {
+        redesc(db, is, os);
+      } else if (cmd == "desc") {
+        desc(db, is, os);
+      } else if (cmd == "meets") {
+        meets(db, is, os);
+      } else if (cmd == "commons") {
+        commons(db, is, os);
+      } else if (cmd == "less") {
+        less(db, is, os);
+      } else if (cmd == "greater") {
+        greater(db, is, os);
+      } else if (cmd == "out-persons") {
+        outPersons(db, is, os);
+      } else {
+        os << "<INVALID COMMAND>\n";
+        std::string dummy;
+        std::getline(is, dummy);
+      }
+    }
+  }
 }
