@@ -4,12 +4,9 @@
 
 int main(const int argc, char *argv[])
 {
-  if (argc > 3) {
-    return 1;
-  }
-
   const pozdnyakov::AppArgs args = pozdnyakov::parseArguments(argc, argv);
   if (args.isError) {
+    std::cerr << "Invalid arguments\n";
     return 1;
   }
 
