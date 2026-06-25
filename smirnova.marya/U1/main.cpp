@@ -1,21 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-
-#include "input_handler.hpp"
-#include "person.hpp"
-#include "parse_line.hpp"
-#include "vector.hpp"
-
 int main(int argc, char* argv[])
 {
-  // максимум 2 аргумента + имя программы
-  if (argc > 3)
-  {
-    std::cerr << "Invalid arguments." << std::endl;
-    return 1;
-  }
-
   std::string inputFileName;
   std::string outputFileName;
 
@@ -64,15 +48,13 @@ int main(int argc, char* argv[])
                           validEntries,
                           ignoredEntries);
 
-  // ===== ВАЖНО: Empty Input test =====
-  // если вообще ничего не считали — НИЧЕГО НЕ ПЕЧАТАЕМ
+  // ✔ EMPTY INPUT FIX
   if (persons.size() == 0)
   {
     std::cerr << validEntries << " " << ignoredEntries << std::endl;
     return 0;
   }
 
-  // ===== output =====
   if (hasOut)
   {
     std::ofstream out(outputFileName);
@@ -92,7 +74,6 @@ int main(int argc, char* argv[])
     smirnova::printPersons(persons, std::cout);
   }
 
-  // ===== stats ВСЕГДА =====
   std::cerr << validEntries << " " << ignoredEntries << std::endl;
 
   return 0;
