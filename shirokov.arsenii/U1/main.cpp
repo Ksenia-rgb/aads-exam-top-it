@@ -90,11 +90,12 @@ int main(int argc, char* argv[])
 
   shirokov::Person* massive = nullptr;
   size_t size = 0, cap = 0;
+  size_t fail = 0;
 
   size_t id = 0;
   while (in >> id)
   {
-    while (in.peek() == ' ')
+    while (in.peek() == ' ' || in.peek() == '\t')
     {
       in.get();
     }
@@ -110,10 +111,12 @@ int main(int argc, char* argv[])
         continue;
       }
       break;
+      ++fail;
     }
 
     if (info.empty())
     {
+      ++fail;
       continue;
     }
 
@@ -121,6 +124,7 @@ int main(int argc, char* argv[])
 
     if (shirokov::contains(person, massive, size))
     {
+      ++fail;
       continue;
     }
 
@@ -143,6 +147,7 @@ int main(int argc, char* argv[])
   if (!in && !in.eof())
   {
     std::cerr << "Input format error occurred" << '\n';
+    return 1;
   }
 
   if (outStatus)
@@ -165,6 +170,8 @@ int main(int argc, char* argv[])
   {
     out << massive[i].id << ' ' << massive[i].info << '\n';
   }
+
+  std::cerr << size << ' ' << fail << '\n';
 
   delete[] massive;
 }
