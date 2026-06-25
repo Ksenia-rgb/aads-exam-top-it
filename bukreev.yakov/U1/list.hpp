@@ -12,10 +12,26 @@ namespace bukreev
   };
 
   template< class T >
-  void initList(List< T >* fake) noexcept
+  void createList(List< T >** ppfake)
   {
-    fake->next = fake;
-    fake->prev = fake;
+    *ppfake = new List< T >;
+    List< T >* pfake = *ppfake;
+    pfake->next = pfake;
+    pfake->prev = pfake;
+  }
+
+  template< class T >
+  void deleteList(List< T >* fake)
+  {
+    List< T >* h = fake->next;
+    while (h != fake)
+    {
+      List< T >* n = h->next;
+      delete h;
+      h = n;
+    }
+
+    delete fake;
   }
 
   template< class T >
