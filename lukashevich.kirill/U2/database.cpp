@@ -1,0 +1,129 @@
+#include "database.hpp"
+
+void lukashevich::initDatabase(Database& database) noexcept
+{
+  initArray(database.persons);
+  initArray(database.meetings);
+}
+
+void lukashevich::destroyDatabase(Database& database) noexcept
+{
+  destroyArray(database.meetings);
+  destroyArray(database.persons);
+}
+
+void lukashevich::addAnonPerson(Database& database, size_t id)
+{
+  if (hasPerson(database.persons, id)) {
+    return;
+  }
+
+  Person person;
+  person.id = id;
+  person.info.clear();
+  person.hasInfo = false;
+
+  pushBack(database.persons, person);
+}
+
+bool lukashevich::addDescribedPerson(Database& database,
+  size_t id, const std::string& info)
+{
+  if (hasPerson(database.persons, id)) {
+    return false;
+  }
+
+  Person person;
+  person.id = id;
+  person.info = info;
+  person.hasInfo = true;
+
+  pushBack(database.persons, person);
+  return true;
+}
+
+void lukashevich::addMeeting(Database& database, size_t first,
+  size_t second, size_t time)
+{
+  if (first == second) {
+    return;
+  }
+
+  addAnonPerson(database, first);
+  addAnonPerson(database, second);
+
+  Meeting meeting;
+  meeting.first = first;
+  meeting.second = second;
+  meeting.time = time;
+
+  pushBack(database.meetings, meeting);
+}
+
+bool lukashevich::hasMeetingWith(const Database& database, size_t id, size_t other)
+{
+  for (size_t i = 0; i < database.meetings.size_; ++i) {
+    const Meeting& meeting = database.meetings.data_[i];
+
+    if (((meeting.first == id) && (meeting.second == other))
+      || (meeting.first == other) && (meeting.second == id)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool lukashevich::pushUniqueId(Array< size_t >& ids, size_t id)
+{
+  for (size_t i = 0; i < ids.size_; ++i) {
+    if (ids.data_[i] == id) {
+      return false;
+    }
+  }
+
+  pushBack(ids, id);
+  return true;
+}
+
+void lukashevich::sortIds(Array< size_t >& ids)
+{
+  for (size_t i = 0; i < ids.size_; ++i) {
+    size_t minIndex = i;
+
+    for (size_t j = i + 1; j < ids.data_[minIndex]; ++j) {
+      if (ids.data_[j] < ids.data_[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    if (minIndex != i) {
+      const size_t temp = ids.data_[i];
+      ids.data_[i] = ids.data_[minIndex];
+      ids.data_[minIndex] = temp;
+    }
+  }
+}
+
+void lukashevich::sortMeetingViews(Array< MeetingView >& views)
+{
+  for (size_t i = 0; i < views.size_; ++i) {
+    size_t minIndex = i;
+
+    for (size_t j = i + 1; j < views.size_; ++j) {
+      const bool lessId = views.data_[j].id < views.data_[minIndex].id;
+      const bool equalId = views.data_[j].id == views.data_[minIndex].id;
+      const bool lessTime = views.data_[j].time < views.data_[minIndex].time;
+
+      if (lessId || (equalId && lessTime)) {
+        minIndex = j;
+      }
+    }
+
+    if (minIndex != i) {
+      const MeetingView temp = views.data_[i];
+      views.data_[i] = views.data_[minIndex];
+      views.data_[minIndex] = temp;
+    }
+  }
+}
