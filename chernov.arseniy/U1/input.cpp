@@ -1,6 +1,6 @@
-#include <input.hpp>
+#include "input.hpp"
 
-bool parseArgs(int argc, char * argv[], std::string & inFile, std::string & outFile)
+bool chernov::parseArgs(int argc, char ** argv, std::string & inFile, std::string & outFile)
 {
   if (argc > 3) {
     return false;
