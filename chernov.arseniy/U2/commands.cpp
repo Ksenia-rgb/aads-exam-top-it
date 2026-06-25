@@ -1,4 +1,6 @@
 #include "commands.hpp"
+#include <fstream>
+#include <iostream>
 #include <sort.hpp>
 #include <utils.hpp>
 
@@ -54,7 +56,6 @@ bool chernov::processDeanon(Vector< Person > & persons,
   }
 
   applyDeanon(meetings, anonId, id);
-
   rebuildAllIds(allIds, persons, meetings);
 
   return true;
@@ -82,6 +83,88 @@ bool chernov::processRedesc(Vector< Person > & persons,
   } else {
     Person p{id, description};
     pushBack(persons, p);
+  }
+  return true;
+}
+
+void chernov::printMeets(const Vector< Meeting > & meetings, size_t id)
+{
+  Vector< Meeting > filtered = filterMeetingsByPerson(meetings, id);
+  try {
+    printMeetingList(filtered, id);
+  } catch (...) {
+    destroy(filtered);
+    throw;
+  }
+  destroy(filtered);
+}
+
+void chernov::printDurationFiltered(const Vector< Meeting > & meetings, size_t id, size_t duration, bool greater)
+{
+  Vector< Meeting > filtered;
+  init(filtered);
+
+  try {
+    for (size_t i = 0; i < meetings.size; ++i) {
+      const Meeting & m = meetings.data[i];
+      bool matchesPerson = (m.from == id || m.to == id);
+      bool matchesDuration = greater ? (m.duration > duration) : (m.duration < duration);
+      if (matchesPerson && matchesDuration) {
+        pushBack(filtered, m);
+      }
+    }
+    printMeetingList(filtered, id);
+  } catch (...) {
+    destroy(filtered);
+    throw;
+  }
+  destroy(filtered);
+}
+
+void chernov::printCommons(const Vector< Meeting > & meetings, size_t first, size_t second)
+{
+  Vector< size_t > neighbors = getNeighbors(meetings, first);
+  Vector< size_t > common;
+  init(common);
+
+  try {
+    for (size_t i = 0; i < neighbors.size; ++i) {
+      size_t candidate = neighbors.data[i];
+      bool found = false;
+      for (size_t j = 0; j < meetings.size; ++j) {
+        const Meeting & m = meetings.data[j];
+        if ((m.from == second && m.to == candidate) || (m.to == second && m.from == candidate)) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        addUniqueId(common, candidate);
+      }
+    }
+
+    bubbleSort(common);
+    for (size_t i = 0; i < common.size; ++i) {
+      std::cout << common.data[i] << '\n';
+    }
+  } catch (...) {
+    destroy(neighbors);
+    destroy(common);
+    throw;
+  }
+
+  destroy(neighbors);
+  destroy(common);
+}
+
+bool chernov::writePersons(const std::string & filename, const Vector< Person > & persons)
+{
+  std::ofstream fout(filename);
+  if (!fout.is_open()) {
+    return false;
+  }
+  for (size_t i = 0; i < persons.size; ++i) {
+    fout << persons.data[i].id << ' ' << persons.data[i].info << '\n';
   }
   return true;
 }

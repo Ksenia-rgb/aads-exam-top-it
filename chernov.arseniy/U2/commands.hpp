@@ -1,6 +1,7 @@
 #ifndef COMMANDS_HPP
 #define COMMANDS_HPP
 
+#include <string>
 #include <meeting.hpp>
 #include <person.hpp>
 #include <vector.hpp>
@@ -14,6 +15,11 @@ namespace chernov {
     size_t anonId,
     size_t id);
   bool processRedesc(Vector< Person > & persons, Vector< size_t > & allIds, size_t id, const std::string & description);
+  void printMeets(const Vector< Meeting > & meetings, size_t id);
+  void printDurationFiltered(const Vector< Meeting > & meetings, size_t id, size_t duration, bool greater);
+  void printCommons(const Vector< Meeting > & meetings, size_t first, size_t second);
+  bool writePersons(const std::string & filename, const Vector< Person > & persons);
 
 }
+
 #endif

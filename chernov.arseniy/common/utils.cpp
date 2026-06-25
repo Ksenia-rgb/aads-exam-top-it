@@ -47,3 +47,38 @@ void chernov::rebuildAllIds(Vector< size_t > & allIds,
 
   init(newAllIds);
 }
+
+size_t chernov::otherId(const chernov::Meeting & m, size_t id)
+{
+  return (m.from == id) ? m.to : m.from;
+}
+
+void chernov::printMeetingList(chernov::Vector< chernov::Meeting > & meetings, size_t id)
+{
+  chernov::sortMeetingsForOutput(meetings, id);
+  for (size_t i = 0; i < meetings.size; ++i) {
+    std::cout << otherId(meetings.data[i], id) << ' ' << meetings.data[i].duration << '\n';
+  }
+}
+
+bool chernov::parseSize(const std::string & text, size_t & value)
+{
+  if (text.empty())
+    return false;
+  for (size_t i = 0; i < text.size(); ++i) {
+    if (text[i] < '0' || text[i] > '9')
+      return false;
+  }
+  size_t pos;
+  try {
+    value = std::stoull(text, &pos);
+  } catch (...) {
+    return false;
+  }
+  return pos == text.size();
+}
+
+bool chernov::hasIdInAll(const chernov::Vector< size_t > & allIds, size_t id)
+{
+  return chernov::hasId(allIds, id);
+}
