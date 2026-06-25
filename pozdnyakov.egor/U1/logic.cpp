@@ -96,7 +96,6 @@ namespace pozdnyakov
 
     std::string line;
     while (std::getline(in, line)) {
-
       if (!line.empty() && line[line.length() - 1] == '\r') {
         line.erase(line.length() - 1);
       }
