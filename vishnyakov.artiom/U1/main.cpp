@@ -62,17 +62,6 @@ int main(int argc, char* argv[])
 
   std::istream& in = inputFile.empty() ? std::cin : inputFileStream;
 
-  std::ofstream outputFileStream;
-  if (!outputFile.empty())
-  {
-    outputFileStream.open(outputFile);
-    if (!outputFileStream.is_open())
-    {
-      std::cerr << "Cannot open file\n";
-      return 2;
-    }
-  }
-
   List< Person > persons;
   HashSet< size_t > usedIds;
   size_t successful = 0;
@@ -144,6 +133,17 @@ int main(int argc, char* argv[])
   if (!inputFile.empty())
   {
     inputFileStream.close();
+  }
+
+  std::ofstream outputFileStream;
+  if (!outputFile.empty())
+  {
+    outputFileStream.open(outputFile);
+    if (!outputFileStream.is_open())
+    {
+      std::cerr << "Cannot open file\n";
+      return 2;
+    }
   }
 
   if (!outputFile.empty())
