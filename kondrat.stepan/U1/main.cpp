@@ -245,4 +245,63 @@ void kondrat::printPersons(std::ostream & output, const PersonStorage & storage)
 }
 
 int main(int argc, char ** argv)
-{}
+{
+  kondrat::ProgramArgs args = {};
+  if (!kondrat::parseArgs(argc, argv, args))
+  {
+    return 1;
+  }
+
+  std::ifstream inputFile;
+  std::istream * input = &std::cin;
+  if (args.input != nullptr)
+  {
+    inputFile.open(args.input);
+    if (!inputFile)
+    {
+      return 2;
+    }
+    input = &inputFile;
+  }
+
+  kondrat::PersonStorage storage = {};
+  kondrat::initStorage(storage);
+  size_t ignored = 0;
+  try
+  {
+    kondrat::readPersons(*input, storage, ignored);
+  }
+  catch (...)
+  {
+    kondrat::destroyStorage(storage);
+    throw;
+  }
+  inputFile.close();
+
+  std::ofstream outputFile;
+  std::ostream * output = &std::cout;
+  if (args.output != nullptr)
+  {
+    outputFile.open(args.output);
+    if (!outputFile)
+    {
+      kondrat::destroyStorage(storage);
+      return 2;
+    }
+    output = &outputFile;
+  }
+
+  try
+  {
+    kondrat::printPersons(*output, storage);
+    std::cerr << storage.size << ' ' << ignored << '\n';
+  }
+  catch (...)
+  {
+    kondrat::destroyStorage(storage);
+    throw;
+  }
+  kondrat::destroyStorage(storage);
+
+  return 0;
+}
