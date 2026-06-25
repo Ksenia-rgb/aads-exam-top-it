@@ -34,16 +34,16 @@ namespace
   }
 
   bool isEmptyLine(const std::string &line)
-{
-  for (size_t i = 0; i < line.size(); ++i)
   {
-    if (!isSpace(line[i]))
+    for (size_t i = 0; i < line.size(); ++i)
     {
-      return false;
+      if (!isSpace(line[i]))
+      {
+        return false;
+      }
     }
+    return true;
   }
-  return true;
-}
 }
 
 bool zhuravleva::contains(const DynamicArray< Person > &persons, size_t id)
@@ -56,6 +56,33 @@ bool zhuravleva::contains(const DynamicArray< Person > &persons, size_t id)
     }
   }
   return false;
+}
+
+bool zhuravleva::readPerson(const std::string &line, Person &person)
+{
+  size_t pos = 0;
+  while (pos < line.size() && isSpace(line[pos]))
+  {
+    ++pos;
+  }
+  if (pos == line.size() || line[pos] < '0' || line[pos] > '9')
+  {
+    return false;
+  }
+  size_t id = 0;
+  while (pos < line.size() && line[pos] >= '0' && line[pos] <= '9')
+  {
+    id = id * 10 + static_cast< size_t >(line[pos] - '0');
+    ++pos;
+  }
+  const std::string info = getInfo(line, pos);
+  if (info.empty())
+  {
+    return false;
+  }
+  person.id = id;
+  person.info = info;
+  return true;
 }
 
 void zhuravleva::readPersons(
@@ -72,28 +99,6 @@ void zhuravleva::readPersons(
       continue;
     }
 
-    Person person = {0, ""};
-    if (!readPerson(line, person) || contains(persons, person.id))
-    {
-      ++bad;
-    }
-    else
-    {
-      pushBack(persons, person);
-      ++good;
-    }
-  }
-}
-
-void zhuravleva::readPersons(
-    std::istream &input,
-    DynamicArray< Person > &persons,
-    size_t &good,
-    size_t &bad)
-{
-  std::string line;
-  while (std::getline(input, line))
-  {
     Person person = {0, ""};
     if (!readPerson(line, person) || contains(persons, person.id))
     {
