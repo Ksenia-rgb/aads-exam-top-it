@@ -24,11 +24,15 @@ int main(int argc, char* argv[])
       ? inputFile
       : std::cin;
 
+  shigarev::ReadResult result = shigarev::readPersons(in);
+  inputFile.close();
+
   std::ofstream outputFile;
   if (args.hasOutputFile) {
     outputFile.open(args.outputFile);
     if (!outputFile.is_open()) {
       std::cerr << "Cannot open output file\n";
+      shigarev::destroyDynArray(result.persons);
       return 2;
     }
   }
@@ -36,7 +40,6 @@ int main(int argc, char* argv[])
       ? outputFile
       : std::cout;
 
-  shigarev::ReadResult result = shigarev::readPersons(in);
   shigarev::writePersons(out, result.persons);
   shigarev::writeStats(std::cerr, result.readCount,
       result.ignoredCount);

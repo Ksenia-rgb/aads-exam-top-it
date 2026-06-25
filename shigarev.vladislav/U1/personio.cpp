@@ -74,6 +74,16 @@ namespace {
     return line;
   }
 
+  bool isBlankLine(const std::string& line)
+  {
+    for (size_t i = 0; i < line.size(); ++i) {
+      if (!isBlank(line[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   bool hasDuplicateId(
       const shigarev::DynArray< shigarev::Person >& arr,
       size_t id)
@@ -92,6 +102,9 @@ shigarev::ReadResult shigarev::readPersons(std::istream& in)
   std::string line = "";
   while (std::getline(in, line)) {
     const std::string cleaned = stripCr(line);
+    if (isBlankLine(cleaned)) {
+      continue;
+    }
     Person person = {0, ""};
     if (!parsePerson(cleaned, person)) {
       ++result.ignoredCount;
