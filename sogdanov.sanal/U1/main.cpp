@@ -7,6 +7,10 @@
 int main(int argc, char* argv[]) {
   using namespace sogdanov;
 
+  if (argc > 3) {
+    return 1;
+  }
+
   std::string inFile;
   std::string outFile;
   bool hasIn = false;
@@ -14,13 +18,13 @@ int main(int argc, char* argv[]) {
 
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
-    if (arg.substr(0, 3) == "in:") {
+    if (arg.length() >= 3 && arg.substr(0, 3) == "in:") {
       if (hasIn) {
         return 1;
       }
       inFile = arg.substr(3);
       hasIn = true;
-    } else if (arg.substr(0, 4) == "out:") {
+    } else if (arg.length() >= 4 && arg.substr(0, 4) == "out:") {
       if (hasOut) {
         return 1;
       }
@@ -52,8 +56,10 @@ int main(int argc, char* argv[]) {
   size_t successCount = 0;
   size_t ignoreCount = 0;
   std::string line;
+  bool hasLines = false;
 
   while (std::getline(*input, line)) {
+    hasLines = true;
     if (line.empty()) {
       continue;
     }
@@ -108,9 +114,12 @@ int main(int argc, char* argv[]) {
     *output << persons.data[i].id << " " << persons.data[i].info << "\n";
   }
 
-  std::cerr << successCount << " " << ignoreCount << "\n";
+  if (hasLines) {
+    std::cerr << successCount << " " << ignoreCount << "\n";
+  }
 
   destroyArray(persons);
   destroyHashTable(seenIds);
 
 }
+
