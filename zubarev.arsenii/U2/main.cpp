@@ -2,16 +2,16 @@
 #include <string>
 #include <fstream>
 #include <limits>
-#include "functions.hpp"
+#include "../common/functions.hpp"
 #include "commands.hpp"
-#include "person.hpp"
+#include "../common/person.hpp"
 
 int main(int argc, char* argv[])
 {
   std::string in_name = "";
   std::string data_name = "";
 
-  if (!zubarev::detail::parse_args(argc, argv, in_name, data_name)) {
+  if (!zubarev::detail::parse_args_meet(argc, argv, in_name, data_name)) {
     std::cerr << "Invalid command line arguments\n";
     return 1;
   }
