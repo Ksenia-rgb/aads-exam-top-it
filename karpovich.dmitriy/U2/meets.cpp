@@ -68,52 +68,11 @@ namespace
 
 void karpovich::readMeets(std::istream &input, Vector< Meet > &meets)
 {
-  std::string line;
+  size_t firstId = 0;
+  size_t secondId = 0;
+  size_t duration = 0;
 
-  while (std::getline(input, line)) {
-    if (line.empty()) {
-      continue;
-    }
-
-    size_t pos = 0;
-    size_t firstId = 0;
-    size_t secondId = 0;
-    size_t duration = 0;
-
-    try {
-      firstId = std::stoul(line, &pos);
-    } catch (...) {
-      throw std::runtime_error("Invalid meet data");
-    }
-
-    while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t')) {
-      ++pos;
-    }
-
-    if (pos == line.size()) {
-      throw std::runtime_error("Invalid meet data");
-    }
-
-    try {
-      secondId = std::stoul(line.substr(pos), &pos);
-    } catch (...) {
-      throw std::runtime_error("Invalid meet data");
-    }
-
-    while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t')) {
-      ++pos;
-    }
-
-    if (pos == line.size()) {
-      throw std::runtime_error("Invalid meet data");
-    }
-
-    try {
-      duration = std::stoul(line.substr(pos), &pos);
-    } catch (...) {
-      throw std::runtime_error("Invalid meet data");
-    }
-
+  while (input >> firstId >> secondId >> duration) {
     Meet meet;
     meet.firstId = firstId;
     meet.secondId = secondId;
@@ -159,8 +118,10 @@ void karpovich::cmdAnons(std::istream &, std::ostream &output, Vector< Person > 
     }
   }
 
-  for (size_t i = 0; i < anons.size; ++i) {
-    output << anons.data[i] << '\n';
+  if (anons.size > 0) {
+    for (size_t i = 0; i < anons.size; ++i) {
+      output << anons.data[i] << '\n';
+    }
   }
 
   destroyVector(anons);
@@ -262,8 +223,10 @@ void karpovich::cmdMeets(std::istream &input, std::ostream &output, Vector< Pers
 
   sortMeets(result);
 
-  for (size_t i = 0; i < result.size; ++i) {
-    output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+  if (result.size > 0) {
+    for (size_t i = 0; i < result.size; ++i) {
+      output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+    }
   }
 
   destroyVector(result);
@@ -332,8 +295,10 @@ void karpovich::cmdCommons(std::istream &input, std::ostream &output, Vector< Pe
     }
   }
 
-  for (size_t i = 0; i < result.size; ++i) {
-    output << result.data[i] << '\n';
+  if (result.size > 0) {
+    for (size_t i = 0; i < result.size; ++i) {
+      output << result.data[i] << '\n';
+    }
   }
 
   destroyVector(contacts1);
@@ -365,8 +330,10 @@ void karpovich::cmdLess(std::istream &input, std::ostream &output, Vector< Perso
 
   sortMeets(result);
 
-  for (size_t i = 0; i < result.size; ++i) {
-    output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+  if (result.size > 0) {
+    for (size_t i = 0; i < result.size; ++i) {
+      output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+    }
   }
 
   destroyVector(result);
@@ -396,8 +363,10 @@ void karpovich::cmdGreater(std::istream &input, std::ostream &output, Vector< Pe
 
   sortMeets(result);
 
-  for (size_t i = 0; i < result.size; ++i) {
-    output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+  if (result.size > 0) {
+    for (size_t i = 0; i < result.size; ++i) {
+      output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+    }
   }
 
   destroyVector(result);
@@ -412,7 +381,7 @@ void karpovich::cmdOutPersons(std::istream &input, std::ostream &, Vector< Perso
     throw std::runtime_error("Invalid input");
   }
 
-  std::ofstream outputFile(filename);
+  std::ofstream outputFile(filename, std::ios::trunc);
 
   if (!outputFile.is_open()) {
     throw std::runtime_error("Cannot open file");
