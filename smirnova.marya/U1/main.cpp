@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     smirnova::printPersons(persons, std::cout);
   }
 
-  std::cerr << validEntries << " " << ignoredEntries << std::endl;
+  std::cerr << validEntries << " " << ignoredEntries << "\n";
 
   return 0;
 }
