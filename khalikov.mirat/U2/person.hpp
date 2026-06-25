@@ -17,7 +17,7 @@ namespace khalikov {
     size_t id1;
     size_t id2;
     size_t time;
-  }
+  };
 
   bool hasId(List< Person > *h, size_t id)
   {
