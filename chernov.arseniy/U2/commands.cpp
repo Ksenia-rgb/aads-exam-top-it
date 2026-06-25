@@ -1,5 +1,6 @@
 #include "commands.hpp"
 #include <sort.hpp>
+#include <utils.hpp>
 
 void chernov::printAnons(const Vector< size_t > & allIds, const Vector< Person > & persons)
 {
@@ -25,4 +26,26 @@ void chernov::printAnons(const Vector< size_t > & allIds, const Vector< Person >
   }
 
   destroy(idsCopy);
+}
+
+bool chernov::processDeanon(size_t anonId,
+  size_t id,
+  Vector< Person > & persons,
+  Vector< Meeting > & meetings,
+  Vector< size_t > & allIds)
+{
+  if (findById(persons, anonId) != persons.size) {
+    return false;
+  }
+  if (findById(persons, id) == persons.size) {
+    return false;
+  }
+  if (!hasId(allIds, anonId)) {
+    return false;
+  }
+
+  applyDeanon(meetings, anonId, id);
+  rebuildAllIds(allIds, persons, meetings);
+
+  return true;
 }
