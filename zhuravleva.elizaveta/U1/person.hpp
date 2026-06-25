@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <iosfwd>
 #include <string>
-#include <common/dynamicArray.hpp>
+#include <dynamicArray.hpp>
 
 namespace zhuravleva
 {
