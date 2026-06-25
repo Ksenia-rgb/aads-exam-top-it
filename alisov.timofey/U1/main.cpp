@@ -68,16 +68,16 @@ namespace alisov
     return true;
   }
 
-  bool parse_person(const std::string &line, Person &out_person, bool &is_ignorable)
+  bool parse_person(const std::string &line, Person &out_person, bool &is_empty)
   {
-    is_ignorable = false;
+    is_empty = false;
     if (line.empty()) {
-      is_ignorable = true;
+      is_empty = true;
       return false;
     }
     const size_t first_non_space = line.find_first_not_of(" \t\r\n");
     if (first_non_space == std::string::npos) {
-      is_ignorable = true;
+      is_empty = true;
       return false;
     }
     if (line[first_non_space] < '0' || line[first_non_space] > '9') {
@@ -111,19 +111,22 @@ namespace alisov
 
 int main(int argc, char *argv[])
 {
+  if (argc > 3) {
+    return 1;
+  }
   std::string in_file = "";
   std::string out_file = "";
   bool has_in = false;
   bool has_out = false;
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
-    if (arg.length() >= 3 && arg.substr(0, 3) == "in:") {
+    if (arg.compare(0, 3, "in:") == 0) {
       if (has_in) {
         return 1;
       }
       in_file = arg.substr(3);
       has_in = true;
-    } else if (arg.length() >= 4 && arg.substr(0, 4) == "out:") {
+    } else if (arg.compare(0, 4, "out:") == 0) {
       if (has_out) {
         return 1;
       }
@@ -132,9 +135,6 @@ int main(int argc, char *argv[])
     } else {
       return 1;
     }
-  }
-  if (argc > 3) {
-    return 1;
   }
   std::ifstream f_in;
   if (has_in) {
@@ -151,8 +151,8 @@ int main(int argc, char *argv[])
   std::string line = "";
   while (std::getline(input, line)) {
     alisov::Person p;
-    bool is_ignorable = false;
-    if (alisov::parse_person(line, p, is_ignorable)) {
+    bool is_empty = false;
+    if (alisov::parse_person(line, p, is_empty)) {
       if (alisov::id_unique(people, p.id)) {
         alisov::push_back(people, p);
         ++success_count;
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
         ++ignore_count;
       }
     } else {
-      if (!is_ignorable) {
+      if (!is_empty) {
         ++ignore_count;
       }
     }
