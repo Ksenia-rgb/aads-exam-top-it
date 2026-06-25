@@ -132,8 +132,5 @@ void shigarev::writePersons(std::ostream& out,
 void shigarev::writeStats(std::ostream& err,
     size_t read, size_t ignored)
 {
-  if (read == 0 && ignored == 0) {
-    return;
-  }
   err << read << " " << ignored << "\n";
 }
