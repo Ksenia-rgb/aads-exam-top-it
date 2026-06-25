@@ -95,4 +95,5 @@ int main(int argc, char* argv[]) {
     *output << *iter << ' ' << *htable.find(*iter) << '\n';
     ++iter;
   }
+  return 0;
 }
