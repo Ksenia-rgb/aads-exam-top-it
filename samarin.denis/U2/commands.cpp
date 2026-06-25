@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <fstream>
 #include <istream>
-#include <memory>
 #include <ostream>
 #include <string>
 #include <utility>
@@ -83,26 +82,12 @@ namespace {
     return true;
   }
 
-  bool isBefore(const DurationPair & value, std::size_t partner, std::size_t duration)
+  bool meetingComesBefore(const DurationPair & left, const DurationPair & right)
   {
-    if (value.first != partner) {
-      return value.first < partner;
+    if (left.first != right.first) {
+      return left.first < right.first;
     }
-    return value.second <= duration;
-  }
-
-  void insertMeeting(samarin::detail::list_t< DurationPair > & list, std::size_t partner,
-      std::size_t duration)
-  {
-    PairNode ** link = std::addressof(list.head);
-    while (*link != nullptr && isBefore((*link)->value, partner, duration)) {
-      link = std::addressof((*link)->next);
-    }
-    PairNode * const node = new PairNode{ std::make_pair(partner, duration), *link };
-    *link = node;
-    if (node->next == nullptr) {
-      list.tail = node;
-    }
+    return left.second <= right.second;
   }
 
   void printMeetings(std::ostream & out, const samarin::Dataset & data, std::size_t id,
@@ -123,7 +108,8 @@ namespace {
           || (bound == Bound::below && meeting.duration < threshold)
           || (bound == Bound::above && meeting.duration > threshold);
       if (keep) {
-        insertMeeting(selected, partner, meeting.duration);
+        const DurationPair entry = std::make_pair(partner, meeting.duration);
+        samarin::detail::insertSorted(selected, entry, meetingComesBefore);
       }
     }
     for (const PairNode * node = selected.head; node != nullptr; node = node->next) {
@@ -186,14 +172,12 @@ namespace {
 
   bool metWith(const samarin::Dataset & data, std::size_t person, std::size_t partner)
   {
-    for (const MeetingNode * node = data.meetings.head; node != nullptr; node = node->next) {
-      const samarin::Meeting & meeting = node->value;
-      if ((meeting.first == person && meeting.second == partner)
-          || (meeting.first == partner && meeting.second == person)) {
-        return true;
-      }
-    }
-    return false;
+    const auto matches = [person, partner](const samarin::Meeting & meeting)
+    {
+      return (meeting.first == person && meeting.second == partner)
+          || (meeting.first == partner && meeting.second == person);
+    };
+    return samarin::detail::findValue(data.meetings, matches) != nullptr;
   }
 
   void doCommons(std::ostream & out, samarin::Dataset & data, std::size_t first, std::size_t second)
@@ -210,40 +194,6 @@ namespace {
         out << candidate << '\n';
       }
     }
-  }
-
-  void removeSelfMeetings(samarin::Dataset & data)
-  {
-    MeetingNode ** link = std::addressof(data.meetings.head);
-    MeetingNode * tail = nullptr;
-    while (*link != nullptr) {
-      if ((*link)->value.first == (*link)->value.second) {
-        MeetingNode * const dead = *link;
-        *link = dead->next;
-        delete dead;
-      } else {
-        tail = *link;
-        link = std::addressof((*link)->next);
-      }
-    }
-    data.meetings.tail = tail;
-  }
-
-  void removePerson(samarin::Dataset & data, std::size_t id)
-  {
-    PersonNode ** link = std::addressof(data.persons.head);
-    PersonNode * tail = nullptr;
-    while (*link != nullptr) {
-      if ((*link)->value.id == id) {
-        PersonNode * const dead = *link;
-        *link = dead->next;
-        delete dead;
-      } else {
-        tail = *link;
-        link = std::addressof((*link)->next);
-      }
-    }
-    data.persons.tail = tail;
   }
 
   void doDeanon(std::ostream & out, samarin::Dataset & data, std::size_t anonId,
@@ -263,8 +213,16 @@ namespace {
         node->value.second = namedId;
       }
     }
-    removeSelfMeetings(data);
-    removePerson(data, anonId);
+    const auto isSelfMeeting = [](const samarin::Meeting & meeting)
+    {
+      return meeting.first == meeting.second;
+    };
+    samarin::detail::removeIf(data.meetings, isSelfMeeting);
+    const auto hasAnonId = [anonId](const samarin::Person & person)
+    {
+      return person.id == anonId;
+    };
+    samarin::detail::removeIf(data.persons, hasAnonId);
   }
 
   void doOutPersons(std::ostream & out, const samarin::Dataset & data, const std::string & filename)
