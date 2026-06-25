@@ -2,22 +2,12 @@
 
 #include <limits>
 
-namespace lukashevich
-{
-  namespace detail 
-  {
-    bool isSpace(char ch);
-    std::string tri(const std::string& text);
-    bool parseUnsigned(const std::string& text, size_t begin, size_t& value, size_t& end);
-  }
-}
-
 bool lukashevich::detail::isSpace(char ch)
 {
   return (ch == ' ') || (ch == '\t') || (ch == '\r');
 }
 
-std::string lukashevich::detail::tri(const std::string& text)
+std::string lukashevich::detail::trim(const std::string& text)
 {
   size_t begin = 0;
 
@@ -57,4 +47,15 @@ bool lukashevich::detail::parseUnsigned(const std::string& text, size_t begin, s
   value = res;
   end = pos;
   return true;
+}
+
+bool lukashevich::hasPerson(const Array< Person >& persons, size_t id)
+{
+  for (size_t i = 0; i < persons.size_; ++i) {
+    if (persons.data_[i].id == id) {
+      return true;
+    }
+  }
+
+  return false;
 }
