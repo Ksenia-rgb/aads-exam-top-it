@@ -43,13 +43,27 @@ int main(int argc, char** argv)
   std::pair< List< size_t >, Data > d;
 
   if (input) {
-    std::ifstream iffile(input);
+    std::ifstream ifile(input);
     if (!file) {
       return 2;
     }
     
-    d = hachaturyanov::readData(iffile, persons);
+    d = hachaturyanov::readData(ifile, persons);
   } else {
     d = hachaturyanov::readData(std::cin, persons);
   }
+
+  if (output) {
+    std::ofstream ofile(output);
+    if (!ofile) {
+      return 2;
+    }
+
+    printData(ofile, persons, d.first);
+  } else {
+    printData(std::cout, persons, d.first);
+  }
+
+  std::cerr << d.second.success << ' ' << d.second.ignored << '\n';
+  return 0;
 }

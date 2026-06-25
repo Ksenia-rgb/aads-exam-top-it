@@ -29,4 +29,13 @@ namespace hachaturyanov
     }
     return { ids, data };
   }
+
+  void printData(std::ostream &out, PersonTable &persons, List< size_t > order)
+  {
+    auto it = order.begin();
+    do {
+      out << *it << ' ' << persons[*it] << '\n';
+      ++it;
+    } while (it != order.begin());
+  }
 }
