@@ -47,6 +47,17 @@ private:
     validCount++;
   }
 
+  bool parseId(const std::string& str, size_t& id) {
+    id = 0;
+    for (size_t i = 0; i < str.length(); i++) {
+      if (!std::isdigit(str[i])) {
+        return false;
+      }
+      id = id * 10 + (str[i] - '0');
+    }
+    return true;
+  }
+
 public:
   DataProcessor() : head(nullptr), tail(nullptr), validCount(0), ignoredCount(0) {}
 
