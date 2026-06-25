@@ -105,4 +105,38 @@ namespace levkin {
     }
     db.persons.size = p_write_idx;
   }
+  void redesc(DB& db, std::istream& is, std::ostream& os)
+  {
+    size_t id;
+    if (!(is >> id) || !hasPerson(db, id)) {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      std::string dummy;
+      std::getline(is, dummy);
+      return;
+    }
+
+    char ch;
+    while (is.get(ch) && isSpaceChar(ch))
+      ;
+    if (ch != '"') {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      std::string dummy;
+      std::getline(is, dummy);
+      return;
+    }
+
+    std::string new_desc = "";
+    while (is.get(ch) && ch != '"') {
+      new_desc += ch;
+    }
+
+    for (size_t i = 0; i < db.persons.size; ++i) {
+      if (db.persons.data[i].first == id) {
+        db.persons.data[i].second = new_desc;
+        break;
+      }
+    }
+  }
 }
