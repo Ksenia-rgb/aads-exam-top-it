@@ -89,7 +89,15 @@ namespace permyakov
     return result;
   }
 
-  void output(std::osream & out, list< Person > & lst);
+  void output(std::osream & out, list< Person > & lst)
+  {
+    list< Person > * tmpLst = lst;
+    while (tmpLst->next) {
+      out << tmpLst->id << ' ' << tmpLst->info << '\n';
+      tmpLst->next;
+    }
+    out << tmpLst->id << ' ' << tmpLst->info << '\n';
+  }
 }
 
 #endif
