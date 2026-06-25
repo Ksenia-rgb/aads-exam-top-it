@@ -4,6 +4,10 @@
 
 int main(int argc, char *argv[]) {
   using namespace karpenkov;
+  if (argc > 3) {
+    std::cerr << "Too mane args";
+    return 0;
+  }
   Args args = processArgs(argc, argv);
   if (!args.valid)
     return 1;
