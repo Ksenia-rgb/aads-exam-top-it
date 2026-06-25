@@ -4,7 +4,8 @@
 #include <cstddef>
 #include <utility>
 
-namespace burukov {
+namespace burukov
+{
 
   template< class T >
   struct darray
