@@ -71,7 +71,7 @@ namespace strelnikov
     return count;
   }
 
-  bool cmd_anons(std::istream &in, std::ostream &out, Context &ctx)
+  bool cmd_anons(std::istream &, std::ostream &out, Context &ctx)
   {
     size_t count = 0;
     for (size_t i = 0; i < ctx.persons.capacity; ++i) {
@@ -109,7 +109,7 @@ namespace strelnikov
     return true;
   }
 
-  bool cmd_deanon(std::istream &in, std::ostream &out, Context &ctx)
+  bool cmd_deanon(std::istream &in, std::ostream &, Context &ctx)
   {
     size_t anon_id, id;
     if (!(in >> anon_id >> id))
@@ -169,7 +169,7 @@ namespace strelnikov
     return true;
   }
 
-  bool cmd_redesc(std::istream &in, std::ostream &out, Context &ctx)
+  bool cmd_redesc(std::istream &in, std::ostream &, Context &ctx)
   {
     size_t id;
     if (!(in >> id))
@@ -373,7 +373,7 @@ namespace strelnikov
     return true;
   }
 
-  bool cmd_out_persons(std::istream &in, std::ostream &out, Context &ctx)
+  bool cmd_out_persons(std::istream &in, std::ostream &, Context &ctx)
   {
     std::string filename;
     if (!(in >> filename))

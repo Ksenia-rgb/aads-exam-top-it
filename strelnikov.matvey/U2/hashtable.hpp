@@ -24,12 +24,12 @@ namespace strelnikov
 
   size_t default_hash_size_t(const void *key)
   {
-    return *(const size_t *)key;
+    return *static_cast< const size_t * >(key);
   }
 
   bool default_eq_size_t(const void *a, const void *b)
   {
-    return *(const size_t *)a == *(const size_t *)b;
+    return *static_cast< const size_t * >(a) == *static_cast< const size_t * >(b);
   }
 
   template < typename K, typename V > void hash_init(HashTable< K, V > &table, size_t capacity)
