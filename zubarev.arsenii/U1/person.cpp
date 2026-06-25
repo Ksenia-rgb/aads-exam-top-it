@@ -66,4 +66,15 @@ bool zubarev::contains(const HashSet& set, size_t value)
   return false;
 }
 void zubarev::insert(HashSet& set, size_t value)
-{}
+{
+  size_t pos = hash(set, value);
+
+  for (size_t i = 0; i < set.capacity; ++i) {
+    size_t cur = (pos + i) % set.capacity;
+    if (!set.used[cur]) {
+      set.data[cur] = value;
+      set.used[cur] = true;
+      return;
+    }
+  }
+}
