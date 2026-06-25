@@ -4,6 +4,11 @@
 
 int main(int argc, char *argv[])
 {
+  if (argc > 3)
+  {
+    std::cerr << "wrong parameters\n";
+    return 0;
+  }
   zhuravleva::Args args = {"", "", false, false};
   if (!zhuravleva::parseArgs(argc, argv, args))
   {
