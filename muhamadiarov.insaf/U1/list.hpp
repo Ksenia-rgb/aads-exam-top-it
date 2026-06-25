@@ -19,6 +19,7 @@ namespace muhamadiarov
   struct List
   {
     List() noexcept;
+    ~List() noexcept;
     void pushBack(const T& data);
     void popFront() noexcept;
     size_t size() const noexcept;
@@ -36,6 +37,15 @@ muh::List< T >::List() noexcept:
   head_(nullptr),
   size_(0)
 {}
+
+template< class T >
+muh::List< T >::~List() noexcept
+{
+  while (head_)
+  {
+    popFront();
+  }
+}
 
 template<class T>
 void muh::List< T >::pushBack(const T& value)

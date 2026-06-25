@@ -12,17 +12,38 @@ namespace muhamadiarov
     size_t id;
     std::string info;
   };
+
+  std::istream& getLine(std::istream& in, std::string& str)
+   {
+    str.clear();
+
+    char ch;
+    while (in.get(ch) && (ch == ' ' || ch == '\t'))
+    {}
+
+    if (ch == '\n' || !in)
+    {
+      str.clear();
+      return in;
+    }
+    str.push_back(ch);
+    while (in.get(ch) && ch != '\n')
+    {
+      str.push_back(ch);
+    }
+    return in;
+  }
 }
 
 int main(int argc, char *argv[])
 {
   namespace muh = muhamadiarov;
-  
+
   size_t id;
   std::string data;
   muh::Queue< muh::Person > queue;
   if (argc == 2)
-  { 
+  {
     std::ifstream file(argv[1]);
     if (!file.is_open())
     {
@@ -32,7 +53,7 @@ int main(int argc, char *argv[])
 
     try
     {
-      while (file >> id >> data)
+      while (file >> id && muh::getLine(file, data))
       {
         queue.push({id, data});
       }
@@ -46,7 +67,7 @@ int main(int argc, char *argv[])
   }
   else if (argc == 1)
   {
-    while (std::cin >> id >> data)
+    while (std::cin >> id && muh::getLine(std::cin, data))
     {
       queue.push({id, data});
     }
@@ -57,7 +78,8 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  for (size_t i = 0; i < queue.size(); ++i)
+  size_t size = queue.size();
+  for (size_t i = 0; i < size; ++i)
   {
     muh::Person& person = queue.top();
     std::cout << person.id << ' ' << person.info << '\n';
