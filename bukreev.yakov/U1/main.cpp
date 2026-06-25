@@ -75,16 +75,38 @@ int main(int argc, char* argv[])
 
 void bukreev::input(List< Person >* people, std::istream& in)
 {
-  size_t id;
-  std::string name;
-  while (in >> id)
+  std::string line;
+  while (getline(in, line))
   {
-    if (!(in >> name))
+    size_t i = 0;
+    while (std::isdigit(line[i]) && i < line.size())
+    {
+      i++;
+    }
+
+    size_t id;
+    try
+    {
+      id = std::stoi(line.substr(0, i));
+    }
+    catch(...)
     {
       bad++;
-      in.clear();
       continue;
     }
+
+    while (std::isspace(line[i]) && i < line.size())
+    {
+      i++;
+    }
+
+    if (i == line.size())
+    {
+      bad++;
+      continue;
+    }
+
+    std::string name = line.substr(i);
 
     insertListTail(people, {id, name});
     good++;
