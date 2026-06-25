@@ -209,6 +209,9 @@ public:
     for (size_t i = 0; i < anonIds.size(); i++) {
       std::cout << anonIds[i] << "\n";
     }
+    if (anonIds.empty()) {
+      std::cout << "\n";
+    }
   }
 
   void deanon(size_t anonId, size_t id) {
@@ -284,6 +287,9 @@ public:
       size_t other = (result[i].id1 == id) ? result[i].id2 : result[i].id1;
       std::cout << other << " " << result[i].duration << "\n";
     }
+    if (result.empty()) {
+      std::cout << "\n";
+    }
   }
 
   void commons(size_t id1, size_t id2) {
@@ -343,6 +349,9 @@ public:
     for (size_t i = 0; i < result.size(); i++) {
       size_t other = (result[i].id1 == id) ? result[i].id2 : result[i].id1;
       std::cout << other << " " << result[i].duration << "\n";
+    }
+    if (common.empty()) {
+      std::cout << "\n";
     }
   }
 
