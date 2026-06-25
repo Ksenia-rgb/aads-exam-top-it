@@ -33,9 +33,7 @@ int main(int argc, char *argv[]) {
     out = &outputFile;
   }
   writeData(*out, table, order);
-  if (successCount != 0 || ignoredCount != 0) {
-    std::cerr << successCount << " " << ignoredCount << std::endl;
-  }
+  std::cerr << successCount << " " << ignoredCount << "\n";
   destroyOrderArray(order);
   hashTableDestroy(table);
   return 0;
