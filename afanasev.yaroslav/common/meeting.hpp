@@ -11,6 +11,9 @@ namespace afanasev
     size_t id2;
     int duration;
   };
+
+  bool parseMeeting(const std::string& line, Meeting& meeting);
+  void addMeeting(Meeting*& meetings, size_t& count, size_t& capacity, const Meeting& meeting);
 }
 
 #endif

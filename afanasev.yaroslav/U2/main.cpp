@@ -98,6 +98,39 @@ int main(int argc, char * argv[])
     return 2;
   }
 
+  std::string line;
+  while (std::getline(dataStream, line))
+  {
+    Meeting m;
+    if (!parseMeeting(line, m))
+    {
+      std::cerr << "Invalid meeting data\n";
+      delete[] persons;
+      delete[] meetings;
+      return 3;
+    }
+
+    if (m.id1 == m.id2)
+    {
+      continue;
+    }
+
+    if (!existsPerson(persons, count, m.id1))
+    {
+      Person p{m.id1, ""};
+      addPerson(persons, count, capacity, p);
+    }
+
+    if (!existsPerson(persons, count, m.id2))
+    {
+      Person p{m.id2, ""};
+      addPerson(persons, count, capacity, p);
+    }
+
+    addMeeting(meetings, mCount, mCapacity, m);
+  }
+  dataStream.close();
+
 
   delete[] persons;
   delete[] meetings;
