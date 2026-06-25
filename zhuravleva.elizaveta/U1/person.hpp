@@ -2,7 +2,9 @@
 #define PERSON_HPP
 
 #include <cstddef>
+#include <iosfwd>
 #include <string>
+#include <common/dynamicArray.hpp>
 
 namespace zhuravleva
 {
@@ -12,18 +14,9 @@ namespace zhuravleva
     std::string info;
   };
 
-  struct PersonArray
-  {
-    Person *data;
-    size_t size;
-    size_t capacity;
-  };
-
-  void init(PersonArray &persons);
-  void destroy(PersonArray &persons);
-  void reserve(PersonArray &persons, size_t capacity);
-  void pushBack(PersonArray &persons, const Person &person);
-  bool contains(const PersonArray &persons, size_t id);
+  bool contains(const DynamicArray< Person > &persons, size_t id);
+  bool readPerson(const std::string &line, Person &person);
+  void readPersons(std::istream &input, DynamicArray< Person > &persons, size_t &good, size_t &bad);
 }
 
 #endif

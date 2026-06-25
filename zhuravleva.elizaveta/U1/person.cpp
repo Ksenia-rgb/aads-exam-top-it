@@ -1,61 +1,26 @@
 #include "person.hpp"
+#include <iostream>
+#include <istream>
 
 namespace
 {
-  const size_t defaultCapacity = 8;
-}
-
-void zhuravleva::init(PersonArray &persons)
-{
-  persons.data = nullptr;
-  persons.size = 0;
-  persons.capacity = 0;
-}
-
-void zhuravleva::destroy(PersonArray &persons)
-{
-  delete[] persons.data;
-  persons.data = nullptr;
-  persons.size = 0;
-  persons.capacity = 0;
-}
-
-void zhuravleva::reserve(PersonArray &persons, size_t capacity)
-{
-  if (capacity <= persons.capacity)
+  bool isSpace(char symbol)
   {
-    return;
+    return symbol == ' ' || symbol == '\t' || symbol == '\r'
+        || symbol == '\f' || symbol == '\v';
   }
-  Person *newData = new Person[capacity];
-  try
+
+  std::string getInfo(const std::string &line, size_t pos)
   {
-    for (size_t i = 0; i < persons.size; ++i)
+    while (pos < line.size() && isSpace(line[pos]))
     {
-      newData[i] = persons.data[i];
+      ++pos;
     }
+    return line.substr(pos);
   }
-  catch (...)
-  {
-    delete[] newData;
-    throw;
-  }
-  delete[] persons.data;
-  persons.data = newData;
-  persons.capacity = capacity;
 }
 
-void zhuravleva::pushBack(PersonArray &persons, const Person &person)
-{
-  if (persons.size == persons.capacity)
-  {
-    const size_t newCapacity = (persons.capacity == 0) ? defaultCapacity : persons.capacity * 2;
-    reserve(persons, newCapacity);
-  }
-  persons.data[persons.size] = person;
-  ++persons.size;
-}
-
-bool zhuravleva::contains(const PersonArray &persons, size_t id)
+bool zhuravleva::contains(const DynamicArray< Person > &persons, size_t id)
 {
   for (size_t i = 0; i < persons.size; ++i)
   {
@@ -65,4 +30,53 @@ bool zhuravleva::contains(const PersonArray &persons, size_t id)
     }
   }
   return false;
+}
+
+bool zhuravleva::readPerson(const std::string &line, Person &person)
+{
+  size_t pos = 0;
+  while (pos < line.size() && isSpace(line[pos]))
+  {
+    ++pos;
+  }
+  if (pos == line.size() || line[pos] < '0' || line[pos] > '9')
+  {
+    return false;
+  }
+  size_t id = 0;
+  while (pos < line.size() && line[pos] >= '0' && line[pos] <= '9')
+  {
+    id = id * 10 + static_cast< size_t >(line[pos] - '0');
+    ++pos;
+  }
+  const std::string info = getInfo(line, pos);
+  if (info.empty())
+  {
+    return false;
+  }
+  person.id = id;
+  person.info = info;
+  return true;
+}
+
+void zhuravleva::readPersons(
+    std::istream &input,
+    DynamicArray< Person > &persons,
+    size_t &good,
+    size_t &bad)
+{
+  std::string line;
+  while (std::getline(input, line))
+  {
+    Person person = {0, ""};
+    if (!readPerson(line, person) || contains(persons, person.id))
+    {
+      ++bad;
+    }
+    else
+    {
+      pushBack(persons, person);
+      ++good;
+    }
+  }
 }
