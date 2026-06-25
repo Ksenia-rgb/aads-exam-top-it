@@ -18,6 +18,9 @@ namespace chernov {
   template< class T >
   void reserve(Vector< T > & v, size_t newCap);
 
+  template< class T >
+  void pushBack(Vector< T > & v, const T & value);
+
 }
 
 template< typename T >
@@ -55,4 +58,14 @@ void chernov::reserve(Vector< T > & v, size_t newCap)
   delete[] v.data;
   v.data = newData;
   v.capacity = newCap;
+}
+
+template< class T >
+void chernov::pushBack(Vector< T > & v, const T & value)
+{
+  if (v.size == v.capacity) {
+    reserve(v, v.capacity == 0 ? 1 : v.capacity * 2);
+  }
+  v.data[v.size] = value;
+  ++v.size;
 }
