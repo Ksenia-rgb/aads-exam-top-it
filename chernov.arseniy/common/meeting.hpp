@@ -2,10 +2,15 @@
 #define MEETING_HPP
 
 #include <cstddef>
-#include "date.hpp"
 #include "vector.hpp"
 
 namespace chernov {
+
+  struct Date {
+    size_t day;
+    size_t month;
+    size_t year;
+  };
 
   struct Meeting {
     size_t from;
