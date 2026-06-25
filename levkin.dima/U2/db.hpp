@@ -19,6 +19,6 @@ namespace levkin {
   bool hasDescription(const DB& db, size_t id);
   void ensurePersonExists(DB& db, size_t id);
   int loadMeetings(DB& db, const std::string& data_file);
-  
+  void initDB(DB& db);
 }
 #endif

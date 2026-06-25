@@ -58,4 +58,14 @@ namespace levkin {
 
     return 0;
   }
+  void initDB(DB& db)
+  {
+    db.persons.size = 0;
+    db.persons.cap = 0;
+    db.persons.data = nullptr;
+
+    db.meetings.size = 0;
+    db.meetings.cap = 0;
+    db.meetings.data = nullptr;
+  }
 }

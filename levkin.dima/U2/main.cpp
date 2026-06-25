@@ -20,12 +20,7 @@ int main(int argc, char* argv[])
   }
 
   levkin::DB db;
-  db.persons.size = 0;
-  db.persons.cap = 0;
-  db.persons.data = nullptr;
-  db.meetings.size = 0;
-  db.meetings.cap = 0;
-  db.meetings.data = nullptr;
+  levkin::initDB(db);
 
   if (!in_file.empty()) {
     std::ifstream ifs(in_file);
