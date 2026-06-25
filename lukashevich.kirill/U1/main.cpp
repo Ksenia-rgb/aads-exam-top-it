@@ -9,7 +9,8 @@
 int main(int argc, char* argv[])
 {
   if (argc > 3) {
-    return 1;
+    std::cerr << "error\n";
+    return 0;
   }
 
   std::string inputName;
@@ -136,8 +137,12 @@ int main(int argc, char* argv[])
       output = &outputFile;
     }
 
-    for (size_t i = 0; i < persons.size_; ++i) {
-      *output << persons.data_[i].id << ' ' << persons.data_[i].info << '\n';
+    if (persons.size_ == 0) {
+      *output << '\n';
+    } else {
+      for (size_t i = 0; i < persons.size_; ++i) {
+        *output << persons.data_[i].id << ' ' << persons.data_[i].info << '\n';
+      }
     }
 
     if (!(*output)) {
