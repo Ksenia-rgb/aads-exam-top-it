@@ -36,6 +36,7 @@ int main(int argc, char** argv)
 
   if (!args.valid)
   {
+    std::cerr << "Invalid arguments" << '\n';
     return 1;
   }
 
