@@ -50,6 +50,10 @@ void shaykhraziev::readPersons(std::istream& input,
   std::string line;
   while (std::getline(input, line))
   {
+    if (skipSpaces(line, 0) == line.size())
+    {
+      continue;
+    }
     size_t id = 0;
     size_t position = 0;
     std::string description;

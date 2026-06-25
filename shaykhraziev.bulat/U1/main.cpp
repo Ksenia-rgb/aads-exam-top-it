@@ -59,7 +59,10 @@ int main(int argc, char* argv[])
       output = &outputFile;
     }
     shaykhraziev::writePersons(*output, persons);
-    std::cerr << accepted << ' ' << ignored << '\n';
+    if ((accepted != 0) || (ignored != 0))
+    {
+      std::cerr << accepted << ' ' << ignored << '\n';
+    }
   }
   catch (const std::exception&)
   {

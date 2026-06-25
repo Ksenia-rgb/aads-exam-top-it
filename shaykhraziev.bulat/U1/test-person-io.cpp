@@ -289,3 +289,28 @@ BOOST_AUTO_TEST_CASE(read_persons_ignores_bad_lines)
   clearPersonStorage(persons, personsById);
   std::remove(inputName);
 }
+
+BOOST_AUTO_TEST_CASE(read_persons_skips_empty_lines)
+{
+  const char* inputName = "out/u1-read-empty-lines-input.txt";
+  writeTextFile(inputName,
+      "\n"
+      "   \t\n"
+      "31 Mr. Bond\n"
+      "\n");
+  std::ifstream input(inputName);
+  shaykhraziev::List< shaykhraziev::Person > persons;
+  shaykhraziev::HashTable< size_t, shaykhraziev::Person* > personsById;
+  initPersonStorage(persons, personsById);
+  size_t accepted = 0;
+  size_t ignored = 0;
+
+  shaykhraziev::readPersons(input, persons, personsById, accepted, ignored);
+
+  BOOST_TEST(accepted == 1);
+  BOOST_TEST(ignored == 0);
+  BOOST_TEST(persons.size == 1);
+
+  clearPersonStorage(persons, personsById);
+  std::remove(inputName);
+}
