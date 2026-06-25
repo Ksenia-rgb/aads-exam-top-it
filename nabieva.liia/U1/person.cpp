@@ -122,7 +122,6 @@ bool nabieva::readPersons(std::istream& input, PersonStorage& storage, ReadStats
 
     if (position == line.size())
     {
-      ++stats.ignored;
       continue;
     }
 
@@ -134,7 +133,13 @@ bool nabieva::readPersons(std::istream& input, PersonStorage& storage, ReadStats
     }
 
     skipSpaces(line, position);
-    if (position == line.size() || hasId(storage, id))
+    if (position == line.size())
+    {
+      ++stats.ignored;
+      continue;
+    }
+
+    if (hasId(storage, id))
     {
       ++stats.ignored;
       continue;
