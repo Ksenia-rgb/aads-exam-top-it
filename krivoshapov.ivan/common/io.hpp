@@ -7,7 +7,13 @@
 
 namespace krivoshapov
 {
-  void readPersons(std::istream &in, Vector<Person> &out);
+  struct ReadResult
+  {
+    std::size_t valid;
+    std::size_t ignored;
+  };
+
+  ReadResult readPersons(std::istream &in, Vector<Person> &out);
   void writePersons(std::ostream &out, const Vector<Person> &persons);
 }
 

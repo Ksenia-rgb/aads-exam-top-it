@@ -74,7 +74,7 @@ int main(int argc, char **argv)
   krivoshapov::Vector<krivoshapov::Person> persons;
   krivoshapov::init(persons);
 
-  krivoshapov::readPersons(in, persons);
+  krivoshapov::ReadResult result = krivoshapov::readPersons(in, persons);
 
   if (args.inFile != nullptr)
   {
@@ -100,6 +100,11 @@ int main(int argc, char **argv)
     }
     krivoshapov::writePersons(outStream, persons);
     outStream.close();
+  }
+
+  if (result.valid + result.ignored > 0)
+  {
+    std::cerr << result.valid << ' ' << result.ignored << '\n';
   }
 
   krivoshapov::destroy(persons);
