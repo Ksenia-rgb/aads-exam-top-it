@@ -12,6 +12,9 @@ int main(int argc, char* argv[])
   if (!zubarev::detail::parse_args(argc, argv, in_name, out_name)) {
     return 1;
   }
+  if (argc > 3) {
+    return 2;
+  }
 
   std::istream* input = &std::cin;
   std::ifstream in_file;
@@ -123,6 +126,8 @@ int main(int argc, char* argv[])
   }
   if (correct != 0 || ignored != 0) {
     std::cerr << correct << " " << ignored << '\n';
+  } else {
+    std::cerr << '\n';
   }
 
   destroy(persons);

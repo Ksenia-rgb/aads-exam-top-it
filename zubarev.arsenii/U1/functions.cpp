@@ -3,9 +3,6 @@
 
 bool zubarev::detail::parse_args(int argc, char** argv, std::string& in_name, std::string& out_name)
 {
-  if (argc > 3) {
-    return false;
-  }
   bool has_in = false;
   bool has_out = false;
 
