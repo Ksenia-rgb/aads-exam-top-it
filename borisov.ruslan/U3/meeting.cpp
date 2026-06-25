@@ -2,10 +2,10 @@
 #include <istream>
 #include <stdexcept>
 
-borisov::MeetingNode *borisov::readMeetings(std::istream &in)
+borisov::DatedMeetingNode *borisov::readDatedMeetings(std::istream &in)
 {
-  borisov::MeetingNode *head = nullptr;
-  borisov::MeetingNode *tail = nullptr;
+  borisov::DatedMeetingNode *head = nullptr;
+  borisov::DatedMeetingNode *tail = nullptr;
   try
   {
     size_t day = 0;
@@ -25,8 +25,8 @@ borisov::MeetingNode *borisov::readMeetings(std::istream &in)
         continue;
       }
       const borisov::Date date{day, month, year};
-      borisov::MeetingNode * const node = new borisov::MeetingNode{
-          borisov::Meeting{date, id1, id2, duration}, nullptr};
+      borisov::DatedMeetingNode * const node = new borisov::DatedMeetingNode{
+          borisov::DatedMeeting{date, id1, id2, duration}, nullptr};
       if (tail == nullptr)
       {
         head = node;
@@ -45,18 +45,18 @@ borisov::MeetingNode *borisov::readMeetings(std::istream &in)
   }
   catch (...)
   {
-    borisov::freeMeetings(head);
+    borisov::freeDatedMeetings(head);
     throw;
   }
   return head;
 }
 
-void borisov::freeMeetings(borisov::MeetingNode * const head)
+void borisov::freeDatedMeetings(borisov::DatedMeetingNode * const head)
 {
-  borisov::MeetingNode *cur = head;
+  borisov::DatedMeetingNode *cur = head;
   while (cur != nullptr)
   {
-    borisov::MeetingNode * const next = cur->next_;
+    borisov::DatedMeetingNode * const next = cur->next_;
     delete cur;
     cur = next;
   }

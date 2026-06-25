@@ -6,7 +6,7 @@
 
 namespace borisov
 {
-  struct Meeting
+  struct DatedMeeting
   {
     Date date_;
     size_t id1_;
@@ -14,14 +14,14 @@ namespace borisov
     size_t duration_;
   };
 
-  struct MeetingNode
+  struct DatedMeetingNode
   {
-    Meeting data_;
-    MeetingNode *next_;
+    DatedMeeting data_;
+    DatedMeetingNode *next_;
   };
 
-  MeetingNode *readMeetings(std::istream &in);
-  void freeMeetings(MeetingNode *head);
+  DatedMeetingNode *readDatedMeetings(std::istream &in);
+  void freeDatedMeetings(DatedMeetingNode *head);
 }
 
 #endif
