@@ -5,6 +5,8 @@
 #include <iosfwd>
 #include <string>
 
+#include "array.hpp"
+
 namespace lukashevich
 {
   struct Person
@@ -29,7 +31,7 @@ namespace lukashevich
 
   void initReadStats(ReadStats& stats) noexcept;
   void initOptions(ProgramOptions& options);
-  bool parseOptions(int argc, char* argv[], ProgramOptions& options);
+  bool hasPerson(const Array< Person >& persons, size_t id);
 }
 
 #endif
