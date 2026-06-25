@@ -6,7 +6,7 @@
 #include "args.hpp"
 #include "parser.hpp"
 
-namespace 
+namespace
 {
   void cleanupResources(vasyakin::array< vasyakin::Person >& persons,
     vasyakin::hashTable< size_t >& seen) noexcept
