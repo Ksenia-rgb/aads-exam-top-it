@@ -112,5 +112,18 @@ bool processLine(const std::string &line, HashTable *table, OrderArray *order) {
 
   return true;
 }
+void goodStringsCount(std::istream &in, HashTable *table, OrderArray *order,
+                      size_t &successCount, size_t &ignoredCount) {
+  std::string line;
+  successCount = 0;
+  ignoredCount = 0;
+  while (std::getline(in, line)) {
+    if (processLine(line, table, order)) {
+      ++successCount;
+    } else {
+      ++ignoredCount;
+    }
+  }
+}
 
 } // namespace karpenkov
