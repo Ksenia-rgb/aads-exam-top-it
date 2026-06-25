@@ -14,5 +14,6 @@ namespace donkeev
   void readingPersons(std::istream&, PersonList&, size_t&);
 
   void pushMeeting(MeetingList&, size_t, size_t, size_t);
+  void clearMeetingList(MeetingList&);
 }
 #endif

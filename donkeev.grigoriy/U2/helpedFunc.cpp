@@ -130,3 +130,17 @@ void donkeev::pushMeeting(MeetingList& list, size_t id1, size_t id2, size_t dura
   }
   ++list.size_;
 }
+
+void donkeev::clearMeetingList(MeetingList& list)
+{
+  MeetingNode* current = list.head_;
+  while (current)
+  {
+    MeetingNode* next = current->next_;
+    delete current;
+    current = next;
+  }
+  list.head_ = nullptr;
+  list.tail_ = nullptr;
+  list.size_ = 0;
+}
