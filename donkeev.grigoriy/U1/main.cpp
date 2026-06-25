@@ -159,6 +159,11 @@ namespace donkeev
         out << current->data->id << " " << current->data->info << "\n";
         current = current->next_;
       }
+
+      if (list.size_ == 0)
+      {
+        out << '\n';
+      }
   }
 
   void clearList(PersonList& list)
