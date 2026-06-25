@@ -7,48 +7,48 @@
 
 namespace matveev
 {
-bool parseArguments(int argc, char **argv, bool &inSet, std::string &inName, bool &outSet, std::string &outName)
-{
-  inSet = false;
-  outSet = false;
-  inName.clear();
-  outName.clear();
-
-  if (argc > 3)
+  bool parseArguments(int argc, char **argv, bool &inSet, std::string &inName, bool &outSet, std::string &outName)
   {
-    return false;
-  }
+    inSet = false;
+    outSet = false;
+    inName.clear();
+    outName.clear();
 
-  for (int i = 1; i < argc; ++i)
-  {
-    std::string arg(argv[i]);
-
-    if (arg.compare(0, 3, "in:") == 0)
-    {
-      if (inSet || arg.size() == 3)
-      {
-        return false;
-      }
-      inSet = true;
-      inName = arg.substr(3);
-    }
-    else if (arg.compare(0, 4, "out:") == 0)
-    {
-      if (outSet || arg.size() == 4)
-      {
-        return false;
-      }
-      outSet = true;
-      outName = arg.substr(4);
-    }
-    else
+    if (argc > 3)
     {
       return false;
     }
-  }
 
-  return true;
-}
+    for (int i = 1; i < argc; ++i)
+    {
+      std::string arg(argv[i]);
+
+      if (arg.compare(0, 3, "in:") == 0)
+      {
+        if (inSet || arg.size() == 3)
+        {
+          return false;
+        }
+        inSet = true;
+        inName = arg.substr(3);
+      }
+      else if (arg.compare(0, 4, "out:") == 0)
+      {
+        if (outSet || arg.size() == 4)
+        {
+          return false;
+        }
+        outSet = true;
+        outName = arg.substr(4);
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
 
 int main(int argc, char **argv)
@@ -57,18 +57,22 @@ int main(int argc, char **argv)
   bool outSet = false;
   std::string inName;
   std::string outName;
+
   if (!matveev::parseArguments(argc, argv, inSet, inName, outSet, outName))
   {
+    std::cerr << "Invalid arguments\n";
     return 1;
   }
 
   std::ifstream inputFile;
   std::istream *input = &std::cin;
+
   if (inSet)
   {
     inputFile.open(inName);
     if (!inputFile)
     {
+      std::cerr << "Cannot open file\n";
       return 2;
     }
     input = &inputFile;
@@ -79,11 +83,13 @@ int main(int argc, char **argv)
   size_t ignoredCount = 0;
   matveev::Person person;
   bool valid = false;
+
   while (matveev::readPerson(*input, person, valid))
   {
     if (valid)
     {
       bool duplicate = false;
+
       for (size_t i = 0; i < people.size; ++i)
       {
         if (people.data[i].id == person.id)
@@ -92,6 +98,7 @@ int main(int argc, char **argv)
           break;
         }
       }
+
       if (duplicate)
       {
         ++ignoredCount;
@@ -107,18 +114,23 @@ int main(int argc, char **argv)
       ++ignoredCount;
     }
   }
+
   if (inSet)
   {
     inputFile.close();
   }
 
+  std::cerr << validCount << ' ' << ignoredCount << '\n';
+
   std::ofstream outputFile;
   std::ostream *output = &std::cout;
+
   if (outSet)
   {
     outputFile.open(outName);
     if (!outputFile)
     {
+      std::cerr << "Cannot open file\n";
       return 2;
     }
     output = &outputFile;
@@ -129,6 +141,6 @@ int main(int argc, char **argv)
     matveev::writePerson(*output, people.data[i]);
     *output << '\n';
   }
-  std::cerr << validCount << ' ' << ignoredCount << '\n';
+
   return 0;
 }
