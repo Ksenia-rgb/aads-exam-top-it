@@ -34,4 +34,30 @@ namespace petrov
       delete array;
     }
   }
+
+  void pushPerson(personArr* array, const Person& person)
+  {
+    if (array->size == array->capacity)
+    {
+      size_t newCapacity = array->capacity * CAP_FACTOR;
+      Person* newData = new Person[newCapacity];
+      try
+      {
+        for (size_t i = 0; i < array->size; ++i)
+        {
+          newData[i] = array->data[i];
+        }
+      }
+      catch (...)
+      {
+        delete[] newData;
+        throw;
+      }
+      delete[] array->data;
+      array->data = newData;
+      array->capacity = newCapacity;
+    }
+    array->data[array->size] = person;
+    ++array->size;
+  }
 }

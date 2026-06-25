@@ -21,6 +21,7 @@ namespace petrov
 
   personArr* createPersonArray(size_t capacity);
   void destroyPersonArray(personArr* array);
+  void pushPerson(personArr* array, const Person& person);
 }
 
 #endif
