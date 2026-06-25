@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
   if (argc > 3)
   {
     std::cerr << "Invalid arguments." << std::endl;
-    return 1;
+    return 0;
   }
 
   std::string inputFileName;
@@ -64,7 +64,12 @@ int main(int argc, char* argv[])
                           ignoredEntries);
 
   // ✔️ OUTPUT DATA
-  if (hasOut)
+  // ✔️ OUTPUT DATA
+  if (persons.size() == 0)
+  {
+    std::cout << "\n";
+  }
+  else if (hasOut)
   {
     std::ofstream out(outputFileName);
 
@@ -79,12 +84,6 @@ int main(int argc, char* argv[])
   else
   {
     smirnova::printPersons(persons, std::cout);
-  }
-
-  // ❗ ВАЖНО: печатаем ТОЛЬКО если были реальные данные
-  if (validEntries != 0 || ignoredEntries != 0)
-  {
-    std::cerr << validEntries << " " << ignoredEntries << std::endl;
   }
 }
 
