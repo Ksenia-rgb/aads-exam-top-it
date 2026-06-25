@@ -26,13 +26,11 @@ namespace losev
   void pushBack(Node*& head, const Person& person)
   {
     Node* newNode = createNode(person);
-
     if (head == nullptr)
     {
       head = newNode;
       return;
     }
-
     Node* current = head;
     while (current->next != nullptr)
     {
@@ -64,7 +62,6 @@ namespace losev
       delete temp;
     }
   }
-
   size_t getSize(const Node* head)
   {
     size_t count = 0;
@@ -76,7 +73,6 @@ namespace losev
     }
     return count;
   }
-
   Person parseLine(const std::string& line)
   {
     Person result;
@@ -117,6 +113,32 @@ namespace losev
     }
     result.info = line.substr(pos);
     return result;
+  }
+  void processInput(std::istream& in, Node*& people,
+                    size_t& successCount, size_t& ignoredCount)
+  {
+    std::string line;
+    while (std::getline(in, line))
+    {
+      Person p = parseLine(line);
+      if (p.id == 0 && p.info.empty())
+      {
+        ++ignoredCount;
+        continue;
+      }
+      if (p.info.empty())
+      {
+        ++ignoredCount;
+        continue;
+      }
+      if (findId(people, p.id))
+      {
+        ++ignoredCount;
+        continue;
+      }
+      pushBack(people, p);
+      ++successCount;
+    }
   }
 }
 
