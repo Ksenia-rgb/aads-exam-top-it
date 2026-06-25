@@ -1,3 +1,6 @@
+#ifndef CHERNOV_VECTOR_HPP
+#define CHERNOV_VECTOR_HPP
+
 #include <cstddef>
 
 namespace chernov {
@@ -77,3 +80,5 @@ size_t chernov::getSize(Vector< T > & v)
 {
   return v.size;
 }
+
+#endif

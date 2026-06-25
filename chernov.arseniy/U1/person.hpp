@@ -1,3 +1,6 @@
+#ifndef PERSON_HPP
+#define PERSON_HPP
+
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -23,3 +26,5 @@ size_t chernov::findById(const Vector< Person > & persons, size_t id)
   }
   return persons.size;
 }
+
+#endif
