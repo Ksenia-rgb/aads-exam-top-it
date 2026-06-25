@@ -15,6 +15,11 @@ bool petrov::parsePerson(std::istream& in, petrov::Person& person)
 
   while (in >> std::noskipws >> c && c != '\n')
   {
+    if (c == '\r')
+    {
+      continue;
+    }
+
     if (readingId)
     {
       if (c == ' ' || c == '\t')
@@ -54,11 +59,18 @@ bool petrov::parsePerson(std::istream& in, petrov::Person& person)
 void petrov::processStream(std::istream& in, Data& data)
 {
   Person current;
+  char dummy = '\0';
   while (in)
   {
-    if (in.peek() == std::char_traits< char >::eof())
+    int p = in.peek();
+    if (p == std::char_traits< char >::eof())
     {
       break;
+    }
+    if (p == '\n' || p == '\r')
+    {
+      in >> std::noskipws >> dummy;
+      continue;
     }
 
     if (parsePerson(in, current))
@@ -106,6 +118,5 @@ void petrov::printData(std::ostream& out, Data& data)
   {
     out << data.data_[i].id << ' ' << data.data_[i].info << '\n';
   }
-
   std::cerr << data.saved_ << ' ' << data.ignored_ << '\n';
 }
