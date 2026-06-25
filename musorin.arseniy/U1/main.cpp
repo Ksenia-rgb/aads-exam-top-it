@@ -78,6 +78,10 @@ void readRecords(std::istream & in, musorin::List< musorin::Person > & records,
   std::string line;
   while (std::getline(in, line))
   {
+    if (line.empty())
+    {
+      continue;
+    }
     musorin::Person person{0, ""};
     if (!musorin::parseLine(line, person))
     {
@@ -144,7 +148,11 @@ int main(int argc, char * argv[])
   {
     writeRecords(std::cout, records);
   }
-  std::cerr << accepted << ' ' << ignored << '\n';
+  
+  if (accepted != 0 || ignored != 0)
+  {
+    std::cerr << accepted << ' ' << ignored << '\n';
+  }
   musorin::clear(records);
   return 0;
 }
