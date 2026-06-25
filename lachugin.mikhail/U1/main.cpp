@@ -80,4 +80,12 @@ int main(int argc, char* argv[])
     success++;
   }
 
+  for (size_t i = 0; i < size; i++)
+  {
+    *output << persons[i].id << ' ' << persons[i].info << '\n';
+  }
+
+  std::cerr << success << ' ' << ignored << '\n';
+  delete[] persons;
+
 }
