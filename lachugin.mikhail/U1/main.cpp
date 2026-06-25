@@ -1,7 +1,7 @@
 #include "functions.hpp"
 #include "Person.hpp"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -12,6 +12,8 @@ int main(int argc, char* argv[])
   std::ostream* output = &std::cout;
   std::ifstream inputFile;
   std::ofstream outputFile;
+  std::string outputName;
+
   bool hasInput = false;
   bool hasOutput = false;
 
@@ -23,7 +25,7 @@ int main(int argc, char* argv[])
   for (int i = 1; i < argc; i++)
   {
     std::string arg = argv[i];
-    if (arg.substr(0, 3) == "in:")
+    if (arg.size() >= 3 && arg.substr(0, 3) == "in:")
     {
       if (hasInput)
       {
@@ -37,20 +39,14 @@ int main(int argc, char* argv[])
       input = &inputFile;
       hasInput = true;
     }
-
-    else if (arg.substr(0, 4) == "out:")
+    else if (arg.size() >= 4 && arg.substr(0, 4) == "out:")
     {
       if (hasOutput)
       {
         return 1;
       }
-      outputFile.open(arg.substr(4));
-      if (!outputFile)
-      {
-        return 2;
 
-      }
-      output = &outputFile;
+      outputName = arg.substr(4);
       hasOutput = true;
     }
     else
@@ -64,28 +60,51 @@ int main(int argc, char* argv[])
   std::string line;
   while (std::getline(*input, line))
   {
+    if (line.empty())
+    {
+      continue;
+    }
+
     lachugin::Person person;
-    if (!parseLine(line, person))
+    if (!lachugin::parseLine(line, person))
     {
       ignored++;
       continue;
     }
 
-    if (containsId(persons, size, person.id))
+    if (lachugin::containsId(persons, size, person.id))
     {
       ignored++;
       continue;
     }
-    pushBack(persons, size, capacity, person);
+
+    lachugin::pushBack(persons, size, capacity, person);
     success++;
+  }
+
+  if (inputFile.is_open())
+  {
+    inputFile.close();
+  }
+  if (hasOutput)
+  {
+    outputFile.open(outputName);
+
+    if (!outputFile)
+    {
+      delete[] persons;
+      return 2;
+    }
+    output = &outputFile;
   }
 
   for (size_t i = 0; i < size; i++)
   {
     *output << persons[i].id << ' ' << persons[i].info << '\n';
   }
-
-  std::cerr << success << ' ' << ignored << '\n';
+  if (success != 0 || ignored != 0)
+  {
+    std::cerr << success << ' ' << ignored << '\n';
+  }
   delete[] persons;
-
 }

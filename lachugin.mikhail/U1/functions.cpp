@@ -52,7 +52,7 @@ namespace lachugin
     {
       index++;
     }
-    if (index == line.size())
+    if (index >= line.size())
     {
       return false;
     }
