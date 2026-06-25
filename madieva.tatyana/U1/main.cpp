@@ -79,17 +79,14 @@ int main(int argc, char * argv[])
 
     if (successCount == 0 && ignoredCount == 0) {
       std::cerr << "\n";
+      return 0;
     }
 
     std::cerr << successCount << " " << ignoredCount << "\n";
 
     madieva::destroyArray(persons);
     return 0;
-  } catch (const std::invalid_argument& e) {
-    std::cerr << e.what() << "\n";
-    return 2;
-  } catch (const std::bad_alloc&) {
-    std::cerr << "out of memory" << "\n";
+  } catch (...) {
     return 2;
   }
 }
