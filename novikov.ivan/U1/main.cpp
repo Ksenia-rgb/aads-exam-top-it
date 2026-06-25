@@ -4,8 +4,10 @@
 
 int main(int argc, char* argv[])
 {
-  if (argc > 3) {
-    return 2;
+  if (argc > 3)
+  {
+    std::cerr << "Too many arguments" << '\n';
+    return 0;
   }
 
   std::string in_name = "";
