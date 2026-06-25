@@ -261,6 +261,15 @@ int main(int argc, char* argv[])
     in = &inFile;
   }
 
+  donkeev::PersonList list;
+  list.head_ = nullptr;
+  list.tail_ = nullptr;
+  list.size_ = 0;
+
+  size_t ignoredCount = 0;
+
+  donkeev::readingPersons(*in, list, ignoredCount);
+
   if (!outFilename.empty())
   {
     outFile.open(outFilename);
@@ -271,15 +280,6 @@ int main(int argc, char* argv[])
     }
     out = &outFile;
   }
-
-  donkeev::PersonList list;
-  list.head_ = nullptr;
-  list.tail_ = nullptr;
-  list.size_ = 0;
-
-  size_t ignoredCount = 0;
-
-  donkeev::readingPersons(*in, list, ignoredCount);
 
   donkeev::printResult(*out, list);
   std::cerr << list.size_ << " " << ignoredCount << "\n";
