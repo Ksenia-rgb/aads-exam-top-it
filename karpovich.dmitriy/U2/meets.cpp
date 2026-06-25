@@ -120,7 +120,10 @@ void karpovich::cmdAnons(std::istream &, std::ostream &output, Vector< Person > 
 
   if (anons.size > 0) {
     for (size_t i = 0; i < anons.size; ++i) {
-      output << anons.data[i] << '\n';
+      if (i > 0) {
+        output << '\n';
+      }
+      output << anons.data[i];
     }
   }
 
@@ -194,9 +197,9 @@ void karpovich::cmdDesc(std::istream &input, std::ostream &output, Vector< Perso
   }
 
   if (person->info.empty()) {
-    output << "<ANON>\n";
+    output << "<ANON>";
   } else {
-    output << person->info << '\n';
+    output << person->info;
   }
 }
 
@@ -225,7 +228,10 @@ void karpovich::cmdMeets(std::istream &input, std::ostream &output, Vector< Pers
 
   if (result.size > 0) {
     for (size_t i = 0; i < result.size; ++i) {
-      output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+      if (i > 0) {
+        output << '\n';
+      }
+      output << result.data[i].id << ' ' << result.data[i].duration;
     }
   }
 
@@ -297,7 +303,10 @@ void karpovich::cmdCommons(std::istream &input, std::ostream &output, Vector< Pe
 
   if (result.size > 0) {
     for (size_t i = 0; i < result.size; ++i) {
-      output << result.data[i] << '\n';
+      if (i > 0) {
+        output << '\n';
+      }
+      output << result.data[i];
     }
   }
 
@@ -332,7 +341,10 @@ void karpovich::cmdLess(std::istream &input, std::ostream &output, Vector< Perso
 
   if (result.size > 0) {
     for (size_t i = 0; i < result.size; ++i) {
-      output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+      if (i > 0) {
+        output << '\n';
+      }
+      output << result.data[i].id << ' ' << result.data[i].duration;
     }
   }
 
@@ -365,7 +377,10 @@ void karpovich::cmdGreater(std::istream &input, std::ostream &output, Vector< Pe
 
   if (result.size > 0) {
     for (size_t i = 0; i < result.size; ++i) {
-      output << result.data[i].id << ' ' << result.data[i].duration << '\n';
+      if (i > 0) {
+        output << '\n';
+      }
+      output << result.data[i].id << ' ' << result.data[i].duration;
     }
   }
 

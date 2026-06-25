@@ -35,7 +35,7 @@ int main(int argc, char **argv)
   std::string inputFileName;
   std::string dataFileName;
 
-  for (size_t i = 1; i < static_cast< size_t >(argc); ++i) {
+  for (size_t i = 1; i < static_cast<size_t>(argc); ++i) {
     std::string argument = argv[i];
 
     if (startsWith(argument, "in:")) {
@@ -126,6 +126,7 @@ int main(int argc, char **argv)
   while (std::cin >> command) {
     try {
       karpovich::processCommand(std::cin, std::cout, persons, meets, command);
+      std::cout << '\n';
     } catch (const std::exception &) {
       std::cout << "<INVALID COMMAND>\n";
       std::cin.clear();
