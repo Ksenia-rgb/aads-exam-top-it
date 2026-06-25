@@ -29,7 +29,9 @@ int main(int argc, char *argv[]) {
     out = &outputFile;
   }
   writeData(*out, table, order);
-  std::cerr << successCount << " " << ignoredCount << std::endl;
+  if (successCount != 0 || ignoredCount != 0) {
+    std::cerr << successCount << " " << ignoredCount << std::endl;
+  }
   destroyOrderArray(order);
   hashTableDestroy(table);
   return 0;
