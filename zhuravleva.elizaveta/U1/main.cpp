@@ -55,7 +55,10 @@ int main(int argc, char *argv[])
   }
 
   zhuravleva::printPersons(*output, persons);
+  if (good != 0 || bad != 0)
+{
   std::cerr << good << " " << bad << "\n";
+}
   zhuravleva::destroy(persons);
   return 0;
 }
