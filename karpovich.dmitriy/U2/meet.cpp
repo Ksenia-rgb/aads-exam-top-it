@@ -160,3 +160,33 @@ void karpovich::printAnons(std::ostream &output, const Vector< Person > &persons
 
   destroyVector(anons);
 }
+
+void karpovich::deanon(Vector< Person > &persons, Vector< Meet > &meets, size_t anonId, size_t id)
+{
+  const Person *anon = findPersonById(persons, anonId);
+  if (anon == nullptr || !anon->info.empty()) {
+    throw std::runtime_error("Invalid deanon");
+  }
+  const Person *target = findPersonById(persons, id);
+  if (target == nullptr || target->info.empty()) {
+    throw std::runtime_error("Invalid deanon");
+  }
+  for (size_t i = 0; i < meets.size; ++i) {
+    if (meets.data[i].firstId == anonId) {
+      meets.data[i].firstId = id;
+    }
+    if (meets.data[i].secondId == anonId) {
+      meets.data[i].secondId = id;
+    }
+  }
+  for (size_t i = 0; i < persons.size; ++i) {
+    if (persons.data[i].id == anonId) {
+      for (size_t j = i; j + 1 < persons.size; ++j) {
+        persons.data[j] = persons.data[j + 1];
+      }
+      --persons.size;
+      break;
+    }
+  }
+  removeSelfMeets(meets);
+}

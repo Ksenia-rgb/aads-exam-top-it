@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <iosfwd>
 #include "../common/person.hpp"
+#include "../common/persons.hpp"
 #include "../common/vector.hpp"
 #include "meet.hpp"
 
