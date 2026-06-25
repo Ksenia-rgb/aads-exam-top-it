@@ -77,6 +77,11 @@ namespace
 
 int main(int argc, char ** argv)
 {
+  if (argc > 3)
+  {
+    std::cerr << "Too many arguments\n";
+    return 0;
+  }
   Arguments args = parseArguments(argc, argv);
   if (!args.valid)
   {
