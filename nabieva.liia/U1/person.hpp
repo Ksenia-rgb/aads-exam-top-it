@@ -26,20 +26,10 @@ namespace nabieva
     std::size_t ignored;
   };
 
-  void nabieva::initStorage(PersonStorage& storage)
-  {
-    storage.data = 0;
-    storage.size = 0;
-    storage.capacity = 0;
-  }
-
-  void nabieva::initStorage(PersonStorage& storage)
-  {
-    storage.data = 0;
-    storage.size = 0;
-    storage.capacity = 0;
-  }
-
+  void initStorage(PersonStorage& storage);
+  void destroyStorage(PersonStorage& storage);
+  bool readPersons(std::istream& input, PersonStorage& storage, ReadStats& stats);
+  void printPersons(std::ostream& output, const PersonStorage& storage);
 }
 
 #endif
