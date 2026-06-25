@@ -24,6 +24,16 @@ int main(int argc, char * argv[])
     std::size_t ignoredCount = 0;
     std::string line;
     while (std::getline(*inStream, line)) {
+      bool allSpaces = true;
+      for (std::size_t i = 0; i < line.size(); ++i) {
+        if (!std::isspace(static_cast<unsigned char>(line[i]))) {
+          allSpaces = false;
+          break;
+        }
+      }
+      if (allSpaces) {
+        continue;
+      }
       madieva::Person person;
       if (!madieva::parseLine(line, person)) {
         ++ignoredCount;
@@ -50,12 +60,12 @@ int main(int argc, char * argv[])
       inFile.close();
     }
 
-    std::ostream* outStream = &std::cout;
+    std::ostream * outStream = &std::cout;
     std::ofstream outFile;
     if (!config.output_file_.empty()) {
       outFile.open(config.output_file_);
       if (!outFile) {
-        std::cerr << "cannot open output file" << std::endl;
+        std::cerr << "cannot open output file" << "\n";
         madieva::destroyArray(persons);
         return 2;
       }
