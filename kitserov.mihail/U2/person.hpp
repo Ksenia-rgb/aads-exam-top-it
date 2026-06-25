@@ -24,7 +24,8 @@ namespace kitserov
     storage.size_ = 0;
     storage.capacity_ = 0;
   }
-  bool contains(const PersonsContainer& container, size_t id)
+  template< class Container >
+  bool contains(const Container& container, size_t id)
   {
     for (size_t i = 0; i < container.size_; ++i) {
       if (container.data_[i].id_ == id) {
@@ -42,8 +43,8 @@ namespace kitserov
     }
     return c.size_;
   }
-
-  bool addPerson(PersonsContainer& container, size_t id, const std::string& info)
+  template< class T, class Container >
+  bool add(Container& container, size_t id, const std::string& info)
   {
     if (contains(container, id)) {
       return false;
@@ -53,12 +54,12 @@ namespace kitserov
     }
     if (container.size_ == container.capacity_) {
       size_t new_cap = (container.capacity_ == 0) ? 8 : container.capacity_ * 2;
-      Person* new_data = new Person[new_cap];
+      T* new_data = new T[new_cap];
       try {
         for (size_t i = 0; i < container.size_; ++i) {
           new_data[i] = container.data_[i];
         }
-        new_data[container.size_] = Person{id, info};
+        new_data[container.size_] = T{id, info};
       } catch (...) {
         delete[] new_data;
         throw; 
@@ -67,7 +68,7 @@ namespace kitserov
       container.data_ = new_data;
       container.capacity_ = new_cap;
     } else {
-      container.data_[container.size_] = Person{id, info};
+      container.data_[container.size_] = T{id, info};
     }
     container.size_++;
     return true;
