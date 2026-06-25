@@ -1,4 +1,6 @@
 #include "person.hpp"
+namespace musorin
+{
 namespace
 {
 bool isSpace(char ch)
@@ -10,7 +12,7 @@ bool isDigit(char ch)
   return ch >= '0' && ch <= '9';
 }
 }
-bool musorin::parseLine(const std::string & line, Person & person)
+bool parseLine(const std::string & line, Person & person)
 {
   std::size_t pos = 0;
   while (pos < line.size() && isSpace(line[pos]))
@@ -43,4 +45,5 @@ bool musorin::parseLine(const std::string & line, Person & person)
   person.id = id;
   person.info = line.substr(pos);
   return true;
+}
 }
