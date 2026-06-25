@@ -26,6 +26,7 @@ static bool parseArgsSimple(int argc, char* argv[], std::string& inFile, std::st
   {
     return false;
   }
+
   for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
@@ -56,14 +57,14 @@ int main(int argc, char* argv[])
   if (argc > 3)
   {
     std::cerr << "Too many arguments\n";
-    return 1;
+    return 0;
   }
   std::string inFile, outFile;
   bool hasIn = false, hasOut = false;
   if (!parseArgsSimple(argc, argv, inFile, outFile, hasIn, hasOut))
   {
     std::cerr << "Invalid arguments\n";
-    return 1;
+    return 0;
   }
   std::ifstream inFileStream;
   std::istream* inStream = &std::cin;
@@ -112,6 +113,5 @@ int main(int argc, char* argv[])
   {
     outFileStream.close();
   }
-
   return 0;
 }
