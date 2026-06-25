@@ -13,7 +13,7 @@ namespace lukashevich
   {
     size_t id;
     std::string info;
-    bool hasInfo
+    bool hasInfo;
   };
 
   bool hasPerson(const Array< Person >& persons, size_t id);
