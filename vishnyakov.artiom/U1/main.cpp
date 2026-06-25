@@ -83,7 +83,6 @@ int main(int argc, char* argv[])
 
   while (std::getline(in, line))
   {
-    hasData = true;
 
     size_t first = line.find_first_not_of(" \t");
     if (first == std::string::npos)
