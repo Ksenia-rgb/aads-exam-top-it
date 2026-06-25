@@ -1,3 +1,5 @@
+#ifndef STRUCTURES_HPP
+#define STRUCTURES_HPP
 #include <iostream>
 
 namespace karpenkov {
@@ -6,14 +8,15 @@ struct Person {
   std::string info;
 };
 struct HashPerson {
-private:
   Person unit;
   bool occupied;
 };
 struct HashTable {
-private:
-  HashPerson *table_;
-  size_t size_;
-  size_t capacity_;
+  HashPerson *table;
+  size_t size;
+  size_t capacity;
 };
+HashTable *createHashTable(size_t initCapacity);
+void hashTableDestroy();
 } // namespace karpenkov
+#endif
