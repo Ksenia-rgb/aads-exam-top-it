@@ -127,6 +127,10 @@ int main(int argc, char ** argv)
       *output << persons.data[i].id << " " << persons.data[i].info << '\n';
     }
 
+    if (!success && !skiped)
+    {
+      std::cout << '\n';
+    }
     std::cerr << success << " " << skiped << "\n";
 
     if (!out_file.empty()) {
@@ -134,6 +138,5 @@ int main(int argc, char ** argv)
     }
 
     destroy(persons);
-
     return 0;
 }
