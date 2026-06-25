@@ -7,6 +7,11 @@ int main(int argc, char ** argv)
 {
   using namespace chernov;
 
+  if (argc > 3) {
+    std::cerr << "Too many arguments\n";
+    return 0;
+  }
+
   std::string inFile, outFile;
   if (!parseArgs(argc, argv, inFile, outFile)) {
     std::cerr << "Invalid arguments\n";
@@ -22,17 +27,7 @@ int main(int argc, char ** argv)
     }
   }
 
-  std::ofstream fout;
-  if (!outFile.empty()) {
-    fout.open(outFile);
-    if (!fout.is_open()) {
-      std::cerr << "Cannot open output file\n";
-      return 2;
-    }
-  }
-
   std::istream & input = inFile.empty() ? std::cin : fin;
-  std::ostream & output = outFile.empty() ? std::cout : fout;
 
   Vector< Person > persons;
   init(persons);
@@ -54,7 +49,6 @@ int main(int argc, char ** argv)
     }
 
     std::string idStr = line.substr(first, space - first);
-
     size_t descStart = line.find_first_not_of(" \t", space);
     if (descStart == std::string::npos) {
       ++ignored;
@@ -85,9 +79,29 @@ int main(int argc, char ** argv)
     ++success;
   }
 
-  for (size_t i = 0; i < persons.size; ++i) {
-    output << persons.data[i].id << ' ' << persons.data[i].info << '\n';
+  if (!inFile.empty()) {
+    fin.close();
   }
+
+  std::ofstream fout;
+  if (!outFile.empty()) {
+    fout.open(outFile);
+    if (!fout.is_open()) {
+      std::cerr << "Cannot open output file\n";
+      destroy(persons);
+      return 2;
+    }
+  }
+
+  std::ostream & output = outFile.empty() ? std::cout : fout;
+
+  if (persons.size) {
+    output << persons.data[0].id << ' ' << persons.data[0].info;
+  }
+  for (size_t i = 1; i < persons.size; ++i) {
+    output << '\n' << persons.data[i].id << ' ' << persons.data[i].info;
+  }
+  output << '\n';
 
   std::cerr << success << ' ' << ignored << '\n';
 
