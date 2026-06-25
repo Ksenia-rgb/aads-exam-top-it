@@ -5,7 +5,7 @@
 #include <string>
 #include "dynamic_array.hpp"
 
-namespace kirilich
+namespace nabieva
 {
   struct Person
   {

@@ -1,6 +1,6 @@
 #include "domain.hpp"
 
-namespace kirilich
+namespace nabieva
 {
   void init(Database& database)
   {
