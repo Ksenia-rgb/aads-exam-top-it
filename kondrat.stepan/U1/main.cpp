@@ -1,4 +1,8 @@
 #include <cstddef>
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <stdexcept>
 #include <string>
 
 namespace kondrat
@@ -24,6 +28,11 @@ namespace kondrat
 
   bool startsWith(const char * value, const char * prefix);
   bool parseArgs(int argc, char ** argv, ProgramArgs & args);
+  void initStorage(PersonStorage & storage);
+  void destroyStorage(PersonStorage & storage);
+  size_t nextCapacity(size_t capacity);
+  void reserve(PersonStorage & storage, size_t capacity);
+  void pushBack(PersonStorage & storage, const Person & person);
 }
 
 bool kondrat::startsWith(const char * value, const char * prefix)
@@ -74,6 +83,67 @@ bool kondrat::parseArgs(int argc, char ** argv, ProgramArgs & args)
   }
 
   return true;
+}
+
+void kondrat::initStorage(PersonStorage & storage)
+{
+  storage.data = nullptr;
+  storage.size = 0;
+  storage.capacity = 0;
+}
+
+void kondrat::destroyStorage(PersonStorage & storage)
+{
+  delete[] storage.data;
+  storage.data = nullptr;
+  storage.size = 0;
+  storage.capacity = 0;
+}
+
+size_t kondrat::nextCapacity(size_t capacity)
+{
+  if (capacity == 0)
+  {
+    return 8;
+  }
+  return capacity * 2;
+}
+
+void kondrat::reserve(PersonStorage & storage, size_t capacity)
+{
+  if (capacity <= storage.capacity)
+  {
+    return;
+  }
+
+  Person * newData = new Person[capacity];
+  try
+  {
+    for (size_t i = 0; i < storage.size; ++i)
+    {
+      newData[i] = storage.data[i];
+    }
+  }
+  catch (...)
+  {
+    delete[] newData;
+    throw;
+  }
+
+  delete[] storage.data;
+  storage.data = newData;
+  storage.capacity = capacity;
+}
+
+void kondrat::pushBack(PersonStorage & storage, const Person & person)
+{
+  if (storage.size == storage.capacity)
+  {
+    reserve(storage, nextCapacity(storage.capacity));
+  }
+
+  storage.data[storage.size] = person;
+  ++storage.size;
 }
 
 int main(int argc, char ** argv)
