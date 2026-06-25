@@ -217,7 +217,25 @@ void runCommands(musorin::List< musorin::Person > & persons, std::istream & in,
     printInvalid(out);
     musorin::clear(args);
   }
-  (void)persons;
+  if (command == "anons")
+    {
+      if (args.size != 0)
+      {
+        printInvalid(out);
+      }
+      else
+      {
+        cmdAnons(persons, out)
+      }
+    }
+    else if (command == "desc")
+    {
+      cmdDesc(persons, args, out);
+    }
+    else
+    {
+      printInvalid(out);
+    }
 }
 musorin::Person * findPerson(musorin::List< musorin::Person > & persons, std::size_t id)
 {
@@ -324,7 +342,80 @@ void cmdDesc(musorin::List< musorin::Person > & persons,
     out << person->info << '\n';
   }
 }
+bool parseRedescPayload(const std::string & line, std::size_t & id,
+  std::string & description)
+{
+  std::size_t pos = 0;
+  while (pos < line.size() && isSpaceChar(line[pos]))
+  {
+    ++pos;
+  }
+  if (pos == line.size() || !isDigitChar(line[pos]))
+  {
+    return false;
+  }
+  std::size_t value = 0;
+  while (pos < line.size() && isDigitChar(line[pos]))
+  {
+    const std::size_t digit = static_cast< std::size_t >(line[pos] - '0');
+    value = value * 10 + digit;
+    ++pos;
+  }
+  while (pos < line.size() && isSpaceChar(line[pos]))
+  {
+    ++pos;
+  }
+  if (pos == line.size() || line[pos] != '"')
+  {
+    return false;
+  }
+  ++pos;
+  const std::size_t start = pos;
+  while (pos < line.size() && line[pos] != '"')
+  {
+    ++pos;
+  }
+  if (pos == line.size())
+  {
+    return false;
+  }
+  const std::size_t end = pos;
+  ++pos;
+  while (pos < line.size() && isSpaceChar(line[pos]))
+  {
+    ++pos;
+  }
+  if (pos != line.size())
+  {
+    return false;
+  }
+  if (end == start)
+  {
+    return false;
+  }
+  id = value;
+  description = line.substr(start, end - start);
+  return true;
 }
+void cmdRedesc(musorin::List< musorin::Person > & persons, const std::string & payload,
+  std::ostream & out)
+{
+  std::size_t id = 0;
+  std::string description;
+  if (!parseRedescPayload(payload, id, description))
+  {
+    printInvalid(out);
+    return;
+  }
+  musorin::Person * person = findPerson(persons, id);
+  if (person == nullptr)
+  {
+    printInvalid(out);
+    return;
+  }
+  person->info = description;
+}
+
 int main(int argc, char * argv[])
 {
   Options options{"", "", false};
