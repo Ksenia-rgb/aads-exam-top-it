@@ -27,5 +27,6 @@ void hashTableInsert(HashTable *table, const Person &person);
 Person *hashTableGet(const HashTable *table, size_t id);
 OrderArray *createOrderArray(size_t initCapacity);
 void destroyOrderArray(OrderArray *arr);
+void orderArrayPush(OrderArray *arr, size_t id);
 } // namespace karpenkov
 #endif

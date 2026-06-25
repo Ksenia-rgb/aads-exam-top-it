@@ -63,5 +63,18 @@ void destroyOrderArray(OrderArray *arr) {
   delete[] arr->data;
   delete arr;
 }
+void orderArrayPush(OrderArray *arr, size_t id) {
+  if (arr->size >= arr->capacity) {
+    size_t newCapacity = arr->capacity * 2;
+    size_t *newData = new size_t[newCapacity];
+    for (size_t i = 0; i < arr->size; ++i) {
+      newData[i] = arr->data[i];
+    }
+    delete[] arr->data;
+    arr->data = newData;
+    arr->capacity = newCapacity;
+  }
+  arr->data[arr->size++] = id;
+}
 
 } // namespace karpenkov
