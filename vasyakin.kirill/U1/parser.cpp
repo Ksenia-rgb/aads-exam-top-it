@@ -8,10 +8,16 @@
 
 bool vasyakin::parseLine(const std::string& line, vasyakin::Person& person)
 {
+  std::string cleanLine = line;
+  if (!cleanLine.empty() && cleanLine.back() == '\r')
+  {
+    cleanLine.pop_back();
+  }
+    
   size_t pos = 0;
-  size_t len = line.size();
+  size_t len = cleanLine.size();
 
-  while (pos < len && std::isspace(static_cast< unsigned char >(line[pos])))
+  while (pos < len && std::isspace(static_cast< unsigned char >(cleanLine[pos])))
   {
     ++pos;
   }
@@ -21,16 +27,16 @@ bool vasyakin::parseLine(const std::string& line, vasyakin::Person& person)
     return false;
   }
 
-  if (line[pos] == '-')
+  if (cleanLine[pos] == '-')
   {
     return false;
   }
 
   char* endPtr = nullptr;
   errno = 0;
-  unsigned long long id = std::strtoull(line.c_str() + pos, &endPtr, 10);
+  unsigned long long id = std::strtoull(cleanLine.c_str() + pos, &endPtr, 10);
 
-  if (endPtr == line.c_str() + pos)
+  if (endPtr == cleanLine.c_str() + pos)
   {
     return false;
   }
@@ -40,21 +46,21 @@ bool vasyakin::parseLine(const std::string& line, vasyakin::Person& person)
     return false;
   }
 
-  size_t afterNum = endPtr - line.c_str();
+  size_t afterNum = static_cast< size_t >(endPtr - cleanLine.c_str());
 
   if (afterNum >= len)
   {
     return false;
   }
 
-  if (!std::isspace(static_cast< unsigned char >(line[afterNum])))
+  if (!std::isspace(static_cast< unsigned char >(cleanLine[afterNum])))
   {
     return false;
   }
 
   pos = afterNum;
 
-  while (pos < len && std::isspace(static_cast< unsigned char >(line[pos])))
+  while (pos < len && std::isspace(static_cast< unsigned char >(cleanLine[pos])))
   {
     ++pos;
   }
@@ -65,7 +71,7 @@ bool vasyakin::parseLine(const std::string& line, vasyakin::Person& person)
   }
 
   person.id = static_cast< size_t >(id);
-  person.info = line.substr(pos);
+  person.info = cleanLine.substr(pos);
 
   return true;
 }

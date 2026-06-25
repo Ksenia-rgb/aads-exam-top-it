@@ -15,6 +15,19 @@ namespace
     vasyakin::clearArray(persons);
     vasyakin::clearHashTable(seen);
   }
+
+  bool isBlankLine(const std::string& line) noexcept
+  {
+    for (char c : line)
+    {
+      if (!std::isspace(static_cast< unsigned char >(c))) 
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
 
 int main(int argc, char** argv)
@@ -53,6 +66,11 @@ int main(int argc, char** argv)
       std::string line;
       while (std::getline(*inStream, line))
       {
+        if (isBlankLine(line))
+        {
+          continue;
+        }
+
         vasyakin::Person p;
         if (!vasyakin::parseLine(line, p))
         {
@@ -101,6 +119,6 @@ int main(int argc, char** argv)
   catch (...)
   {
     cleanupResources(persons, seen);
-    throw;
+    return 2;
   }
 }

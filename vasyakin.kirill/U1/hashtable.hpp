@@ -57,7 +57,7 @@ namespace vasyakin
   template< class K >
   bool findInBucket(const listNode< hashCell< K > >* head, K key) noexcept
   {
-    for (listNode< hashCell< K > >* cur = head; cur; cur = cur->next)
+    for (const listNode< hashCell< K > >* cur = head; cur; cur = cur->next)
     {
       if (cur->value.key == key)
       {
