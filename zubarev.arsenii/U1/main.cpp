@@ -1,3 +1,21 @@
-int main() {
-  
-}
+struct Person
+
+{
+
+  size_t id;
+
+  std::string info;
+};
+
+struct PersonArray
+
+{
+
+  Person* data;
+
+  size_t size;
+
+  size_t capacity;
+};
+int main()
+{}
