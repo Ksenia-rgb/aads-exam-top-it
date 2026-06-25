@@ -102,11 +102,6 @@ int main(int argc, char **argv)
     outStream.close();
   }
 
-  if (result.valid + result.ignored > 0)
-  {
-    std::cerr << result.valid << ' ' << result.ignored << '\n';
-  }
-
   krivoshapov::destroy(persons);
   return 0;
 }
