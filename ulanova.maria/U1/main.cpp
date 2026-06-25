@@ -58,7 +58,7 @@ int main(int argc, char * argv[])
   in >> std::ws;
   if (in.eof())
   {
-    return 0;
+    return 2;
   }
   ulanova::ParseResult result = ulanova::readPersons(in);
   fin.close();
