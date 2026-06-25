@@ -84,4 +84,12 @@ int main(int argc, char ** argv)
     pushBack(persons, p);
     ++success;
   }
+
+  for (size_t i = 0; i < persons.size; ++i) {
+    output << persons.data[i].id << ' ' << persons.data[i].info << '\n';
+  }
+
+  std::cerr << success << ' ' << ignored << '\n';
+
+  destroy(persons);
 }
