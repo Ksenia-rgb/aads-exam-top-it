@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype>
 #include "person.hpp"
 #include "list.hpp"
+#include "hash.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -67,12 +69,83 @@ int main(int argc, char* argv[])
   }
 
   vishnyakov::List< vishnyakov::Person > persons;
+  vishnyakov::HashSet< size_t > usedIds;
+  size_t successful = 0;
+  size_t ignored = 0;
   std::string line;
 
   while (std::getline(*in, line))
   {
-    *out << line << "\n";
+    if (line.empty())
+    {
+      continue;
+    }
+
+    size_t pos = 0;
+    while (pos < line.length() && std::isspace(line[pos]))
+    {
+      ++pos;
+    }
+
+    if (pos >= line.length())
+    {
+      continue;
+    }
+
+    size_t id = 0;
+    bool validId = true;
+
+    while (pos < line.length() && std::isdigit(line[pos]))
+    {
+      id = id * 10 + (line[pos] - '0');
+      ++pos;
+    }
+
+    if (pos == 0 || !validId)
+    {
+      ++ignored;
+      continue;
+    }
+
+    while (pos < line.length() && std::isspace(line[pos]))
+    {
+      ++pos;
+    }
+
+    if (pos >= line.length())
+    {
+      ++ignored;
+      continue;
+    }
+
+    std::string info = line.substr(pos);
+
+    if (info.empty())
+    {
+      ++ignored;
+      continue;
+    }
+
+    if (usedIds.has(id))
+    {
+      ++ignored;
+      continue;
+    }
+
+    vishnyakov::Person p;
+    p.id = id;
+    p.info = info;
+    persons.pushBack(p);
+    usedIds.insert(id);
+    ++successful;
   }
+
+  for (vishnyakov::ListNode< vishnyakov::Person >* current = persons.head_; current != nullptr; current = current->next)
+  {
+    *out << current->data.id << " " << current->data.info << "\n";
+  }
+
+  std::cerr << successful << " " << ignored << "\n";
 
   return 0;
 }
