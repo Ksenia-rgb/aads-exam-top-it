@@ -101,8 +101,14 @@ namespace donkeev
     {
       size_t pos = 0;
       std::string idStr = nextWord(line, pos);
+      if (idStr.empty())
+      {
+        continue;
+      }
+
       if (!isNumber(idStr))
       {
+        ++ignored;
         continue;
       }
       size_t id = std::stoull(idStr);
