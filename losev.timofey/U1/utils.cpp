@@ -1,6 +1,6 @@
-#include <iostream>
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 #include "list.hpp"
 
@@ -72,6 +72,12 @@ namespace losev
     std::string line;
     while (std::getline(in, line))
     {
+      if (line.empty())
+      {
+        ++ignoredCount;
+        continue;
+      }
+
       Person p = parseLine(line);
 
       if (p.id == 0 && p.info.empty())
