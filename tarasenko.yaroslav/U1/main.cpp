@@ -79,6 +79,12 @@ namespace
     return true;
   }
 
+  bool hasTooManyArguments(int argc)
+  {
+    const int maxArgumentCount = 3;
+    return argc > maxArgumentCount;
+  }
+
   bool readInput(const ProgramOptions& options,
       tarasenko::PersonStorage& storage,
       tarasenko::ReadStats& stats)
@@ -121,6 +127,10 @@ namespace
 
 int main(int argc, char* argv[])
 {
+  if (hasTooManyArguments(argc)) {
+    return SUCCESS;
+  }
+
   ProgramOptions options = { false, false, "", "" };
   if (!parseArguments(argc, argv, options)) {
     return INVALID_ARGUMENTS;
