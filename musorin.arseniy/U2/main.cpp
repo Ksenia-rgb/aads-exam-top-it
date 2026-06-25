@@ -415,7 +415,29 @@ void cmdRedesc(musorin::List< musorin::Person > & persons, const std::string & p
   }
   person->info = description;
 }
-
+void cmdOutPersons(const musorin::List< musorin::Person > & persons,
+  const musorin::List< std::string > & args, std::ostream & out)
+{
+  if (args.size != 1)
+  {
+    printInvalid(out);
+    return;
+  }
+  std::ofstream file(args.head->value);
+  if (!file.is_open())
+  {
+    printInvalid(out);
+    return;
+  }
+  for (const musorin::detail::Node< musorin::Person > * node = persons.head;
+    node != nullptr; node = node->next)
+  {
+    if (!node->value.info.empty())
+    {
+      file << node->value.id << ' ' << node->value.info << '\n';
+    }
+  }
+}
 int main(int argc, char * argv[])
 {
   Options options{"", "", false};
