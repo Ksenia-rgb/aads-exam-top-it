@@ -49,14 +49,14 @@ int main(int argc, char **argv)
   if (argc > 3)
   {
     std::cerr << "Invalid arguments\n";
-    return 2;
+    return 1;
   }
 
   Args args = parseArgs(argc, argv);
   if (!args.valid)
   {
     std::cerr << "Invalid arguments\n";
-    return 2;
+    return 1;
   }
 
   std::ifstream inStream;
@@ -74,19 +74,12 @@ int main(int argc, char **argv)
   krivoshapov::Vector<krivoshapov::Person> persons;
   krivoshapov::init(persons);
 
-  krivoshapov::readPersons(in, persons);
+  krivoshapov::ReadResult result = krivoshapov::readPersons(in, persons);
 
   if (args.inFile != nullptr)
   {
     inStream.close();
   }
-
-  if (args.outFile != nullptr)
-  {
-    std::cout << "in file " << args.outFile << '\n';
-  }
-
-  krivoshapov::writePersons(std::cout, persons);
 
   if (args.outFile != nullptr)
   {
@@ -101,6 +94,12 @@ int main(int argc, char **argv)
     krivoshapov::writePersons(outStream, persons);
     outStream.close();
   }
+  else
+  {
+    krivoshapov::writePersons(std::cout, persons);
+  }
+
+  std::cerr << result.valid << ' ' << result.ignored << '\n';
 
   krivoshapov::destroy(persons);
   return 0;
