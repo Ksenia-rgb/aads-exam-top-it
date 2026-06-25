@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <string>
 #include "input_handler.hpp"
 #include "person.hpp"
@@ -8,27 +7,25 @@
 
 int main(int argc, char* argv[]) {
     if (argc > 3) {
-        std::cerr << "Invalid arguments." << std::endl;
-        return 0;
+      std::cerr << "Invalid arguments." << std::endl;
+      return 0;
     }
 
     std::string inputFileName;
     std::string outputFileName;
-    bool hasInputFile = false;
     bool hasOutputFile = false;
 
     for (int i = 1; i < argc; ++i) {
-        std::string arg = argv[i];
-        if (arg.rfind("in:", 0) == 0 && !hasInputFile) {
-            inputFileName = arg.substr(3);
-            hasInputFile = true;
-        } else if (arg.rfind("out:", 0) == 0 && !hasOutputFile) {
-            outputFileName = arg.substr(4);
-            hasOutputFile = true;
-        } else {
-            std::cerr << "Invalid arguments." << std::endl;
-            return 0;
-        }
+      std::string arg = argv[i];
+      if (arg.rfind("in:", 0) == 0) {
+        inputFileName = arg.substr(3);
+      } else if (arg.rfind("out:", 0) == 0) {
+        outputFileName = arg.substr(4);
+        hasOutputFile = true;
+      } else if (argc > 3) {
+        std::cerr << "Invalid arguments." << std::endl;
+        return 0;
+      }
     }
 
     smirnova::InputHandler inputHandler(inputFileName);
@@ -39,19 +36,13 @@ int main(int argc, char* argv[]) {
     smirnova::processInput(inputHandler.getInputStream(), persons, validEntries, ignoredEntries);
 
     if (hasOutputFile) {
-        std::ofstream output(outputFileName.c_str());
-
-        if (!output) {
-            std::cerr << "Failed to open output file." << std::endl;
-            return 2;
-        }
-
-        smirnova::printPersons(persons, output);
+      std::cout << "in file " << outputFileName << '\n';
+      smirnova::printPersons(persons, std::cout);
     } else {
-        smirnova::printPersons(persons, std::cout);
+      smirnova::printPersons(persons, std::cout);
 
-        if (validEntries != 0 || ignoredEntries != 0) {
-            std::cerr << validEntries << " " << ignoredEntries << std::endl;
+      if (validEntries != 0 || ignoredEntries != 0) {
+        std::cerr << validEntries << " " << ignoredEntries << std::endl;
         }
     }
 

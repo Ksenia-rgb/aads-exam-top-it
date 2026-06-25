@@ -36,7 +36,6 @@ namespace smirnova
     size_t capacity_;
   };
 
-  // ===== ctor =====
   template< typename T >
   Vector< T >::Vector() :
     data_(nullptr),
@@ -44,7 +43,6 @@ namespace smirnova
     capacity_(0)
   {}
 
-  // ===== copy ctor =====
   template< typename T >
   Vector< T >::Vector(const Vector& other) :
     data_(nullptr),
