@@ -31,8 +31,7 @@ namespace sadovnik
 
     if (argc > 3)
     {
-      std::cerr << "invalid arguments\n";
-      return 1;
+      return 0;
     }
 
     for (int i = 1; i < argc; ++i)
