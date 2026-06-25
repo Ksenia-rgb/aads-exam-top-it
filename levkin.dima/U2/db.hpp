@@ -15,5 +15,10 @@ namespace levkin {
     Vec< levkin::Pair > persons;
     Vec< Meeting > meetings;
   };
+
+  void freeDB(DB& db);
+  bool hasPerson(const DB& db, size_t id);
+  bool hasDescription(const DB& db, size_t id);
+  void ensurePersonExists(DB& db, size_t id);
 }
 #endif
