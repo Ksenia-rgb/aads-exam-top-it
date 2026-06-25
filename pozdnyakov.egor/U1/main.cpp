@@ -4,6 +4,11 @@
 
 int main(const int argc, char *argv[])
 {
+  if (argc > 3) {
+    std::cerr << "Too many arguments\n";
+    return 0;
+  }
+
   const pozdnyakov::AppArgs args = pozdnyakov::parseArguments(argc, argv);
   if (args.isError) {
     std::cerr << "Invalid arguments\n";
