@@ -1,12 +1,12 @@
-#ifndef TARASENKO_YAROSLAV_U1_INPUT_PROCESSING_HH
-#define TARASENKO_YAROSLAV_U1_INPUT_PROCESSING_HH
+#ifndef TARASENKO_YAROSLAV_U1_INPUT_PROCESSING_HPP
+#define TARASENKO_YAROSLAV_U1_INPUT_PROCESSING_HPP
 
 #include <cstddef>
 #include <iosfwd>
 #include <string>
 
-#include "person.hh"
-#include "person_storage.hh"
+#include "person.hpp"
+#include "person_storage.hpp"
 
 namespace tarasenko
 {

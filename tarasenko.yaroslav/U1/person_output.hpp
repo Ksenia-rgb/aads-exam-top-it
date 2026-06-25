@@ -1,9 +1,9 @@
-#ifndef TARASENKO_YAROSLAV_U1_PERSON_OUTPUT_HH
-#define TARASENKO_YAROSLAV_U1_PERSON_OUTPUT_HH
+#ifndef TARASENKO_YAROSLAV_U1_PERSON_OUTPUT_HPP
+#define TARASENKO_YAROSLAV_U1_PERSON_OUTPUT_HPP
 
 #include <iosfwd>
 
-#include "person_storage.hh"
+#include "person_storage.hpp"
 
 namespace tarasenko
 {

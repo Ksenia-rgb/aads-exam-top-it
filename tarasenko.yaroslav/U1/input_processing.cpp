@@ -1,4 +1,4 @@
-#include "input_processing.hh"
+#include "input_processing.hpp"
 
 #include <cctype>
 #include <istream>

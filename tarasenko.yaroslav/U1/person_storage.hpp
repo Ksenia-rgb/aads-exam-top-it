@@ -1,10 +1,10 @@
-#ifndef TARASENKO_YAROSLAV_U1_PERSON_STORAGE_HH
-#define TARASENKO_YAROSLAV_U1_PERSON_STORAGE_HH
+#ifndef TARASENKO_YAROSLAV_U1_PERSON_STORAGE_HPP
+#define TARASENKO_YAROSLAV_U1_PERSON_STORAGE_HPP
 
 #include <cstddef>
 #include <memory>
 
-#include "person.hh"
+#include "person.hpp"
 
 namespace tarasenko
 {

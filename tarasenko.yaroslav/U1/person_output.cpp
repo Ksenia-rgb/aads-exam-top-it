@@ -1,4 +1,4 @@
-#include "person_output.hh"
+#include "person_output.hpp"
 
 #include <ostream>
 
@@ -8,4 +8,3 @@ void tarasenko::writePersons(std::ostream& output, const PersonStorage& storage)
     output << storage.persons[index].id << ' ' << storage.persons[index].info << '\n';
   }
 }
-
