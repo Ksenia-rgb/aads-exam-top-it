@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "HashTableImpl.hpp"
+#include "ListImpl.hpp"
 
 struct Person
 {
@@ -119,20 +119,54 @@ void setNames(std::string arg, std::string& inName, std::string&outName, bool& h
   }
 }
 
-size_t hashSizeT(size_t key)
+bool idExists(vishnevskiy::List<Person>* head, size_t id)
 {
-  return key;
+  vishnevskiy::LIter<Person> it(head);
+  while (it.curr)
+  {
+    if (it.value().id == id)
+    {
+      return true;
+    }
+    ++it;
+  }
+  return false;
 }
 
-bool equalSizeT(size_t a, size_t b)
+void addPerson(vishnevskiy::List<Person>*& head, const Person& person)
 {
-  return a == b;
+  vishnevskiy::List<Person>* newNode = new vishnevskiy::List<Person>(person, nullptr);
+  if (!head)
+  {
+    head = newNode;
+  }
+  else
+  {
+    vishnevskiy::LIter<Person> it(head);
+    while (it.curr && it.curr->next)
+    {
+      ++it;
+    }
+    it.curr->next = newNode;
+  }
+}
+
+void clearList(vishnevskiy::List<Person>* head)
+{
+  if (!head)
+  {
+    return;
+  }
+  if (head->next)
+  {
+    clearList(head->next);
+    head->next = nullptr;
+  }
+  delete head;
 }
 
 int main(int argc, char *argv[])
 {
-  std::string filename1;
-  std::string filename2;
   std::string inName = "";
   std::string outName = "";
   bool hasIn = false;
@@ -141,7 +175,8 @@ int main(int argc, char *argv[])
   {
     return 1;
   }
-  for (int i = 1; i < argc; ++i)
+
+  for (size_t i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
     try
@@ -178,7 +213,8 @@ int main(int argc, char *argv[])
     outPtr = &outputFile;
   }
 
-  vishnevskiy::HashTable<size_t, std::string, size_t(*)(size_t), bool(*)(size_t, size_t)> personTable(200, hashSizeT, equalSizeT);
+  vishnevskiy::List<Person>* personList = nullptr;
+
   Person person;
   int parseResult;
 
@@ -188,36 +224,22 @@ int main(int argc, char *argv[])
     {
       continue;
     }
-    if (!personTable.has(person.id))
+    if (!idExists(personList, person.id))
     {
-      try
-      {
-        personTable.add(person.id, person.info);
-      }
-      catch (const std::exception& e)
-      {
-        try
-        {
-          personTable.rehash(personTable.getCapacity() * 2);
-          personTable.add(person.id, person.info);
-        }
-        catch (const std::exception& ex)
-        {
-          return 2;
-        }
-      }
+      addPerson(personList, person);
     }
   }
 
-  vishnevskiy::tableIt<size_t, std::string, size_t(*)(size_t), bool(*)(size_t, size_t)> it(&personTable);
-  while (it.hasNext())
+  vishnevskiy::LIter<Person> it(personList);
+  while (it.curr)
   {
-    *outPtr << it.key() << " " << it.val() << std::endl;
-    it.next();
+    *outPtr << it.value().id << " " << it.value().info << std::endl;
+    ++it;
   }
 
+  clearList(personList);
+  personList = nullptr;
   if (inputFile.is_open()) inputFile.close();
   if (outputFile.is_open()) outputFile.close();
-
   return 0;
 }
