@@ -7,7 +7,8 @@ int main(int argc, char** argv)
 {
   if (argc > 3)
   {
-    return 1;
+    std::cerr << "Error: Too many arguments\n";
+    return 0;
   }
 
   std::string file_in = "";
@@ -26,7 +27,8 @@ int main(int argc, char** argv)
     }
     else
     {
-      return 1;
+      std::cerr << "Error: Invalid argument\n";
+      return 0;
     }
   }
 
@@ -38,18 +40,21 @@ int main(int argc, char** argv)
     fin.open(file_in);
     if (!fin.is_open())
     {
-      return 1;
+      std::cerr << "Error: Cannot open input file\n";
+      return 0;
     }
     in = &fin;
   }
 
   if (in->peek() == std::char_traits<char>::eof())
   {
+    std::cout << "\n";
     return 0;
   }
 
   petrov::Person* vec = nullptr;
   size_t s = 0, c = 0, ok = 0, err = 0;
+
   while(*in)
   {
     size_t id_v;
@@ -138,8 +143,9 @@ int main(int argc, char** argv)
     fout.open(file_out);
     if (!fout.is_open())
     {
+      std::cerr << "Error: Cannot open output file\n";
       delete[] vec;
-      return 1;
+      return 0;
     }
     out = &fout;
   }
@@ -148,7 +154,9 @@ int main(int argc, char** argv)
   {
     *out << vec[i].id << " " << vec[i].info << "\n";
   }
+
   std::cerr << ok << " " << err << "\n";
+
   delete[] vec;
   return 0;
 }
