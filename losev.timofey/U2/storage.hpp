@@ -33,6 +33,7 @@ namespace losev
   void initPersonStorage(PersonStorage& storage);
   void addPerson(PersonStorage& storage, const Person& person);
   bool findPersonId(const PersonStorage& storage, size_t id);
+  const Person* findPerson(const PersonStorage& storage, size_t id);
   void clearPersonStorage(PersonStorage& storage);
 
   void initMeetingStorage(MeetingStorage& storage);

@@ -40,6 +40,33 @@ namespace losev
     return false;
   }
 
+  const Person* findPerson(const PersonStorage& storage, size_t id)
+  {
+    PersonNode* current = storage.head;
+    while (current != nullptr)
+    {
+      if (current->data.id == id)
+      {
+        return &current->data;
+      }
+      current = current->next;
+    }
+    return nullptr;
+  }
+
+  void clearPersonStorage(PersonStorage& storage)
+  {
+    PersonNode* current = storage.head;
+    while (current != nullptr)
+    {
+      PersonNode* next = current->next;
+      delete current;
+      current = next;
+    }
+    storage.head = nullptr;
+    storage.tail = nullptr;
+  }
+
   void initMeetingStorage(MeetingStorage& storage)
   {
     storage.head = nullptr;
@@ -62,19 +89,6 @@ namespace losev
       storage.tail->next = node;
       storage.tail = node;
     }
-  }
-
-  void clearPersonStorage(PersonStorage& storage)
-  {
-    PersonNode* current = storage.head;
-    while (current != nullptr)
-    {
-      PersonNode* next = current->next;
-      delete current;
-      current = next;
-    }
-    storage.head = nullptr;
-    storage.tail = nullptr;
   }
 
   void clearMeetingStorage(MeetingStorage& storage)
