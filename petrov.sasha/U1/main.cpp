@@ -55,6 +55,11 @@ int main(int argc, char* argv[])
 {
   try
   {
+    if (argc > 3)
+    {
+      std::cerr << "many args\n";
+      return 0;
+    }
     std::string inFilename = "";
     std::string outFilename = "";
     if (!parseArgs(argc, argv, inFilename, outFilename))
