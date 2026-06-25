@@ -18,6 +18,7 @@ namespace chernov {
   Vector< Meeting > filterMeetingsByPerson(const Vector< Meeting > & meetings, size_t id);
   Vector< size_t > getNeighbors(const Vector< Meeting > & meetings, size_t id);
   void sortMeetingsForOutput(Vector< Meeting > & meetings, size_t id);
+  void applyDeanon(Vector< Meeting > & meetings, size_t anonId, size_t id);
 
   namespace detail {
     size_t getOther(const Meeting & m, size_t id);

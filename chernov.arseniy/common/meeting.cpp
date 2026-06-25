@@ -91,3 +91,34 @@ void chernov::sortMeetingsForOutput(Vector< Meeting > & meetings, size_t id)
     }
   }
 }
+
+void chernov::applyDeanon(Vector< Meeting > & meetings, size_t anonId, size_t id)
+{
+  Vector< Meeting > newMeetings;
+  init(newMeetings);
+
+  try {
+    for (size_t i = 0; i < meetings.size; ++i) {
+      Meeting m = meetings.data[i];
+      if (m.from == anonId) {
+        m.from = id;
+      }
+      if (m.to == anonId) {
+        m.to = id;
+      }
+      if (m.from != m.to) {
+        pushBack(newMeetings, m);
+      }
+    }
+  } catch (...) {
+    destroy(newMeetings);
+    throw;
+  }
+
+  destroy(meetings);
+  meetings.data = newMeetings.data;
+  meetings.size = newMeetings.size;
+  meetings.capacity = newMeetings.capacity;
+
+  init(newMeetings);
+}
