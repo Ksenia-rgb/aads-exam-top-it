@@ -116,6 +116,36 @@ int main(int argc, char* argv[])
     if (inputFile.is_open()) {
       inputFile.close();
     }
+
+    std::ostream* output = &std::cout;
+    std::ofstream outputFile;
+
+    if (hasOutput) {
+      outputFile.open(outputName.c_str());
+
+      if (!outputFile.is_open()) {
+        std::cerr << "file open error\n";
+        lukashevich::destroyArray(persons);
+        return 2;
+      }
+
+      output = &outputFile;
+    }
+
+    for (size_t i = 0; i < persons.size_; ++i) {
+      *output << persons.data_[i].id << ' ' << persons.data_[i].info << '\n';
+    }
+
+    if (!(*output)) {
+      std::cerr << "ouput error\n";
+      lukashevich::destroyArray(persons);
+      return 2;
+    }
+
+    std::cerr << accepted << ' ' << ignored << '\n';
+    lukashevich::destroyArray(persons);
+    return 0;
+
   } catch (const std::exception& error) {
     static_cast< void >(error);
     std::cerr << " error\n";
