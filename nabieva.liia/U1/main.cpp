@@ -64,6 +64,10 @@ namespace nabieva {
 
 int main(int argc, char** argv)
 {
+  if (argc > 3)
+  {
+    return 0;
+  }
   nabieva::ProgramArgs args = { 0, 0 };
   if (!readArgs(argc, argv, args))
   {
