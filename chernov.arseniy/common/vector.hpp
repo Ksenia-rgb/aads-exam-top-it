@@ -1,3 +1,5 @@
+#include <cstddef>
+
 namespace chernov {
 
   template< class T >
@@ -12,6 +14,9 @@ namespace chernov {
 
   template< class T >
   void destroy(Vector< T > & v);
+
+  template< class T >
+  void reserve(Vector< T > & v, size_t newCap);
 
 }
 
@@ -30,4 +35,24 @@ void chernov::destroy(Vector< T > & v)
     delete[] v.data;
   }
   init(v);
+}
+
+template< class T >
+void chernov::reserve(Vector< T > & v, size_t newCap)
+{
+  if (newCap <= v.capacity) {
+    return;
+  }
+  T * newData = new T[newCap];
+  try {
+    for (size_t i = 0; i < v.size; ++i) {
+      newData[i] = v.data[i];
+    }
+  } catch (...) {
+    delete[] newData;
+    throw;
+  }
+  delete[] v.data;
+  v.data = newData;
+  v.capacity = newCap;
 }
