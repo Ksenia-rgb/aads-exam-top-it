@@ -42,8 +42,23 @@ bool lukashevich::addDescribedPerson(Database& database,
   return true;
 }
 
-void lukashevich::addMeeting(Database& database, size_t first, size_t second, size_t time)
-{}
+void lukashevich::addMeeting(Database& database, size_t first,
+  size_t second, size_t time)
+{
+  if (first == second) {
+    return;
+  }
+
+  addAnonPerson(database, first);
+  addAnonPerson(database, second);
+
+  Meeting meeting;
+  meeting.first = first;
+  meeting.second = second;
+  meeting.time = time;
+
+  pushBack(database.meetings, meeting);
+}
 
 bool lukashevich::hasMeetingWith(const Database& database, size_t id, size_t other)
 {}
