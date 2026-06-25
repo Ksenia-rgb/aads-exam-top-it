@@ -29,7 +29,7 @@ namespace nabieva {
     args.inputFile = 0;
     args.outputFile = 0;
 
-    if (argc > 3)
+    if (argc > 4)
     {
       return false;
     }
