@@ -1,12 +1,11 @@
-#ifndef VASYAKIN_LIST_HPP
-#define VASYAKIN_LIST_HPP
+#ifndef LIST_HPP
+#define LIST_HPP
 
 #include <cstddef>
 #include <utility>
 
 namespace vasyakin
 {
-
   template< class T >
   struct listNode
   {

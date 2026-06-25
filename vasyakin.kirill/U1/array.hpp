@@ -6,7 +6,6 @@
 
 namespace vasyakin
 {
-
   template< class T >
   struct array
   {
