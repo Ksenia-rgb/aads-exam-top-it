@@ -51,6 +51,8 @@ int main(int argc, char* argv[]) {
   size_t ignored = processor.getIgnoredCount();
   if (valid > 0 || ignored > 0) {
     std::cerr << valid << " " << ignored << "\n";
+  } else {
+    return 1;
   }
   if (outputFile.is_open()) {
     outputFile.close();
