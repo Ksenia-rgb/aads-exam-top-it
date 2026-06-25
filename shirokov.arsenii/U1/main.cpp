@@ -24,6 +24,12 @@ namespace shirokov
 
 int main(int argc, char* argv[])
 {
+  if (argc > 3)
+  {
+    std::cerr << "Too many args" << '\n';
+    return 0;
+  }
+
   std::istream* inPtr = &std::cin;
   std::ifstream fileIn;
   std::ostream* outPtr = &std::cout;
@@ -103,8 +109,15 @@ int main(int argc, char* argv[])
   size_t fail = 0;
 
   size_t id = 0;
-  while (in >> id)
+  while (in)
   {
+    in >> id;
+    if (!in && !in.eof())
+    {
+      in.clear();
+      in.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
+      continue;
+    }
     while (in.peek() == ' ' || in.peek() == '\t')
     {
       in.get();
@@ -152,13 +165,6 @@ int main(int argc, char* argv[])
       }
     }
     massive[size++] = shirokov::Person{id, info};
-  }
-
-  if (!in && !in.eof())
-  {
-    std::cerr << "Input format error occurred" << '\n';
-    delete[] massive;
-    return 1;
   }
 
   if (outStatus)
