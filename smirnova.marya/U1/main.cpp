@@ -54,23 +54,16 @@ int main(int argc, char* argv[])
 
   smirnova::InputHandler inputHandler(inputFileName);
 
-  std::istream& in = inputHandler.getInputStream();
-
   smirnova::Vector<smirnova::Person> persons;
   size_t validEntries = 0;
   size_t ignoredEntries = 0;
 
-  smirnova::processInput(in, persons, validEntries, ignoredEntries);
+  smirnova::processInput(inputHandler.getInputStream(),
+                          persons,
+                          validEntries,
+                          ignoredEntries);
 
-  if (hasOut)
-  {
-    std::cout << "in file " << outputFileName << "\n";
-  }
-  else
-  {
-    std::cout << "in file\n";
-  }
-
+  // ✔️ OUTPUT DATA
   if (hasOut)
   {
     std::ofstream out(outputFileName);
@@ -88,10 +81,8 @@ int main(int argc, char* argv[])
     smirnova::printPersons(persons, std::cout);
   }
 
-  if (!(validEntries == 0 && ignoredEntries == 0))
-  {
-    std::cerr << validEntries << " " << ignoredEntries << std::endl;
-  }
+  // ✔️ STDERR STATS (ОБЯЗАТЕЛЬНО ВСЕГДА)
+  std::cerr << validEntries << " " << ignoredEntries << std::endl;
 
   return 0;
 }
