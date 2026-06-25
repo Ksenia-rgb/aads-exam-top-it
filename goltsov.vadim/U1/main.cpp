@@ -63,6 +63,13 @@ namespace goltsov
           }
         }
       }
+      else
+      {
+        if (!is.eof())
+        {
+          is.clear();
+        }
+      }
     }
     *l = start_l;
     return {good, bad};
@@ -85,8 +92,9 @@ namespace goltsov
 
 int main(int argc, char** argv)
 {
-  std::ifstream inFile;
-  std::ofstream outFile;
+  std::fstream inFile;
+  std::fstream outFile;
+  std::string outFilename;
   std::istream* is = &std::cin;
   std::ostream* os = &std::cout;
   if (argc > 3)
@@ -97,7 +105,7 @@ int main(int argc, char** argv)
   for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
-    if (arg.substr(0, 3) == "in:")
+    if (arg.substr(0, 3) == "in:" && is == &std::cin)
     {
       std::string filename = arg.substr(3);
       inFile.open(filename);
@@ -108,16 +116,9 @@ int main(int argc, char** argv)
       }
       is = &inFile;
     }
-    else if (arg.substr(0, 4) == "out:")
+    else if (arg.substr(0, 4) == "out:" && outFilename.empty())
     {
-      std::string filename = arg.substr(4);
-      outFile.open(filename);
-      if (!outFile.is_open())
-      {
-        std::cerr << "Cannot open output file\n";
-        return 2;
-      }
-      os = &outFile;
+      outFilename = arg.substr(4);
     }
     else
     {
@@ -128,6 +129,16 @@ int main(int argc, char** argv)
   goltsov::HashTable ht = goltsov::newHT(100);
   goltsov::List* l = nullptr;
   std::pair< size_t, size_t > res = goltsov::readPersons(ht, *is, &l);
+  if (!outFilename.empty())
+  {
+    outFile.open(outFilename, std::ios::trunc);
+    if (!outFile.is_open())
+    {
+      std::cerr << "Cannot open output file\n";
+      return 2;
+    }
+    os = &outFile;
+  }
   goltsov::printRes(*os, l);
   *os << '\n';
   std::cerr << res.first << ' ' << res.second << '\n';
