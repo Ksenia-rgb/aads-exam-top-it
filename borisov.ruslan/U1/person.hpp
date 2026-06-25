@@ -17,6 +17,7 @@ namespace borisov
     PersonNode *next_;
   };
 
+  bool containsId(const PersonNode *head, size_t id);
   void freePersons(PersonNode *head);
 }
 
