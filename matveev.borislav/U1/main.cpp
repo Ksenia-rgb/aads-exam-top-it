@@ -7,9 +7,8 @@
 
 namespace matveev
 {
-
- bool parseArguments(int argc, char **argv, bool &inSet, std::string &inName, bool &outSet, std::string &outName)
- {
+bool parseArguments(int argc, char **argv, bool &inSet, std::string &inName, bool &outSet, std::string &outName)
+{
   inSet = false;
   outSet = false;
   inName.clear();
@@ -49,6 +48,7 @@ namespace matveev
   }
 
   return true;
+}
 }
 
 int main(int argc, char **argv)
