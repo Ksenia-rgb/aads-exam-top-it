@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <fstream>
 #include "person.hpp"
+#include "darray.hpp"
 
 namespace kuznetsov {
   Person readPerson(std::istream& in);
@@ -11,6 +12,7 @@ namespace kuznetsov {
 
 int main(int argc, char** argv)
 {
+  namespace kuz = kuznetsov;
   std::ifstream ifile;
   std::ofstream ofile;
   std::istream* source = &std::cin;
@@ -28,7 +30,7 @@ int main(int argc, char** argv)
         ifile.open(path);
         if (!ifile) {
           std::cerr << "Cant open file\n";
-          return 1;
+          return 2;
         }
         source = &ifile;
         countInp++;
@@ -37,7 +39,7 @@ int main(int argc, char** argv)
         ofile.open(path);
         if (!ofile) {
           std::cerr << "Cant open file\n";
-          return 1;
+          return 2;
         }
         output = &ofile;
         countOut++;
@@ -48,6 +50,18 @@ int main(int argc, char** argv)
   if (countInp > 1 || countOut > 1) {
     return 1;
   }
+  kuz::darray< kuz::Person > persons = kuz::makeDarray< kuz::Person >(8);
+  while (!source->eof()) {
+    kuz::Person p = kuz::readPerson(*source);
+    if (!source->fail()) {
+      kuz::pushBackDarray(persons, p);
+    } else {
+      source->clear();
+      std::streamsize n = std::numeric_limits< std::streamsize >::max();
+      source->ignore(n, '\n');
+    }
+  }
+
 
 }
 

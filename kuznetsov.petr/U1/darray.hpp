@@ -30,6 +30,27 @@ namespace kuznetsov {
   }
 
   template< class T >
+  darray< T > copyDarray(darray< T > dr, size_t cap = 0)
+  {
+    darray< T > nr {nullptr, 0, 0};
+    if (cap < dr.size) {
+      cap = dr.cap;
+    }
+    nr.data = new T[cap];
+    try {
+      for (size_t i = 0; i < dr.size; ++i) {
+        nr.data[i] = dr.data[i];
+        ++nr.size;
+      }
+      nr.cap = cap;
+      return nr;
+    } catch (...) {
+      clearDarray(nr);
+      throw;
+    }
+  }
+
+  template< class T >
   void swapDarray(darray< T >& a, darray< T >& b)
   {
     std::swap(a.data, b.data);
@@ -38,7 +59,7 @@ namespace kuznetsov {
   }
 
   template< class T >
-  void insertDarray(darray< T >& dr, T&& val)
+  void pushBackDarray(darray< T >& dr, T& val)
   {
     darray< T > tmp {nullptr, 0, 0};
     size_t cap = dr.cap;
