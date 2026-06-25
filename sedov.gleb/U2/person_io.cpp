@@ -17,20 +17,20 @@ std::istream & sedov::readPerson(std::istream & in, Person & person, bool & vali
   {
     line.pop_back();
   }
-  std::size_t pos = 0;
+  size_t pos = 0;
   while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t'))
   {
     ++pos;
   }
-  std::size_t id = 0;
+  size_t id = 0;
   bool hasDigit = false;
   while (pos < line.size() && line[pos] >= '0' && line[pos] <= '9')
   {
-    if (id > SIZE_MAX / 10 || (id == SIZE_MAX / 10 && static_cast< std::size_t >(line[pos] - '0') > SIZE_MAX % 10))
+    if (id > SIZE_MAX / 10 || (id == SIZE_MAX / 10 && static_cast< size_t >(line[pos] - '0') > SIZE_MAX % 10))
     {
       return in;
     }
-    id = id * 10 + static_cast< std::size_t >(line[pos] - '0');
+    id = id * 10 + static_cast< size_t >(line[pos] - '0');
     hasDigit = true;
     ++pos;
   }
