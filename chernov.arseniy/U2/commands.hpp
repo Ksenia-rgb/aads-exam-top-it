@@ -8,11 +8,11 @@
 namespace chernov {
 
   void printAnons(const Vector< size_t > & allIds, const Vector< Person > & persons);
-  bool processDeanon(size_t anonId,
-    size_t id,
-    Vector< Person > & persons,
+  bool processDeanon(Vector< Person > & persons,
     Vector< Meeting > & meetings,
-    Vector< size_t > & allIds);
+    Vector< size_t > & allIds,
+    size_t anonId,
+    size_t id);
   bool processRedesc(Vector< Person > & persons, Vector< size_t > & allIds, size_t id, const std::string & description);
 
 }

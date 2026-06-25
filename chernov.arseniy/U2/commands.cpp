@@ -28,23 +28,33 @@ void chernov::printAnons(const Vector< size_t > & allIds, const Vector< Person >
   destroy(idsCopy);
 }
 
-bool chernov::processDeanon(size_t anonId,
-  size_t id,
-  Vector< Person > & persons,
+bool chernov::processDeanon(Vector< Person > & persons,
   Vector< Meeting > & meetings,
-  Vector< size_t > & allIds)
+  Vector< size_t > & allIds,
+  size_t anonId,
+  size_t id)
 {
+  bool anonExists = false;
+  for (size_t i = 0; i < allIds.size; ++i) {
+    if (allIds.data[i] == anonId) {
+      anonExists = true;
+      break;
+    }
+  }
+  if (!anonExists) {
+    return false;
+  }
+
   if (findById(persons, anonId) != persons.size) {
     return false;
   }
+
   if (findById(persons, id) == persons.size) {
-    return false;
-  }
-  if (!hasId(allIds, anonId)) {
     return false;
   }
 
   applyDeanon(meetings, anonId, id);
+
   rebuildAllIds(allIds, persons, meetings);
 
   return true;
