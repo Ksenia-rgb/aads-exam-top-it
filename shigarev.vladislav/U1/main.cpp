@@ -6,6 +6,11 @@
 
 int main(int argc, char* argv[])
 {
+  if (argc > 3) {
+    std::cerr << "Invalid arguments\n";
+    return 0;
+  }
+
   shigarev::Args args = {"", "", false, false};
   if (!shigarev::parseArgs(argc, argv, args)) {
     std::cerr << "Invalid arguments\n";

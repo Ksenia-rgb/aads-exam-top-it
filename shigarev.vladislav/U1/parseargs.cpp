@@ -19,10 +19,6 @@ bool shigarev::parseArgs(int argc, const char* const* argv, Args& args)
 {
   args = {"", "", false, false};
 
-  if (argc > 3) {
-    return false;
-  }
-
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
     if (startsWith(arg, "in:", IN_PREFIX_LEN)) {
@@ -38,7 +34,7 @@ bool shigarev::parseArgs(int argc, const char* const* argv, Args& args)
       args.outputFile = arg.substr(OUT_PREFIX_LEN);
       args.hasOutputFile = true;
     } else {
-      return false;
+      return false; 
     }
   }
   return true;
