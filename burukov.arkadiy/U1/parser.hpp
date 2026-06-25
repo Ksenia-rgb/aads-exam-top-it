@@ -2,7 +2,6 @@
 #define PARSER_HPP
 
 #include <string>
-
 #include "person.hpp"
 
 namespace burukov
