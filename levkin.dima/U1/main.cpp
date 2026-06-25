@@ -64,5 +64,9 @@ int main(int argc, char* argv[])
   if (persons.data != nullptr) {
     delete[] persons.data;
   }
+
+  if (total == 0) {
+      std::cout << "\n";
+  }
   return 0;
 }
