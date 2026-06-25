@@ -1,4 +1,5 @@
 #include "commands.hpp"
+#include <fstream>
 #include <ostream>
 #include "../common/ordered-list.hpp"
 #include "../common/parse.hpp"
@@ -69,6 +70,40 @@ namespace
       return false;
     }
     return shaykhraziev::skipSpaces(line, position) == line.size();
+  }
+
+  bool parseTwoIdCommand(const std::string& line, const char* command, size_t& first, size_t& second)
+  {
+    size_t position = 0;
+    if (!parseCommandPrefix(line, command, position))
+    {
+      return false;
+    }
+    if (!shaykhraziev::parseSizeTPrefix(line, first, position))
+    {
+      return false;
+    }
+    if (!shaykhraziev::parseSizeTPrefix(line, second, position))
+    {
+      return false;
+    }
+    return shaykhraziev::skipSpaces(line, position) == line.size();
+  }
+
+  bool parseFileCommand(const std::string& line, const char* command, std::string& filename)
+  {
+    size_t position = 0;
+    if (!parseCommandPrefix(line, command, position))
+    {
+      return false;
+    }
+    position = shaykhraziev::skipSpaces(line, position);
+    if (position >= line.size())
+    {
+      return false;
+    }
+    filename = line.substr(position);
+    return true;
   }
 
   bool parseRedescCommand(const std::string& line, size_t& id, std::string& description)
@@ -161,6 +196,30 @@ namespace
     shaykhraziev::clearList(views);
     return true;
   }
+
+  size_t getOtherId(const shaykhraziev::Meeting& meeting, size_t id)
+  {
+    if (meeting.first == id)
+    {
+      return meeting.second;
+    }
+    return meeting.first;
+  }
+
+  bool hasMeetingWith(const shaykhraziev::Meeting& meeting, size_t id)
+  {
+    return (meeting.first == id) || (meeting.second == id);
+  }
+
+  void printSizeTList(shaykhraziev::List< size_t >& values, std::ostream& output)
+  {
+    shaykhraziev::ListIterator< size_t > iterator = shaykhraziev::begin(values);
+    while (!shaykhraziev::isEnd(iterator))
+    {
+      output << shaykhraziev::get(iterator) << '\n';
+      iterator = shaykhraziev::next(iterator);
+    }
+  }
 }
 
 bool shaykhraziev::executeAnons(U2Storage& storage, std::ostream& output)
@@ -248,4 +307,115 @@ bool shaykhraziev::executeGreater(U2Storage& storage,
     return false;
   }
   return executeMeetQuery(storage, id, 'g', time, output);
+}
+
+bool shaykhraziev::executeCommons(U2Storage& storage,
+    const std::string& line,
+    std::ostream& output)
+{
+  size_t firstId = 0;
+  size_t secondId = 0;
+  if (!parseTwoIdCommand(line, "commons", firstId, secondId)
+      || !contains(storage.knownIds, firstId)
+      || !contains(storage.knownIds, secondId))
+  {
+    return false;
+  }
+
+  HashTable< size_t, bool > firstNeighbours;
+  initHashTable(firstNeighbours, 101, hashSizeT, equalSizeT);
+  List< size_t > result;
+  initList(result);
+  try
+  {
+    ListIterator< Meeting > iterator = begin(storage.meetings);
+    while (!isEnd(iterator))
+    {
+      const Meeting& meeting = get(iterator);
+      if (hasMeetingWith(meeting, firstId))
+      {
+        const bool known = true;
+        insert(firstNeighbours, getOtherId(meeting, firstId), known);
+      }
+      iterator = next(iterator);
+    }
+    iterator = begin(storage.meetings);
+    while (!isEnd(iterator))
+    {
+      const Meeting& meeting = get(iterator);
+      if (hasMeetingWith(meeting, secondId))
+      {
+        const size_t other = getOtherId(meeting, secondId);
+        if (contains(firstNeighbours, other))
+        {
+          insertOrderedUniqueSizeT(result, other);
+        }
+      }
+      iterator = next(iterator);
+    }
+    printSizeTList(result, output);
+  }
+  catch (...)
+  {
+    clearList(result);
+    clearHashTable(firstNeighbours);
+    throw;
+  }
+  clearList(result);
+  clearHashTable(firstNeighbours);
+  return true;
+}
+
+bool shaykhraziev::executeDeanon(U2Storage& storage, const std::string& line)
+{
+  size_t anonId = 0;
+  size_t id = 0;
+  if (!parseTwoIdCommand(line, "deanon", anonId, id)
+      || (anonId == id)
+      || !contains(storage.knownIds, anonId)
+      || (findPersonById(storage.personsById, anonId) != nullptr)
+      || (findPersonById(storage.personsById, id) == nullptr))
+  {
+    return false;
+  }
+
+  ListIterator< Meeting > iterator = begin(storage.meetings);
+  while (!isEnd(iterator))
+  {
+    Meeting& meeting = get(iterator);
+    if (meeting.first == anonId)
+    {
+      meeting.first = id;
+    }
+    if (meeting.second == anonId)
+    {
+      meeting.second = id;
+    }
+    if (meeting.first == meeting.second)
+    {
+      iterator = erase(storage.meetings, iterator);
+    }
+    else
+    {
+      iterator = next(iterator);
+    }
+  }
+  erase(storage.knownIds, anonId);
+  return true;
+}
+
+bool shaykhraziev::executeOutPersons(U2Storage& storage, const std::string& line)
+{
+  std::string filename;
+  if (!parseFileCommand(line, "out-persons", filename))
+  {
+    return false;
+  }
+  std::ofstream output(filename.c_str());
+  if (!output)
+  {
+    return false;
+  }
+  writePersons(output, storage.persons);
+  return true;
 }

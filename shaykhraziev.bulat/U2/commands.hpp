@@ -13,6 +13,9 @@ namespace shaykhraziev
   bool executeMeets(U2Storage& storage, const std::string& line, std::ostream& output);
   bool executeLess(U2Storage& storage, const std::string& line, std::ostream& output);
   bool executeGreater(U2Storage& storage, const std::string& line, std::ostream& output);
+  bool executeCommons(U2Storage& storage, const std::string& line, std::ostream& output);
+  bool executeDeanon(U2Storage& storage, const std::string& line);
+  bool executeOutPersons(U2Storage& storage, const std::string& line);
 }
 
 #endif

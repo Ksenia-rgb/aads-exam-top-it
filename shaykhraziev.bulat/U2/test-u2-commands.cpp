@@ -242,3 +242,89 @@ BOOST_AUTO_TEST_CASE(meeting_query_rejects_bad_time)
   shaykhraziev::clearU2Storage(storage);
   std::remove(filename);
 }
+
+BOOST_AUTO_TEST_CASE(commons_outputs_unique_sorted_values)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+  addMeeting(storage, 33, 31, 10);
+  addMeeting(storage, 33, 32, 11);
+  addMeeting(storage, 31, 32, 99);
+  addMeeting(storage, 31, 32, 100);
+  const char* filename = "out/u2-commons.txt";
+  std::ofstream output(filename);
+
+  BOOST_TEST(shaykhraziev::executeCommons(storage, "commons 33 31", output));
+  output.close();
+  BOOST_TEST(readTextFile(filename) == "32\n");
+
+  shaykhraziev::clearU2Storage(storage);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(commons_unknown_id_is_invalid)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+  const char* filename = "out/u2-commons-invalid.txt";
+  std::ofstream output(filename);
+
+  BOOST_TEST(!shaykhraziev::executeCommons(storage, "commons 33 100", output));
+
+  shaykhraziev::clearU2Storage(storage);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(deanon_replaces_anon_and_removes_self_meetings)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+  addMeeting(storage, 32, 31, 10);
+  addMeeting(storage, 32, 33, 11);
+
+  BOOST_TEST(shaykhraziev::executeDeanon(storage, "deanon 32 31"));
+  BOOST_TEST(!shaykhraziev::contains(storage.knownIds, static_cast< size_t >(32)));
+  BOOST_TEST(storage.meetings.size == 1);
+  BOOST_TEST(storage.meetings.head->value.first == 31);
+  BOOST_TEST(storage.meetings.head->value.second == 33);
+
+  shaykhraziev::clearU2Storage(storage);
+}
+
+BOOST_AUTO_TEST_CASE(deanon_rejects_described_first_id)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+
+  BOOST_TEST(!shaykhraziev::executeDeanon(storage, "deanon 31 31"));
+  BOOST_TEST(!shaykhraziev::executeDeanon(storage, "deanon 31 32"));
+
+  shaykhraziev::clearU2Storage(storage);
+}
+
+BOOST_AUTO_TEST_CASE(out_persons_writes_only_described_people)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+  const char* filename = "out/u2-out-persons.txt";
+
+  BOOST_TEST(shaykhraziev::executeOutPersons(storage, std::string("out-persons ") + filename));
+  BOOST_TEST(readTextFile(filename) == "31 The Agent\n");
+
+  shaykhraziev::clearU2Storage(storage);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(out_persons_after_redesc_anon)
+{
+  shaykhraziev::U2Storage storage;
+  initCommandStorage(storage);
+  const char* filename = "out/u2-out-persons-redesc.txt";
+
+  BOOST_TEST(shaykhraziev::executeRedesc(storage, "redesc 32 \"Known\""));
+  BOOST_TEST(shaykhraziev::executeOutPersons(storage, std::string("out-persons ") + filename));
+  BOOST_TEST(readTextFile(filename) == "31 The Agent\n32 Known\n");
+
+  shaykhraziev::clearU2Storage(storage);
+  std::remove(filename);
+}
