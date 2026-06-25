@@ -12,8 +12,7 @@ namespace matveev
     size_t id;
     std::string info;
   };
-
-  std::istream &readPerson(std::istream &in, Person &person, bool &valid);
+  bool readPerson(std::istream &in, Person &person, bool &valid);
   std::ostream &writePerson(std::ostream &out, const Person &person);
 }
 

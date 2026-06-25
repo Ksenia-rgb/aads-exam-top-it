@@ -3,7 +3,7 @@
 #include <istream>
 #include <ostream>
 
-std::istream &matveev::readPerson(std::istream &in, Person &person, bool &valid)
+bool matveev::readPerson(std::istream &in, Person &person, bool &valid)
 {
   valid = false;
   size_t id = 0;
@@ -21,14 +21,16 @@ std::istream &matveev::readPerson(std::istream &in, Person &person, bool &valid)
       person.info = info;
       valid = true;
     }
+    return true;
   }
-  else if (!in.eof())
+  if (in.eof())
   {
-    in.clear();
-    std::string skip;
-    std::getline(in, skip);
+    return false;
   }
-  return in;
+  in.clear();
+  std::string skip;
+  std::getline(in, skip);
+  return true;
 }
 
 std::ostream &matveev::writePerson(std::ostream &out, const Person &person)
