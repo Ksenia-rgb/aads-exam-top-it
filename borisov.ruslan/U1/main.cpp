@@ -5,6 +5,11 @@
 
 int main(int argc, char **argv)
 {
+  if (argc > 3)
+  {
+    std::cerr << "bad args\n";
+    return 0;
+  }
   const borisov::Args args = borisov::parseArgs(argc, argv);
   if (!args.valid_)
   {
@@ -22,8 +27,12 @@ int main(int argc, char **argv)
   std::istream &in = args.inSet_ ? static_cast< std::istream & >(inFstream) : std::cin;
   size_t count = 0;
   size_t skipped = 0;
-  borisov::PersonNode * const head = borisov::readPersons(in, count, skipped);
-  inFstream.close();
+  bool hasInput = false;
+  borisov::PersonNode * const head = borisov::readPersons(in, count, skipped, hasInput);
+  if (args.inSet_)
+  {
+    inFstream.close();
+  }
   std::ofstream outFstream;
   if (args.outSet_)
   {
@@ -35,11 +44,13 @@ int main(int argc, char **argv)
     }
   }
   std::ostream &out = args.outSet_ ? static_cast< std::ostream & >(outFstream) : std::cout;
+  const bool empty = (head == nullptr);
   borisov::writePersons(out, head);
   borisov::freePersons(head);
-  if (count > 0 || skipped > 0)
+  if (empty)
   {
-    std::cerr << count << " " << skipped << "\n";
+    out << "\n";
   }
+  std::cerr << count << " " << skipped << "\n";
   return 0;
 }

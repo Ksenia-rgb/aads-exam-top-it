@@ -1,4 +1,5 @@
 #include "person.hpp"
+#include <cctype>
 #include <istream>
 #include <ostream>
 #include <string>
@@ -17,41 +18,64 @@ bool borisov::containsId(const borisov::PersonNode * const head, const size_t id
   return false;
 }
 
-borisov::PersonNode *borisov::readPersons(std::istream &in, size_t &count, size_t &skipped)
+borisov::PersonNode *borisov::readPersons(
+  std::istream &in,
+  size_t &count,
+  size_t &skipped,
+  bool &hasInput)
 {
   borisov::PersonNode *head = nullptr;
   borisov::PersonNode *tail = nullptr;
   count = 0;
   skipped = 0;
+  hasInput = false;
   try
   {
-    while (in)
+    std::string line;
+    while (std::getline(in, line))
     {
-      size_t id = 0;
-      if (!(in >> id))
+      hasInput = true;
+      size_t idStart = 0;
+      while (idStart < line.size() && (line[idStart] == ' ' || line[idStart] == '\t'))
       {
-        if (in.eof())
-        {
-          break;
-        }
-        in.clear();
-        std::string line;
-        std::getline(in, line);
+        ++idStart;
+      }
+      if (idStart == line.size())
+      {
+        continue;
+      }
+      if (!std::isdigit(static_cast< unsigned char >(line[idStart])))
+      {
         ++skipped;
         continue;
       }
-      std::string info;
-      std::getline(in, info);
-      size_t start = 0;
-      while (start < info.size() && (info[start] == ' ' || info[start] == '\t'))
+      size_t idEnd = idStart;
+      while (idEnd < line.size() && std::isdigit(static_cast< unsigned char >(line[idEnd])))
       {
-        ++start;
+        ++idEnd;
       }
-      if (start > 0)
+      if (idEnd < line.size() && line[idEnd] != ' ' && line[idEnd] != '\t')
       {
-        info = info.substr(start);
+        ++skipped;
+        continue;
       }
-      if (info.empty() || borisov::containsId(head, id))
+      size_t id = 0;
+      for (size_t i = idStart; i < idEnd; ++i)
+      {
+        id = id * 10 + static_cast< size_t >(line[i] - '0');
+      }
+      size_t infoStart = idEnd;
+      while (infoStart < line.size() && (line[infoStart] == ' ' || line[infoStart] == '\t'))
+      {
+        ++infoStart;
+      }
+      if (infoStart >= line.size())
+      {
+        ++skipped;
+        continue;
+      }
+      const std::string info = line.substr(infoStart);
+      if (borisov::containsId(head, id))
       {
         ++skipped;
         continue;
