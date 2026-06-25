@@ -1,6 +1,7 @@
 #include "commands.hpp"
 #include <person.hpp>
 #include <meeting.hpp>
+#include <iostream>
 #include <ostream>
 #include <fstream>
 #include <string>
@@ -214,6 +215,10 @@ bool borisov::cmdAnons(std::ostream &out, const borisov::PersonNode * const pers
 {
   size_t count = 0;
   size_t * const anons = collectAnons(persons, meetings, count);
+  if (count == 0)
+  {
+    out << "\n";
+  }
   for (size_t i = 0; i < count; ++i)
   {
     out << anons[i] << "\n";
@@ -252,6 +257,10 @@ bool borisov::cmdMeets(std::ostream &out, const borisov::PersonNode * const pers
   }
   size_t count = 0;
   IdDuration * const arr = collectMeetingsOf(meetings, id, count);
+  if (count == 0)
+  {
+    out << "\n";
+  }
   for (size_t i = 0; i < count; ++i)
   {
     out << arr[i].id_ << " " << arr[i].duration_ << "\n";
@@ -329,8 +338,20 @@ bool borisov::cmdRedesc(borisov::PersonNode **head,
     }
     cur = cur->next_;
   }
-  borisov::PersonNode * const node = new borisov::PersonNode{borisov::Person{id, newInfo}, *head};
-  *head = node;
+  borisov::PersonNode * const node = new borisov::PersonNode{borisov::Person{id, newInfo}, nullptr};
+  borisov::PersonNode *cur2 = *head;
+  if (cur2 == nullptr)
+  {
+    *head = node;
+  }
+  else
+  {
+    while (cur2->next_ != nullptr)
+    {
+      cur2 = cur2->next_;
+    }
+    cur2->next_ = node;
+  }
   return true;
 }
 
@@ -347,11 +368,13 @@ bool borisov::cmdCommons(std::ostream &out, const borisov::PersonNode * const pe
   size_t * const partners2 = collectPartnersOf(meetings, id2, count2);
   size_t i = 0;
   size_t j = 0;
+  bool printed = false;
   while (i < count1 && j < count2)
   {
     if (partners1[i] == partners2[j])
     {
       out << partners1[i] << "\n";
+      printed = true;
       ++i;
       ++j;
     }
@@ -363,6 +386,10 @@ bool borisov::cmdCommons(std::ostream &out, const borisov::PersonNode * const pe
     {
       ++j;
     }
+  }
+  if (!printed)
+  {
+    out << "\n";
   }
   delete[] partners1;
   delete[] partners2;
@@ -378,12 +405,18 @@ bool borisov::cmdLess(std::ostream &out, const borisov::PersonNode * const perso
   }
   size_t count = 0;
   IdDuration * const arr = collectMeetingsOf(meetings, id, count);
+  bool printed = false;
   for (size_t i = 0; i < count; ++i)
   {
     if (arr[i].duration_ < time)
     {
       out << arr[i].id_ << " " << arr[i].duration_ << "\n";
+      printed = true;
     }
+  }
+  if (!printed)
+  {
+    out << "\n";
   }
   delete[] arr;
   return true;
@@ -398,12 +431,18 @@ bool borisov::cmdGreater(std::ostream &out, const borisov::PersonNode * const pe
   }
   size_t count = 0;
   IdDuration * const arr = collectMeetingsOf(meetings, id, count);
+  bool printed = false;
   for (size_t i = 0; i < count; ++i)
   {
     if (arr[i].duration_ > time)
     {
       out << arr[i].id_ << " " << arr[i].duration_ << "\n";
+      printed = true;
     }
+  }
+  if (!printed)
+  {
+    out << "\n";
   }
   delete[] arr;
   return true;
@@ -412,11 +451,18 @@ bool borisov::cmdGreater(std::ostream &out, const borisov::PersonNode * const pe
 bool borisov::cmdOutPersons(const std::string &filename,
     const borisov::PersonNode * const persons)
 {
-  std::ofstream out(filename.c_str());
+  std::ofstream out(filename.c_str(), std::ios::app);
   if (!out.is_open())
   {
     return false;
   }
+  if (persons == nullptr)
+  {
+    out << "\n";
+    std::cout << "\n";
+    return true;
+  }
   borisov::writePersons(out, persons);
+  borisov::writePersons(std::cout, persons);
   return true;
 }

@@ -172,6 +172,11 @@ namespace
 
 int main(int argc, char **argv)
 {
+  if (argc > 3)
+  {
+    std::cerr << "bad args\n";
+    return 0;
+  }
   const borisov::Args args = borisov::parseArgs(argc, argv);
   if (!args.valid_)
   {
