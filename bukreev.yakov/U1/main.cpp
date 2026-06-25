@@ -10,7 +10,10 @@ namespace bukreev
     std::string info;
   };
 
-  size_t input(List< Person >* people);
+  size_t good = 0;
+  size_t bad = 0;
+
+  void input(List< Person >* people);
   void output(List< Person >* people);
 }
 
@@ -35,19 +38,22 @@ int main()
   deleteList(people);
 }
 
-size_t bukreev::input(List< Person >* people)
+void bukreev::input(List< Person >* people)
 {
-  size_t goodEntries = 0;
-
   size_t id;
   std::string name;
-  while (std::cin >> id >> name)
+  while (std::cin >> id)
   {
-    insertListTail(people, {id, name});
-    goodEntries++;
-  }
+    if (!(std::cin >> name))
+    {
+      bad++;
+      std::cin.clear();
+      continue;
+    }
 
-  return goodEntries;
+    insertListTail(people, {id, name});
+    good++;
+  }
 }
 
 void bukreev::output(List< Person >* people)
@@ -60,4 +66,6 @@ void bukreev::output(List< Person >* people)
 
     h = h->next;
   }
+
+  std::cerr << good << ' ' << bad << '\n';
 }
