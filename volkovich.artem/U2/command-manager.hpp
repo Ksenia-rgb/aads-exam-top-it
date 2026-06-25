@@ -21,8 +21,7 @@ namespace volkovich {
     void handleGreater(std::istream&, std::ostream&);
     void handleOutPersons(std::istream&, std::ostream&);
 
-    using GraphTable =
-        volkovich::Graphs< std::string, volkovich::SipHash, std::equal_to< std::string > >;
+    using Meets = HashTable<std::pair<size_t, size_t>>;
     GraphTable& gr;
 
    public:
