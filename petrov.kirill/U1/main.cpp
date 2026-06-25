@@ -1,14 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sstream>
 #include "person.hpp"
 
 int main(int argc, char** argv)
 {
   if (argc > 3)
   {
-    return 1;
+    return 2;
   }
 
   std::string file_in = "";
@@ -32,7 +31,9 @@ int main(int argc, char** argv)
   }
 
   std::istream* in = &std::cin;
+  std::ostream* out = &std::cout;
   std::ifstream fin;
+  std::ofstream fout;
 
   if (file_in != "")
   {
@@ -44,6 +45,16 @@ int main(int argc, char** argv)
     in = &fin;
   }
 
+  if (file_out != "")
+  {
+    fout.open(file_out);
+    if (!fout.is_open())
+    {
+      return 2;
+    }
+    out = &fout;
+  }
+
   petrov::Person* vec = nullptr;
   size_t s = 0, c = 0, ok = 0, err = 0;
   while(*in)
@@ -51,6 +62,10 @@ int main(int argc, char** argv)
     size_t id_v;
     if (!(*in >> id_v))
     {
+      if (in->eof())
+      {
+        break;
+      }
       in->clear();
       std::string trash;
       if (std::getline(*in, trash))
@@ -120,36 +135,11 @@ int main(int argc, char** argv)
     s++;
     ok++;
   }
-
-  if (file_in != "")
-  {
-    fin.close();
-  }
-
-  std::ostream* out = &std::cout;
-  std::ofstream fout;
-
-  if (file_out != "")
-  {
-    fout.open(file_out);
-    if (!fout.is_open())
-    {
-      delete[] vec;
-      return 2;
-    }
-    out = &fout;
-  }
-
   for (size_t i = 0; i < s; ++i)
   {
     *out << vec[i].id << " " << vec[i].info << "\n";
   }
-
-  if (ok != 0 || err != 0)
-  {
-    std::cerr << ok << " " << err << "\n";
-  }
-
+  std::cerr << ok << " " << err << "\n";
   delete[] vec;
   return 0;
 }

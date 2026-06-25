@@ -10,12 +10,11 @@ namespace petrov
     size_t id;
     std::string info;
   };
-
-  void push_new(Person* vec, size_t s, size_t c, Person p)
+  void push_new(Person*& vec, size_t& s, size_t& c, Person p)
   {
     if (s == c)
     {
-      size_t new_c = c * 2;
+      size_t new_c = (c == 0) ? 2 : c * 2;
       Person* new_v = new Person[new_c];
       for (size_t i = 0; i < s; ++i)
       {
@@ -24,11 +23,10 @@ namespace petrov
       delete[] vec;
       vec = new_v;
       c = new_c;
-      vec[s++] = p;
-      return;
     }
     vec[s++] = p;
   }
+
   size_t is_dubl(Person* vec, Person p, size_t s)
   {
     for (size_t i = 0; i < s; ++i)
