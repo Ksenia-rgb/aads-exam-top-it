@@ -1,7 +1,7 @@
-#include "functions.hpp"
-#include "Person.hpp"
 #include <iostream>
 #include <fstream>
+#include "../common/functions.hpp"
+#include "../common/Person.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   while (std::getline(*input, line))
   {
     lachugin::Person person;
-    if (!parseLine(line, person))
+    if (!lachugin::parseLine(line, person))
     {
       ignored++;
       continue;
