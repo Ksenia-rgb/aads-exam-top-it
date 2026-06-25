@@ -9,6 +9,8 @@ namespace chernov {
   void bubbleSort(Vector< T > & v)
   {
     size_t n = v.size;
+    if (n < 2)
+      return;
     for (size_t i = 0; i < n - 1; ++i) {
       bool swapped = false;
       for (size_t j = 0; j < n - i - 1; ++j) {
@@ -19,9 +21,8 @@ namespace chernov {
           swapped = true;
         }
       }
-      if (!swapped) {
+      if (!swapped)
         break;
-      }
     }
   }
 
