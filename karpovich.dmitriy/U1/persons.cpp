@@ -13,11 +13,13 @@ bool karpovich::containsPerson(const Vector< Person > &persons, size_t id)
   return false;
 }
 
-bool karpovich::readPersons(std::istream &input, Vector< Person > &persons, size_t &validCount, size_t &ignoredCount)
+void karpovich::readPersons(std::istream &input, Vector< Person > &persons, size_t &validCount, size_t &ignoredCount)
 {
   validCount = 0;
   ignoredCount = 0;
+
   std::string line;
+
   while (std::getline(input, line)) {
     size_t pos = 0;
     while (pos < line.size() && std::isspace(line[pos])) {
@@ -26,7 +28,7 @@ bool karpovich::readPersons(std::istream &input, Vector< Person > &persons, size
     size_t id = 0;
     size_t idBegin = pos;
     while (pos < line.size() && std::isdigit(line[pos])) {
-      id = id * 10 + static_cast< size_t >(line[pos] - '0');
+      id = id * 10 + line[pos] - '0';
       ++pos;
     }
     if (idBegin == pos) {
@@ -47,12 +49,9 @@ bool karpovich::readPersons(std::istream &input, Vector< Person > &persons, size
     Person person;
     person.id = id;
     person.info = line.substr(pos);
-    if (!pushBack(persons, person)) {
-      return false;
-    }
+    pushBack(persons, person);
     ++validCount;
   }
-  return true;
 }
 
 void karpovich::writePersons(std::ostream &output, const Vector< Person > &persons)

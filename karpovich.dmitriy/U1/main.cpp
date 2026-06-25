@@ -1,16 +1,18 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "persons.hpp"
 #include "person.hpp"
+#include "persons.hpp"
 #include "vector.hpp"
 
 int main(int argc, char **argv)
 {
   bool hasInputFile = false;
   bool hasOutputFile = false;
+
   std::string inputFileName;
   std::string outputFileName;
+
   for (int i = 1; i < argc; ++i) {
     std::string argument = argv[i];
     if (argument.substr(0, 3) == "in:") {
@@ -54,12 +56,15 @@ int main(int argc, char **argv)
   karpovich::initVector(persons);
   size_t validCount = 0;
   size_t ignoredCount = 0;
-  if (!karpovich::readPersons(*input, persons, validCount, ignoredCount)) {
+  try {
+    karpovich::readPersons(*input, persons, validCount, ignoredCount);
+    karpovich::writePersons(*output, persons);
+    karpovich::writeStatistics(std::cerr, validCount, ignoredCount);
+  } catch (...) {
     karpovich::destroyVector(persons);
     return 2;
   }
-  karpovich::writePersons(*output, persons);
-  karpovich::writeStatistics(std::cerr, validCount, ignoredCount);
+
   karpovich::destroyVector(persons);
 
   return 0;

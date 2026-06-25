@@ -31,38 +31,34 @@ namespace karpovich
   }
 
   template< typename T >
-  bool reserveVector(Vector< T > &vector, size_t newCapacity)
+  void reserveVector(Vector< T > &vector, size_t newCapacity)
   {
     if (newCapacity <= vector.capacity) {
-      return true;
+      return;
     }
-    T *newData = nullptr;
-    try {
-      newData = new T[newCapacity];
-    } catch (...) {
-      return false;
-    }
+
+    T *newData = new T[newCapacity];
+
     for (size_t i = 0; i < vector.size; ++i) {
       newData[i] = vector.data[i];
     }
+
     delete[] vector.data;
+
     vector.data = newData;
     vector.capacity = newCapacity;
-    return true;
   }
 
   template< typename T >
-  bool pushBack(Vector< T > &vector, const T &value)
+  void pushBack(Vector< T > &vector, const T &value)
   {
     if (vector.size == vector.capacity) {
       size_t newCapacity = vector.capacity == 0 ? 4 : vector.capacity * 2;
-      if (!reserveVector(vector, newCapacity)) {
-        return false;
-      }
+      reserveVector(vector, newCapacity);
     }
+
     vector.data[vector.size] = value;
     ++vector.size;
-    return true;
   }
 
   template< typename T >
