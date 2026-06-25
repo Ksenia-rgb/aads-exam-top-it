@@ -14,6 +14,11 @@ namespace
     }
     return is;
   }
+  bool isEmptyLine(std::istream& is)
+  {
+    int ch = is.peek();
+    return (ch == '\n' || ch == EOF);
+  }
 }
 
 namespace goltsov
@@ -26,7 +31,7 @@ namespace goltsov
     size_t good = 0, bad = 0;
     while (is)
     {
-      if (is.peek() == '\n' || is.peek() == EOF)
+      if (isEmptyLine(is))
       {
         is.get();
         continue;
@@ -46,29 +51,22 @@ namespace goltsov
           ++bad;
           continue;
         }
-        if (!info.empty())
+        try
         {
-          try
+          insertToHT< Person >(ht, id, {id, info});
+          ++good;
+          if (*l)
           {
-            insertToHT< Person >(ht, id, {id, info});
-            ++good;
-            if (*l)
-            {
-              (*l)->next = newListNode< Person >(id, {id, info}, *l, nullptr);
-              (*l) = (*l)->next;
-            }
-            else
-            {
-              *l = newListNode< Person >(id, {id, info}, *l, nullptr);
-              start_l = *l;
-            }
+            (*l)->next = newListNode< Person >(id, {id, info}, *l, nullptr);
+            (*l) = (*l)->next;
           }
-          catch (const std::runtime_error&)
+          else
           {
-            ++bad;
+            *l = newListNode< Person >(id, {id, info}, *l, nullptr);
+            start_l = *l;
           }
         }
-        else
+        catch (const std::runtime_error&)
         {
           ++bad;
         }
@@ -141,9 +139,7 @@ int main(int argc, char **argv)
   }
   goltsov::HashTable< goltsov::Person > ht = goltsov::newHT< goltsov::Person >(100);
   goltsov::List< goltsov::Person >* l = nullptr;
-
   std::pair< size_t, size_t > res = goltsov::readPersons(ht, *is, &l);
-
   if (!outFilename.empty())
   {
     outFile.open(outFilename, std::ios::trunc);
@@ -156,11 +152,9 @@ int main(int argc, char **argv)
     }
     os = &outFile;
   }
-
   goltsov::printRes(*os, l);
   *os << '\n';
   std::cerr << res.first << ' ' << res.second << '\n';
-
   goltsov::deleteHashTable(ht);
   goltsov::deleteList(l);
 }
