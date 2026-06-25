@@ -1,5 +1,6 @@
-#include <cstddef>
+#include <fstream>
 #include <istream>
+#include <ostream>
 #include <stdexcept>
 #include <string>
 #include "meets.hpp"
@@ -32,6 +33,20 @@ namespace
         }
       }
     }
+  }
+
+  void skipRestOfLine(std::istream &input)
+  {
+    while (input.get() != '\n') {
+      if (!input) {
+        break;
+      }
+    }
+  }
+
+  void printInvalidCommand(std::ostream &output)
+  {
+    output << "<INVALID COMMAND>\n";
   }
 }
 
@@ -96,44 +111,18 @@ void karpovich::removeSelfMeets(Vector< Meet > &meets)
 {
   Vector< Meet > filtered;
   initVector(filtered);
+
   for (size_t i = 0; i < meets.size; ++i) {
     if (meets.data[i].firstId != meets.data[i].secondId) {
       pushBack(filtered, meets.data[i]);
     }
   }
+
   destroyVector(meets);
   meets = filtered;
 }
 
-void karpovich::printMeets(std::ostream &output, const Vector< Meet > &meets, size_t id)
-{
-  Vector< MeetKey > result;
-  initVector(result);
-
-  for (size_t i = 0; i < meets.size; ++i) {
-    if (meets.data[i].firstId == id) {
-      MeetKey key;
-      key.id = meets.data[i].secondId;
-      key.duration = meets.data[i].duration;
-      pushBack(result, key);
-    } else if (meets.data[i].secondId == id) {
-      MeetKey key;
-      key.id = meets.data[i].firstId;
-      key.duration = meets.data[i].duration;
-      pushBack(result, key);
-    }
-  }
-
-  sortMeets(result);
-
-  for (size_t i = 0; i < result.size; ++i) {
-    output << result.data[i].id << ' ' << result.data[i].duration << '\n';
-  }
-
-  destroyVector(result);
-}
-
-void karpovich::printAnons(std::ostream &output, const Vector< Person > &persons)
+void karpovich::cmdAnons(std::istream &, std::ostream &output, Vector< Person > &persons, Vector< Meet > &)
 {
   Vector< size_t > anons;
   initVector(anons);
@@ -161,64 +150,179 @@ void karpovich::printAnons(std::ostream &output, const Vector< Person > &persons
   destroyVector(anons);
 }
 
-void karpovich::deanon(Vector< Person > &persons, Vector< Meet > &meets, size_t anonId, size_t id)
+void karpovich::cmdDeanon(std::istream &input, std::ostream &output, Vector< Person > &persons, Vector< Meet > &meets)
 {
-  const Person *anon = findPersonById(persons, anonId);
-  if (anon == nullptr || !anon->info.empty()) {
-    throw std::runtime_error("Invalid deanon");
+  size_t anonId = 0;
+  size_t id = 0;
+
+  input >> anonId >> id;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
   }
-  const Person *target = findPersonById(persons, id);
-  if (target == nullptr || target->info.empty()) {
-    throw std::runtime_error("Invalid deanon");
-  }
-  for (size_t i = 0; i < meets.size; ++i) {
-    if (meets.data[i].firstId == anonId) {
-      meets.data[i].firstId = id;
+
+  try {
+    const Person *anon = findPersonById(persons, anonId);
+
+    if (anon == nullptr || !anon->info.empty()) {
+      printInvalidCommand(output);
+      return;
     }
-    if (meets.data[i].secondId == anonId) {
-      meets.data[i].secondId = id;
+
+    const Person *target = findPersonById(persons, id);
+
+    if (target == nullptr || target->info.empty()) {
+      printInvalidCommand(output);
+      return;
     }
-  }
-  for (size_t i = 0; i < persons.size; ++i) {
-    if (persons.data[i].id == anonId) {
-      for (size_t j = i; j + 1 < persons.size; ++j) {
-        persons.data[j] = persons.data[j + 1];
+
+    for (size_t i = 0; i < meets.size; ++i) {
+      if (meets.data[i].firstId == anonId) {
+        meets.data[i].firstId = id;
       }
-      --persons.size;
-      break;
+
+      if (meets.data[i].secondId == anonId) {
+        meets.data[i].secondId = id;
+      }
+    }
+
+    for (size_t i = 0; i < persons.size; ++i) {
+      if (persons.data[i].id == anonId) {
+        for (size_t j = i; j + 1 < persons.size; ++j) {
+          persons.data[j] = persons.data[j + 1];
+        }
+
+        --persons.size;
+        break;
+      }
+    }
+
+    removeSelfMeets(meets);
+  } catch (...) {
+    printInvalidCommand(output);
+  }
+}
+
+void karpovich::cmdRedesc(std::istream &input, std::ostream &output, Vector< Person > &persons, Vector< Meet > &)
+{
+  size_t id = 0;
+  std::string description;
+
+  input >> id;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
+  }
+
+  char quote = 0;
+  input >> quote;
+
+  if (quote != '"') {
+    printInvalidCommand(output);
+    return;
+  }
+
+  std::getline(input, description, '"');
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
+  }
+
+  try {
+    Person *person = findPersonById(persons, id);
+
+    if (person == nullptr) {
+      printInvalidCommand(output);
+      return;
+    }
+
+    person->info = description;
+  } catch (...) {
+    printInvalidCommand(output);
+  }
+}
+
+void karpovich::cmdDesc(std::istream &input, std::ostream &output, Vector< Person > &persons, Vector< Meet > &)
+{
+  size_t id = 0;
+
+  input >> id;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
+  }
+
+  try {
+    const Person *person = findPersonById(persons, id);
+
+    if (person == nullptr) {
+      printInvalidCommand(output);
+      return;
+    }
+
+    if (person->info.empty()) {
+      output << "<ANON>\n";
+    } else {
+      output << person->info << '\n';
+    }
+  } catch (...) {
+    printInvalidCommand(output);
+  }
+}
+
+void karpovich::cmdMeets(std::istream &input, std::ostream &output, Vector< Person > &, Vector< Meet > &meets)
+{
+  size_t id = 0;
+
+  input >> id;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
+  }
+
+  Vector< MeetKey > result;
+  initVector(result);
+
+  for (size_t i = 0; i < meets.size; ++i) {
+    if (meets.data[i].firstId == id) {
+      MeetKey key;
+      key.id = meets.data[i].secondId;
+      key.duration = meets.data[i].duration;
+      pushBack(result, key);
+    } else if (meets.data[i].secondId == id) {
+      MeetKey key;
+      key.id = meets.data[i].firstId;
+      key.duration = meets.data[i].duration;
+      pushBack(result, key);
     }
   }
-  removeSelfMeets(meets);
-}
 
-oid karpovich::redesc(Vector< Person > &persons, size_t id, const std::string &description)
-{
-  Person *person = findPersonById(persons, id);
+  sortMeets(result);
 
-  if (person == nullptr) {
-    throw std::runtime_error("Invalid redesc");
+  for (size_t i = 0; i < result.size; ++i) {
+    output << result.data[i].id << ' ' << result.data[i].duration << '\n';
   }
 
-  person->info = description;
+  destroyVector(result);
 }
 
-void karpovich::desc(std::ostream &output, const Vector< Person > &persons, size_t id)
+void karpovich::cmdCommons(std::istream &input, std::ostream &output, Vector< Person > &, Vector< Meet > &meets)
 {
-  const Person *person = findPersonById(persons, id);
+  size_t id1 = 0;
+  size_t id2 = 0;
 
-  if (person == nullptr) {
-    throw std::runtime_error("Invalid desc");
+  input >> id1 >> id2;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
   }
 
-  if (person->info.empty()) {
-    output << "<ANON>\n";
-  } else {
-    output << person->info << '\n';
-  }
-}
-
-void karpovich::commons(std::ostream &output, const Vector< Meet > &meets, size_t id1, size_t id2)
-{
   Vector< size_t > contacts1;
   Vector< size_t > contacts2;
   Vector< size_t > result;
@@ -233,33 +337,40 @@ void karpovich::commons(std::ostream &output, const Vector< Meet > &meets, size_
     } else if (meets.data[i].secondId == id1) {
       pushBack(contacts1, meets.data[i].firstId);
     }
+
     if (meets.data[i].firstId == id2) {
       pushBack(contacts2, meets.data[i].secondId);
     } else if (meets.data[i].secondId == id2) {
       pushBack(contacts2, meets.data[i].firstId);
     }
   }
+
   for (size_t i = 0; i < contacts1.size; ++i) {
     bool found = false;
+
     for (size_t j = 0; j < contacts2.size; ++j) {
       if (contacts1.data[i] == contacts2.data[j]) {
         found = true;
         break;
       }
     }
+
     if (found) {
       bool duplicate = false;
+
       for (size_t j = 0; j < result.size; ++j) {
         if (result.data[j] == contacts1.data[i]) {
           duplicate = true;
           break;
         }
       }
+
       if (!duplicate) {
         pushBack(result, contacts1.data[i]);
       }
     }
   }
+
   for (size_t i = 0; i < result.size; ++i) {
     for (size_t j = i + 1; j < result.size; ++j) {
       if (result.data[j] < result.data[i]) {
@@ -269,16 +380,28 @@ void karpovich::commons(std::ostream &output, const Vector< Meet > &meets, size_
       }
     }
   }
+
   for (size_t i = 0; i < result.size; ++i) {
     output << result.data[i] << '\n';
   }
+
   destroyVector(contacts1);
   destroyVector(contacts2);
   destroyVector(result);
 }
 
-void karpovich::less(std::ostream &output, const Vector< Meet > &meets, size_t time, size_t id)
+void karpovich::cmdLess(std::istream &input, std::ostream &output, Vector< Person > &, Vector< Meet > &meets)
 {
+  size_t time = 0;
+  size_t id = 0;
+
+  input >> time >> id;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
+  }
+
   Vector< MeetKey > result;
   initVector(result);
 
@@ -297,14 +420,26 @@ void karpovich::less(std::ostream &output, const Vector< Meet > &meets, size_t t
   }
 
   sortMeets(result);
+
   for (size_t i = 0; i < result.size; ++i) {
     output << result.data[i].id << ' ' << result.data[i].duration << '\n';
   }
+
   destroyVector(result);
 }
 
-void karpovich::greater(std::ostream &output, const Vector< Meet > &meets, size_t time, size_t id)
+void karpovich::cmdGreater(std::istream &input, std::ostream &output, Vector< Person > &, Vector< Meet > &meets)
 {
+  size_t time = 0;
+  size_t id = 0;
+
+  input >> time >> id;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
+  }
+
   Vector< MeetKey > result;
   initVector(result);
 
@@ -321,15 +456,34 @@ void karpovich::greater(std::ostream &output, const Vector< Meet > &meets, size_
       pushBack(result, key);
     }
   }
+
   sortMeets(result);
+
   for (size_t i = 0; i < result.size; ++i) {
     output << result.data[i].id << ' ' << result.data[i].duration << '\n';
   }
+
   destroyVector(result);
 }
 
-void karpovich::outPersons(std::ostream &output, const Vector< Person > &persons)
+void karpovich::cmdOutPersons(std::istream &input, std::ostream &output, Vector< Person > &persons, Vector< Meet > &)
 {
+  std::string filename;
+
+  input >> filename;
+
+  if (!input) {
+    printInvalidCommand(output);
+    return;
+  }
+
+  std::ofstream outputFile(filename);
+
+  if (!outputFile.is_open()) {
+    printInvalidCommand(output);
+    return;
+  }
+
   Vector< Person > withDescription;
   initVector(withDescription);
 
@@ -339,7 +493,7 @@ void karpovich::outPersons(std::ostream &output, const Vector< Person > &persons
     }
   }
 
-  writePersons(output, withDescription);
+  writePersons(outputFile, withDescription);
 
   destroyVector(withDescription);
 }
