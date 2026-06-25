@@ -18,6 +18,9 @@ namespace studilova
     std::size_t size_;
     std::size_t capacity_;
   };
+
+  void initMeetArray(MeetArray &array);
+  void destroyMeetArray(MeetArray &array);
 }
 
 #endif
