@@ -9,8 +9,8 @@ namespace kitserov
 {
   void printAll(const PersonsContainer& container, std::ostream& out)
   {
-    for (std::size_t i = 0; i < container.size; ++i) {
-      out << container.data[i].id << ' ' << container.data[i].info << '\n';
+    for (std::size_t i = 0; i < container.size_; ++i) {
+      out << container.data_[i].id_ << ' ' << container.data_[i].info_ << '\n';
     }
   }
   bool readLine(const std::string& line, size_t& id, std::string& info)
