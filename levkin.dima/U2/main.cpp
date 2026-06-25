@@ -1,5 +1,15 @@
 #include <iostream>
-int main()
+#include <fstream>
+#include <string>
+#include "db.hpp"
+#include "commands.hpp"
+#include "utils.hpp"
+
+int main(int argc, char* argv[])
 {
-    std::cout << "levkin.dima" << "\n";
+  if (argc < 2 || argc > 3) {
+    std::cerr << "Error: Invalid number of arguments.\n";
+    return 1;
+  }
+  std::cout << "levkin.dima" << "\n";
 }
