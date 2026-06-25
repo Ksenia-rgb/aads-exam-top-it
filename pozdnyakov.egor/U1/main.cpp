@@ -20,6 +20,8 @@ int main(const int argc, char *argv[])
   stats.successCount = 0;
   stats.ignoredCount = 0;
 
+  bool inputProcessed = false;
+
   if (args.hasIn) {
     std::ifstream inFile(args.inFilename);
     if (!inFile.is_open()) {
@@ -28,8 +30,13 @@ int main(const int argc, char *argv[])
     }
     stats = pozdnyakov::readData(inFile, persons);
     inFile.close();
+    inputProcessed = true;
   } else {
-    stats = pozdnyakov::readData(std::cin, persons);
+    std::string firstLine;
+    if (std::getline(std::cin, firstLine)) {
+      stats = pozdnyakov::readData(std::cin, persons);
+      inputProcessed = true;
+    }
   }
 
   if (args.hasOut) {
@@ -44,7 +51,7 @@ int main(const int argc, char *argv[])
     pozdnyakov::writeData(std::cout, persons);
   }
 
-  if (stats.successCount > 0 || stats.ignoredCount > 0) {
+  if (inputProcessed) {
     std::cerr << stats.successCount << " " << stats.ignoredCount << "\n";
   }
 

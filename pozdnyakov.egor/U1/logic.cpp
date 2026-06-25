@@ -109,6 +109,7 @@ namespace pozdnyakov
       }
 
       if (isBlank) {
+        ++stats.ignoredCount;
         continue;
       }
 
@@ -130,6 +131,11 @@ namespace pozdnyakov
 
   void writeData(std::ostream &out, const DynamicArray< Person > &arr)
   {
+    if (arr.size == 0) {
+      out << "\n";
+      return;
+    }
+
     for (size_t i = 0; i < arr.size; ++i) {
       out << arr.data[i].id << " " << arr.data[i].info << "\n";
     }
