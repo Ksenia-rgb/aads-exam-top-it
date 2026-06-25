@@ -282,4 +282,39 @@ namespace levkin {
       }
     }
   }
+  bool parseArguments(int argc,
+                      char* argv[],
+                      std::string& data_file,
+                      std::string& in_file)
+  {
+    data_file = "";
+    in_file = "";
+
+    for (int i = 1; i < argc; ++i) {
+      std::string arg = argv[i];
+      if (arg.rfind("data:", 0) == 0) {
+        if (!data_file.empty()) {
+          std::cerr << "Error: Duplicate data argument.\n";
+          return false;
+        }
+        data_file = arg.substr(5);
+      } else if (arg.rfind("in:", 0) == 0) {
+        if (!in_file.empty()) {
+          std::cerr << "Error: Duplicate in argument.\n";
+          return false;
+        }
+        in_file = arg.substr(3);
+      } else {
+        std::cerr << "Error: Invalid argument format.\n";
+        return false;
+      }
+    }
+
+    if (data_file.empty()) {
+      std::cerr << "Error: Missing data file argument.\n";
+      return false;
+    }
+
+    return true;
+  }
 }
