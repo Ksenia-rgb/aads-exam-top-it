@@ -2,10 +2,10 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include "person.hpp"
-#include "list.hpp"
-#include "hash.hpp"
-#include "string_utils.hpp"
+#include <person.hpp>
+#include <list.hpp>
+#include <hash.hpp>
+#include <string_utils.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -133,8 +133,8 @@ int main(int argc, char* argv[])
     ++successful;
   }
 
-  for (vishnyakov::ListNode< vishnyakov::Person >* current = persons.begin(); 
-      current != persons.end(); 
+  for (vishnyakov::ListNode< vishnyakov::Person >* current = persons.begin();
+      current != persons.end();
       current = current->next)
   {
     *out << current->data.id << " " << current->data.info << "\n";
