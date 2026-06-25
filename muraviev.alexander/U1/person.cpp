@@ -100,6 +100,10 @@ namespace muraviev
     std::string line;
     while (std::getline(input, line))
     {
+      if (line.empty())
+      {
+        continue;
+      }
       Person person;
       if (!parsePersonLine(line, person) ||
           hasPersonId(persons, person.id))

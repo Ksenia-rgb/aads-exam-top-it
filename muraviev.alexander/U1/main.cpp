@@ -7,6 +7,12 @@
 int main(int argc, char** argv)
 {
   const size_t argumentCount = argc;
+  if (argumentCount > 3)
+  {
+    std::cerr << "Too many arguments\n";
+    return 0;
+  }
+
   muraviev::ProgramOptions options;
   if (!muraviev::parseProgramOptions(argumentCount, argv, options))
   {
@@ -42,11 +48,25 @@ int main(int argc, char** argv)
       muraviev::clearList(persons);
       return 2;
     }
-    muraviev::printPersons(output, persons);
+    if (accepted == 0)
+    {
+      output << '\n';
+    }
+    else
+    {
+      muraviev::printPersons(output, persons);
+    }
   }
   else
   {
-    muraviev::printPersons(std::cout, persons);
+    if (accepted == 0)
+    {
+      std::cout << '\n';
+    }
+    else
+    {
+      muraviev::printPersons(std::cout, persons);
+    }
   }
 
   std::cerr << accepted << ' ' << ignored << '\n';

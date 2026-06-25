@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(print_people)
   muraviev::clearList(persons);
 }
 
-BOOST_AUTO_TEST_CASE(ignore_empty_lines)
+BOOST_AUTO_TEST_CASE(skip_empty_lines)
 {
   std::istringstream input("\n4 four\n\n");
   muraviev::PersonList persons;
@@ -73,6 +73,6 @@ BOOST_AUTO_TEST_CASE(ignore_empty_lines)
   muraviev::readPersons(input, persons, accepted, ignored);
 
   BOOST_TEST(accepted == 1U);
-  BOOST_TEST(ignored == 2U);
+  BOOST_TEST(ignored == 0U);
   muraviev::clearList(persons);
 }
