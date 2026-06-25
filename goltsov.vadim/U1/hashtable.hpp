@@ -51,7 +51,7 @@ namespace goltsov
     std::hash< size_t > hasher;
     size_t hash = hasher(id) % ht.size;
     List< T >* node = ht.data[hash];
-    while (node && node->next)
+    while (node)
     {
       if (node->data.key == id)
       {
@@ -59,22 +59,13 @@ namespace goltsov
       }
       node = node->next;
     }
-    if (node)
+    List< T >* new_node = newListNode< T >(id, value, nullptr, nullptr);
+    new_node->next = ht.data[hash];
+    if (ht.data[hash])
     {
-      if (node->data.key == id)
-      {
-        throw std::runtime_error("Key in table");
-      }
+      ht.data[hash]->prev = new_node;
     }
-    List< T >* new_node = newListNode< T >(id, value, node, nullptr);
-    if (new_node->prev)
-    {
-      new_node->prev->next = new_node;
-    }
-    else
-    {
-      ht.data[hash] = new_node;
-    }
+    ht.data[hash] = new_node;
   }
   template< class T >
   void deleteFromHT(HashTable< T >& ht, size_t id)

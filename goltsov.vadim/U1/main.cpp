@@ -14,17 +14,6 @@ namespace
     }
     return is;
   }
-  bool isEOL(std::istream& is)
-  {
-    if (is.peek() == '\n' || is.peek() == EOF)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
 }
 
 namespace goltsov
@@ -33,7 +22,7 @@ namespace goltsov
   {
     size_t id;
     std::string info;
-    List<Person>* start_l = *l;
+    List< Person >* start_l = *l;
     size_t good = 0, bad = 0;
     while (is)
     {
@@ -42,33 +31,33 @@ namespace goltsov
         is.get();
         continue;
       }
-      size_t start = info.find_first_not_of(" \t");
-      if (start != std::string::npos)
-      {
-        info = info.substr(start);
-      }
-      else
-      {
-        info.clear();
-      }
       if (is >> id)
       {
         skipSpaces(is);
         std::getline(is, info);
+        size_t start = info.find_first_not_of(" \t");
+        if (start != std::string::npos)
+        {
+          info = info.substr(start);
+        }
+        else
+        {
+          info.clear();
+        }
         if (!info.empty())
         {
           try
           {
-            insertToHT<Person>(ht, id, {id, info});
+            insertToHT< Person >(ht, id, {id, info});
             ++good;
             if (*l)
             {
-              (*l)->next = newListNode<Person>(id, {id, info}, *l, nullptr);
+              (*l)->next = newListNode< Person >(id, {id, info}, *l, nullptr);
               (*l) = (*l)->next;
             }
             else
             {
-              *l = newListNode<Person>(id, {id, info}, *l, nullptr);
+              *l = newListNode< Person >(id, {id, info}, *l, nullptr);
               start_l = *l;
             }
           }
@@ -87,7 +76,8 @@ namespace goltsov
         if (!is.eof())
         {
           is.clear();
-          is.get();
+          std::string dummy;
+          std::getline(is, dummy);
           ++bad;
         }
       }
