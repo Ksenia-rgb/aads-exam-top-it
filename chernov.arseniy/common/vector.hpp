@@ -21,6 +21,8 @@ namespace chernov {
   template< class T >
   void pushBack(Vector< T > & v, const T & value);
 
+  template< class T >
+  size_t getSize(Vector< T > & v);
 }
 
 template< typename T >
@@ -68,4 +70,10 @@ void chernov::pushBack(Vector< T > & v, const T & value)
   }
   v.data[v.size] = value;
   ++v.size;
+}
+
+template< typename T >
+size_t chernov::getSize(Vector< T > & v)
+{
+  return v.size;
 }
