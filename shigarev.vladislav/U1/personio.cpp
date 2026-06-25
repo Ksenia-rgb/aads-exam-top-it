@@ -8,7 +8,8 @@
 namespace {
   bool isBlank(char ch)
   {
-    return ch != '\n' && std::isspace(static_cast<unsigned char>(ch));
+    return ch != '\n'
+        && std::isspace(static_cast< unsigned char >(ch));
   }
 
   size_t skipBlanks(const std::string& line, size_t pos)
@@ -19,24 +20,25 @@ namespace {
     return pos;
   }
 
-  bool parseId(const std::string& line, size_t& pos, size_t& id)
+  bool parseId(const std::string& line,
+      size_t& pos, size_t& id)
   {
     pos = skipBlanks(line, pos);
     if (pos >= line.size()) {
       return false;
     }
-    const unsigned char first = static_cast<unsigned char>(line[pos]);
+    const unsigned char first = static_cast< unsigned char >(line[pos]);
     if (!std::isdigit(first)) {
       return false;
     }
-    const size_t maxVal = std::numeric_limits<size_t>::max();
+    const size_t maxVal = std::numeric_limits< size_t >::max();
     size_t result = 0;
     while (pos < line.size()) {
-      const unsigned char ch = static_cast<unsigned char>(line[pos]);
+      const unsigned char ch = static_cast< unsigned char >(line[pos]);
       if (!std::isdigit(ch)) {
         break;
       }
-      const size_t digit = static_cast<size_t>(line[pos] - '0');
+      const size_t digit = static_cast< size_t >(line[pos] - '0');
       if (result > (maxVal - digit) / 10) {
         return false;
       }
@@ -47,7 +49,8 @@ namespace {
     return true;
   }
 
-  bool parsePerson(const std::string& line, shigarev::Person& person)
+  bool parsePerson(const std::string& line,
+      shigarev::Person& person)
   {
     size_t pos = 0;
     size_t id = 0;
@@ -81,17 +84,21 @@ namespace {
     return true;
   }
 
-  bool hasDuplicateId(const shigarev::DynArray<shigarev::Person>& arr, size_t id)
+  bool hasDuplicateId(
+      const shigarev::DynArray< shigarev::Person >& arr,
+      size_t id)
   {
-    return shigarev::contains(arr, [id](const shigarev::Person& p) {
-      return p.id == id;
-    });
+    return shigarev::contains(arr,
+        [id](const shigarev::Person& p)
+        {
+          return p.id == id;
+        });
   }
 }
 
 shigarev::ReadResult shigarev::readPersons(std::istream& in)
 {
-  ReadResult result = {createDynArray<Person>(8), 0, 0};
+  ReadResult result = {createDynArray< Person >(8), 0, 0};
   std::string line = "";
   while (std::getline(in, line)) {
     const std::string cleaned = stripCr(line);
@@ -113,7 +120,8 @@ shigarev::ReadResult shigarev::readPersons(std::istream& in)
   return result;
 }
 
-void shigarev::writePersons(std::ostream& out, const DynArray<Person>& persons)
+void shigarev::writePersons(std::ostream& out,
+    const DynArray< Person >& persons)
 {
   if (persons.size_ == 0) {
     out << "\n";
@@ -125,7 +133,8 @@ void shigarev::writePersons(std::ostream& out, const DynArray<Person>& persons)
   }
 }
 
-void shigarev::writeStats(std::ostream& err, size_t read, size_t ignored)
+void shigarev::writeStats(std::ostream& err,
+    size_t read, size_t ignored)
 {
   err << read << " " << ignored << "\n";
 }

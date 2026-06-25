@@ -6,7 +6,8 @@ namespace {
   const size_t IN_PREFIX_LEN = 3;
   const size_t OUT_PREFIX_LEN = 4;
 
-  bool startsWith(const std::string& str, const char* prefix, size_t len)
+  bool startsWith(const std::string& str,
+      const char* prefix, size_t len)
   {
     if (str.size() < len) {
       return false;
@@ -15,9 +16,11 @@ namespace {
   }
 }
 
-bool shigarev::parseArgs(int argc, const char* const* argv, Args& args)
+bool shigarev::parseArgs(int argc, const char* const* argv,
+    Args& args)
 {
   args = {"", "", false, false};
+
   for (int i = 1; i < argc; ++i) {
     const std::string arg = argv[i];
     if (startsWith(arg, "in:", IN_PREFIX_LEN)) {
@@ -33,7 +36,7 @@ bool shigarev::parseArgs(int argc, const char* const* argv, Args& args)
       args.outputFile = arg.substr(OUT_PREFIX_LEN);
       args.hasOutputFile = true;
     } else {
-      return false; 
+      return false;
     }
   }
   return true;
