@@ -4,7 +4,6 @@
 #include <iostream>
 #include <istream>
 #include <string>
-#include <limits>
 
 namespace hvostov {
   struct Person {

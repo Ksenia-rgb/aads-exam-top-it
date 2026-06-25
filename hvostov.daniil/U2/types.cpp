@@ -1,5 +1,6 @@
 #include "types.hpp"
 #include <cctype>
+#include <limits>
 
 std::istream& hvostov::operator>>(std::istream& in, Person& dest)
 {
