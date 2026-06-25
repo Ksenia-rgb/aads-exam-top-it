@@ -1,8 +1,8 @@
-#include <iostream>
 #include <cstddef>
 #include <fstream>
-#include "person.hpp"
-#include "darray.hpp"
+#include <iostream>
+#include <darray.hpp>
+#include <person.hpp>
 
 namespace kuznetsov {
   Person readPerson(std::istream& in, bool& success);
