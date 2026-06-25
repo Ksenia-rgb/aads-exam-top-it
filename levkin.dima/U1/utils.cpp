@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <cctype>
+#include <limits>
 namespace levkin {
   namespace {
     bool isSpaceChar(char ch)
@@ -15,12 +16,7 @@ namespace levkin {
   }
   Pair* reallocate(Vec& v)
   {
-    size_t nw_cap = 0;
-    if (v.cap == 0) {
-      nw_cap = 1;
-    } else {
-      nw_cap = 2 * v.cap;
-    }
+    size_t nw_cap = (v.cap == 0) ? 1 : 2 * v.cap;
     Pair* nw = new Pair[nw_cap];
     for (size_t i = 0; i < v.size; i++) {
       nw[i] = std::move(v.data[i]);
@@ -36,18 +32,26 @@ namespace levkin {
   {
     std::string line;
     while (std::getline(is, line)) {
+      if (!line.empty() && line.back() == '\r') {
+        line.pop_back();
+      }
       size_t idx = 0;
       while (idx < line.length() && isSpaceChar(line[idx])) {
         idx++;
       }
       size_t id = 0;
       bool has_digit = false;
+      bool overflow = false;
       while (idx < line.length() && isDigitChar(line[idx])) {
+        if (id
+            > (std::numeric_limits< size_t >::max() - (line[idx] - '0')) / 10) {
+          overflow = true;
+        }
         id = id * 10 + (line[idx] - '0');
         has_digit = true;
         idx++;
       }
-      if (!has_digit) {
+      if (!has_digit || overflow) {
         ignored++;
         continue;
       }
