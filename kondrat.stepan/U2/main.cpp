@@ -48,10 +48,12 @@ namespace kondrat
   void pushBack(Storage< T > & storage, const T & value);
   bool isBlank(const std::string & line);
   bool parsePerson(const std::string & line, Person & person);
+  Person * findPerson(PersonStorage & storage, size_t id);
   bool containsPerson(const PersonStorage & storage, size_t id);
+  void ensureAnonPerson(PersonStorage & storage, size_t id);
   void readPersons(std::istream & input, PersonStorage & storage);
   bool parseMeeting(const std::string & line, Meeting & meeting);
-  bool readMeetings(std::istream & input, MeetingStorage & storage);
+  bool readMeetings(std::istream & input, MeetingStorage & meetings, PersonStorage & persons);
 }
 
 bool kondrat::parseArgs(int argc, char ** argv, ProgramArgs & args)
@@ -202,6 +204,32 @@ bool kondrat::containsPerson(const PersonStorage & storage, size_t id)
   return false;
 }
 
+kondrat::Person * kondrat::findPerson(PersonStorage & storage, size_t id)
+{
+  for (size_t i = 0; i < storage.size; ++i)
+  {
+    if (storage.data[i].id == id)
+    {
+      return storage.data + i;
+    }
+  }
+  return nullptr;
+}
+
+void kondrat::ensureAnonPerson(PersonStorage & storage, size_t id)
+{
+  if (findPerson(storage, id) != nullptr)
+  {
+    return;
+  }
+
+  Person person = {};
+  person.id = id;
+  person.info = "";
+  person.described = false;
+  pushBack(storage, person);
+}
+
 void kondrat::readPersons(std::istream & input, PersonStorage & storage)
 {
   std::string line;
@@ -269,7 +297,7 @@ bool kondrat::parseMeeting(const std::string & line, Meeting & meeting)
   return true;
 }
 
-bool kondrat::readMeetings(std::istream & input, MeetingStorage & storage)
+bool kondrat::readMeetings(std::istream & input, MeetingStorage & meetings, PersonStorage & persons)
 {
   std::string line;
   while (std::getline(input, line))
@@ -288,10 +316,68 @@ bool kondrat::readMeetings(std::istream & input, MeetingStorage & storage)
     {
       continue;
     }
-    pushBack(storage, meeting);
+    ensureAnonPerson(persons, meeting.first);
+    ensureAnonPerson(persons, meeting.second);
+    pushBack(meetings, meeting);
   }
   return true;
 }
 
 int main(int argc, char ** argv)
-{}
+{
+  kondrat::ProgramArgs args = {};
+  if (!kondrat::parseArgs(argc, argv, args))
+  {
+    std::cerr << "<INVALID ARGUMENTS>\n";
+    return 1;
+  }
+
+  std::ifstream personFile;
+  std::istream * personInput = nullptr;
+  if (args.input != nullptr)
+  {
+    personFile.open(args.input);
+    if (!personFile)
+    {
+      std::cerr << "<FILE ERROR>\n";
+      return 2;
+    }
+    personInput = &personFile;
+  }
+
+  std::ifstream meetingFile(args.data);
+  if (!meetingFile)
+  {
+    std::cerr << "<FILE ERROR>\n";
+    return 2;
+  }
+
+  kondrat::PersonStorage persons = {};
+  kondrat::MeetingStorage meetings = {};
+  kondrat::initStorage(persons);
+  kondrat::initStorage(meetings);
+  try
+  {
+    if (personInput != nullptr)
+    {
+      kondrat::readPersons(*personInput, persons);
+    }
+    if (!kondrat::readMeetings(meetingFile, meetings, persons))
+    {
+      kondrat::destroyStorage(meetings);
+      kondrat::destroyStorage(persons);
+      std::cerr << "<INVALID DATA>\n";
+      return 3;
+    }
+  }
+  catch (...)
+  {
+    kondrat::destroyStorage(meetings);
+    kondrat::destroyStorage(persons);
+    throw;
+  }
+
+  kondrat::destroyStorage(meetings);
+  kondrat::destroyStorage(persons);
+  return 0;
+}
