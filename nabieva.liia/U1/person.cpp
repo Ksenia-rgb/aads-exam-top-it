@@ -117,6 +117,11 @@ bool nabieva::readPersons(std::istream& input, PersonStorage& storage, ReadStats
   std::string line;
   while (std::getline(input, line))
   {
+    if (line.empty())
+    {
+      continue;
+    }
+
     std::size_t position = 0;
     std::size_t id = 0;
     if (!readId(line, position, id))
