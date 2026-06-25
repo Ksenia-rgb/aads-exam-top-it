@@ -1,5 +1,12 @@
 #include <iostream>
-int main()
+int main(int argc, char* argv[])
 {
-    std::cout << "levkin.dima" << "\n";
+  if (argc > 3) {
+    return 1;
+  }
+
+  std::string in_file;
+  std::string out_file;
+  bool has_in = false;
+  bool has_out = false;
 }
