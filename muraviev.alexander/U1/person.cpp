@@ -22,6 +22,10 @@ namespace muraviev
     {
       ++position;
     }
+    if (position == line.size())
+    {
+      return false;
+    }
     person.id = id;
     person.info = line.substr(position);
     return true;
