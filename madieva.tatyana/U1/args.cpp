@@ -16,7 +16,7 @@ namespace madieva {
 
   }
 
-  Config parseArgs(int argc, char * argv[]) {
+  Config parseArgs(int argc, char* argv[]) {
     if (argc > 3) {
       throw std::invalid_argument("too many arguments");
     }

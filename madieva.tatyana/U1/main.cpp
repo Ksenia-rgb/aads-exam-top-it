@@ -26,7 +26,7 @@ int main(int argc, char * argv[])
     while (std::getline(*inStream, line)) {
       bool allSpaces = true;
       for (std::size_t i = 0; i < line.size(); ++i) {
-        if (!std::isspace(static_cast<unsigned char>(line[i]))) {
+        if (!std::isspace(static_cast< unsigned char >(line[i]))) {
           allSpaces = false;
           break;
         }
@@ -86,7 +86,11 @@ int main(int argc, char * argv[])
 
     madieva::destroyArray(persons);
     return 0;
-  } catch (...) {
+  } catch (const std::invalid_argument& e) {
+    std::cerr << e.what() << "\n";
     return 2;
+  } catch (const std::bad_alloc&) {
+    std::cerr << "out of memory" << "\n";
+    return 0;
   }
 }
