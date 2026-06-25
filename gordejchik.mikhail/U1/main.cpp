@@ -2,6 +2,9 @@
 #include <fstream>
 #include <string>
 #include <cstddef>
+#include "dynarray.hpp"
+#include "person.hpp"
+#include "io.hpp"
 
 struct args_t {
   std::string inFile_;
@@ -46,5 +49,37 @@ int main(int argc, char* argv[])
     std::cerr << "Invalid arguments" << "\n";
     return 1;
   }
+
+  gordejchik::dynarray_t< gordejchik::Person > persons;
+  gordejchik::init(persons);
+  gordejchik::read_result_t counts;
+  counts.success_ = 0;
+  counts.ignored_ = 0;
+
+  if (args.hasIn_) {
+    std::ifstream fin(args.inFile_);
+    if (!fin.is_open()) {
+      std::cerr << "Не получается открыть input файл" << "\n";
+      return 2;
+    }
+    counts = gordejchik::readPersons(fin, persons);
+  } else {
+    counts = gordejchik::readPersons(std::cin, persons);
+  }
+
+  if (args.hasOut_) {
+    std::ofstream fout(args.outFile_);
+    if (!fout.is_open()) {
+      gordejchik::destroy(persons);
+      std::cerr << "Не получается открыть output файл" << "\n";
+      return 2;
+    }
+    gordejchik::writePersons(fout, persons);
+  } else {
+    gordejchik::writePersons(std::cout, persons);
+  }
+
+  std::cerr << counts.success_ << " " << counts.ignored_ << "\n";
+  gordejchik::destroy(persons);
   return 0;
 }
