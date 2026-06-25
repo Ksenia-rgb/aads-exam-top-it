@@ -43,14 +43,24 @@ void addPerson(Person *& persons, size_t & count, size_t & capacity, const Perso
   persons[count++] = person;
 }
 
+bool existsPerson(const Person * persons, size_t count, size_t id)
+{
+  for (size_t i = 0; i < count; ++i)
+  {
+    if (persons[i].id == id)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 int main()
 {
-  Person * persons = nullptr;
+  Person* persons = nullptr;
   size_t count = 0;
-
-
-  persons = nullptr;
   size_t capacity = 0;
+  size_t ignored = 0;
   std::string line;
 
   while (std::getline(std::cin, line))
@@ -58,7 +68,18 @@ int main()
     Person person;
     if (parseLine(line, person))
     {
-      addPerson(persons, count, capacity, person);
+      if (!existsPerson(persons, count, person.id))
+      {
+        addPerson(persons, count, capacity, person);
+      }
+      else
+      {
+        ++ignored;
+      }
+    }
+    else
+    {
+      ++ignored;
     }
   }
 
@@ -67,5 +88,8 @@ int main()
     std::cout << persons[i].id << ' ' << persons[i].info << '\n';
   }
 
+  std::cerr << count << ' ' << ignored << '\n';
+
+  delete[] persons;
   return 0;
 }
