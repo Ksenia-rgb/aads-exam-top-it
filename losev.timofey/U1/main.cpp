@@ -76,6 +76,48 @@ namespace losev
     }
     return count;
   }
+
+  Person parseLine(const std::string& line)
+  {
+    Person result;
+    result.id = 0;
+    result.info = "";
+    if (line.empty())
+    {
+      return result;
+    }
+    size_t pos = 0;
+    while (pos < line.length() && (line[pos] == ' ' || line[pos] == '\t'))
+    {
+      ++pos;
+    }
+    if (pos >= line.length())
+    {
+      return result;
+    }
+    std::string numStr = "";
+    while (pos < line.length() && line[pos] >= '0' && line[pos] <= '9')
+    {
+      numStr += line[pos];
+      ++pos;
+    }
+    if (numStr.empty())
+    {
+      return result;
+    }
+    result.id = std::stoull(numStr);
+    while (pos < line.length() && (line[pos] == ' ' || line[pos] == '\t'))
+    {
+      ++pos;
+    }
+    if (pos >= line.length())
+    {
+      result.info = "";
+      return result;
+    }
+    result.info = line.substr(pos);
+    return result;
+  }
 }
 
 int main()
