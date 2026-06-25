@@ -72,10 +72,7 @@ int main(int argc, char * argv[])
   std::ostream & out = outFile.empty() ? std::cout : static_cast< std::ostream & >(fout);
 
   ulanova::printPersons(result.persons, out);
-  if (result.persons.size > 0 || result.ignored > 0)
-  {
-    std::cerr << result.persons.size << " " << result.ignored << "\n";
-  }
+  std::cerr << result.persons.size << " " << result.ignored << "\n";
   ulanova::clear(result.persons);
   return 0;
 }

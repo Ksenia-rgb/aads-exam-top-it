@@ -10,6 +10,11 @@ namespace ulanova
   {
     Array< Person > arr = mArray< Person >();
     size_t ignoredCount = 0;
+    in >> std::ws;
+    if (in.eof())
+    {
+      return ParseResult{arr, ignoredCount};
+    }
     std::string line;
     while (std::getline(in, line))
     {
