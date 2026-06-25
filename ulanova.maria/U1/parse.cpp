@@ -11,51 +11,38 @@ namespace ulanova
     Array< Person > arr = mArray< Person >();
     size_t ignoredCount = 0;
     in >> std::ws;
-    if (in.eof())
+    while (!in.eof())
     {
-      return ParseResult{arr, ignoredCount};
-    }
-    std::string line;
-    while (std::getline(in, line))
-    {
-      if (line.empty())
-      {
-        continue;
-      }
       size_t id = 0;
-      size_t pos = 0;
-      bool valid = false;
-      while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t'))
+      if (!(in >> id))
       {
-        ++pos;
-      }
-      while (pos < line.size() && line[pos] >= '0' && line[pos] <= '9')
-      {
-        id = id * 10 + (line[pos] - '0');
-        ++pos;
-        valid = true;
-      }
-      if (!valid)
-      {
+        in.clear();
+        std::string skip;
+        std::getline(in, skip);
         ++ignoredCount;
+        in >> std::ws;
         continue;
       }
-      while (pos < line.size() && (line[pos] == ' ' || line[pos] == '\t'))
+      while (in.peek() == ' ' || in.peek() == '\t')
       {
-        ++pos;
+        in.ignore();
       }
-      const std::string info = std::string(line.begin() + pos, line.end());
+      std::string info;
+      std::getline(in, info);
       if (info.empty())
       {
         ++ignoredCount;
+        in >> std::ws;
         continue;
       }
       if (containsId(arr, id))
       {
         ++ignoredCount;
+        in >> std::ws;
         continue;
       }
       pushBack(arr, Person{id, info});
+      in >> std::ws;
     }
     return ParseResult{arr, ignoredCount};
   }
