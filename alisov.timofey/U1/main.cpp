@@ -112,9 +112,9 @@ namespace alisov
 int main(int argc, char *argv[])
 {
   if (argc > 3) {
+    std::cerr << "Too many arg" << "\n";
     return 0;
   }
-
   std::string in_file = "";
   std::string out_file = "";
   bool has_in = false;
@@ -149,10 +149,8 @@ int main(int argc, char *argv[])
   alisov::init(people);
   size_t success_count = 0;
   size_t ignore_count = 0;
-  size_t total_lines = 0;
   std::string line = "";
   while (std::getline(input, line)) {
-    ++total_lines;
     alisov::Person p;
     bool is_empty = false;
     if (alisov::parse_person(line, p, is_empty)) {
@@ -179,13 +177,15 @@ int main(int argc, char *argv[])
     }
   }
   std::ostream &output = has_out ? f_out : std::cout;
-  for (size_t i = 0; i < people.size; ++i) {
-    output << people.data[i].id << " " << people.data[i].info << "\n";
+  if (people.size == 0) {
+    output << "\n";
+  } else {
+    for (size_t i = 0; i < people.size; ++i) {
+      output << people.data[i].id << " " << people.data[i].info << "\n";
+    }
   }
   if (has_out) {
     f_out.close();
   }
-  if (total_lines > 0) {
-    std::cerr << success_count << " " << ignore_count << "\n";
-  }
+  std::cerr << success_count << " " << ignore_count << "\n";
 }
