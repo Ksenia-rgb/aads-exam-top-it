@@ -1,0 +1,61 @@
+#include "persons.hpp"
+
+#include <limits>
+
+bool lukashevich::detail::isSpace(char ch)
+{
+  return (ch == ' ') || (ch == '\t') || (ch == '\r') || (ch == '\v') || (ch == '\f');
+}
+
+std::string lukashevich::detail::trim(const std::string& text)
+{
+  size_t begin = 0;
+
+  while((begin < text.size()) && isSpace(text[begin])) {
+    ++begin;
+  }
+
+  size_t end = text.size();
+
+  while ((end > begin) && isSpace(text[end - 1])) {
+    --end;
+  }
+
+  return text.substr(begin, end - begin);
+}
+
+bool lukashevich::detail::parseUnsigned(const std::string& text, size_t begin, size_t& value, size_t& end)
+{
+  if ((begin >= text.size()) || (text[begin] < '0') || (text[begin] > '9')) {
+    return false;
+  }
+
+  size_t res = 0;
+  size_t pos = begin;
+
+  while ((pos < text.size()) && (text[pos] >= '0') && (text[pos] <= '9')) {
+    const size_t digit = static_cast< size_t >(text[pos] - '0');
+
+    if (res > (std::numeric_limits< size_t >::max() - digit) / 10) {
+      return false;
+    }
+
+    res = res * 10 + digit;
+    ++pos;
+  }
+
+  value = res;
+  end = pos;
+  return true;
+}
+
+bool lukashevich::hasPerson(const Array< Person >& persons, size_t id)
+{
+  for (size_t i = 0; i < persons.size_; ++i) {
+    if (persons.data_[i].id == id) {
+      return true;
+    }
+  }
+
+  return false;
+}
