@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "hashtable.hpp"
 
 namespace
@@ -68,23 +69,68 @@ namespace goltsov
   }
   std::ostream& printRes(std::ostream& os, List* l)
   {
+    if (l)
+    {
+      os << l->data.key << ' ' << l->data.value.info;
+      l = l->next;
+    }
     while (l)
     {
-      os << l->data.key << ' ' << l->data.value.info << '\n';
+      os << '\n' << l->data.key << ' ' << l->data.value.info;
       l = l->next;
     }
     return os;
   }
 }
 
-int main()
+int main(int argc, char** argv)
 {
+  std::ifstream inFile;
+  std::ofstream outFile;
+  std::istream* is = &std::cin;
+  std::ostream* os = &std::cout;
+  if (argc > 3)
+  {
+    std::cerr << "Many args\n";
+    return 0;
+  }
+  for (int i = 1; i < argc; ++i)
+  {
+    std::string arg = argv[i];
+    if (arg.substr(0, 3) == "in:")
+    {
+      std::string filename = arg.substr(3);
+      inFile.open(filename);
+      if (!inFile.is_open())
+      {
+        std::cerr << "Cannot open input file\n";
+        return 2;
+      }
+      is = &inFile;
+    }
+    else if (arg.substr(0, 4) == "out:")
+    {
+      std::string filename = arg.substr(4);
+      outFile.open(filename);
+      if (!outFile.is_open())
+      {
+        std::cerr << "Cannot open output file\n";
+        return 2;
+      }
+      os = &outFile;
+    }
+    else
+    {
+      std::cerr << "Invalid argument: " << arg << '\n';
+      return 1;
+    }
+  }
   goltsov::HashTable ht = goltsov::newHT(100);
   goltsov::List* l = nullptr;
-  std::istream& is = std::cin;
-  std::ostream& os = std::cout;
-  std::pair< size_t, size_t > res = goltsov::readPersons(ht, is, &l);
-  goltsov::printRes(os, l);
+  std::pair< size_t, size_t > res = goltsov::readPersons(ht, *is, &l);
+  goltsov::printRes(*os, l);
+  *os << '\n';
+  std::cerr << res.first << ' ' << res.second << '\n';
   goltsov::deleteHashTable(ht);
   goltsov::deleteList(l);
 }
