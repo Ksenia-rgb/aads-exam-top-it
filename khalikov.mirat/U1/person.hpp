@@ -12,7 +12,19 @@ namespace khalikov {
     std::string info;
   };
 
-  void getPerson(std::istream &in, List< Person > *&h)
+  bool hasId(List< Person > *h, size_t id)
+  {
+    List< Person > *curr = h;
+    while (curr) {
+      if (curr->val.id == id) {
+        return true;
+      }
+      curr = curr->next;
+    }
+    return false;
+  }
+
+  bool getPerson(std::istream &in, List< Person > *&h)
   {
     Person p;
     p.id = 0;
@@ -25,10 +37,14 @@ namespace khalikov {
     }
     if (in.peek() == '\n') {
       in.get();
-      return;
+      return false;
     }
     std::getline(in, p.info);
+    if (hasId(h, p.id)) {
+      return false;
+    }
     khalikov::pushBack(h, p);
+    return true;
   }
 }
 #endif
