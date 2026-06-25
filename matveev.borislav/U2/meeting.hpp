@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <iosfwd>
+#include <string>
 
 #include "../common/array.hpp"
 #include "../common/person.hpp"
@@ -20,6 +21,7 @@ namespace matveev
   bool readPersons(std::istream &input, Array< Person > &persons);
   size_t findPersonIndex(const Array< Person > &persons, size_t id);
   void addMeetingPersons(const Array< Meeting > &meetings, Array< Person > &persons);
+  bool executePersonCommand(const std::string &line, Array< Person > &persons, std::ostream &out);
 }
 
 #endif
