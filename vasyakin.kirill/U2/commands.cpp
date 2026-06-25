@@ -10,7 +10,6 @@ namespace vasyakin
 {
   namespace detail
   {
-
     struct AnonPrinter
     {
       std::ostream& out;
