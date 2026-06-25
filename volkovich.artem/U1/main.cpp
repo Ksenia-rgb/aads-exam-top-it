@@ -64,6 +64,7 @@ int main(int argc, char* argv[]) {
   volkovich::HashTable< size_t, std::string, std::hash< size_t >, std::equal_to< size_t > > htable;
   std::string line;
   size_t ignored = 0;
+  size_t not_ignored=0;
 
   volkovich::List< size_t > ids;
 
@@ -85,6 +86,7 @@ int main(int argc, char* argv[]) {
       ignored++;
       continue;
     }
+    not_ignored++;
 
     htable.add(id, info);
     ids.pushBack(id);
@@ -100,6 +102,6 @@ int main(int argc, char* argv[]) {
   } if (in) {
     file_in.close();
   }
-  std::cerr << ignored;
+  std::cerr << ignored << ' ' << not_ignored;
   return 0;
 }
