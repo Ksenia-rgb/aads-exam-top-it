@@ -15,14 +15,11 @@ HashTable *createHashTable(size_t initCapacity) {
 }
 void hashTableDestroy(HashTable *tableL) {
   if (!tableL)
-    throw std::runtime_error("hashTable is already empty");
+    return;
   delete[] tableL->table;
   delete tableL;
 }
 void hashTableInsert(HashTable *tableL, const Person &person) {
-  if (tableL->capacity == 0) {
-    HashTable *tableL = createHashTable(16);
-  }
   size_t index = HashFunction(person.id, tableL->capacity);
   while (tableL->table[index].occupied) {
     index = (index + 1) % tableL->capacity;
@@ -34,7 +31,7 @@ void hashTableInsert(HashTable *tableL, const Person &person) {
 }
 Person *hashTableGet(const HashTable *table, size_t id) {
   if (table->capacity == 0)
-    throw std::runtime_error("Hashtable is empty");
+    return nullptr;
   size_t index = HashFunction(id, table->capacity);
   size_t start = index;
   while (table->table[index].occupied) {
@@ -43,7 +40,7 @@ Person *hashTableGet(const HashTable *table, size_t id) {
     }
     index = (index + 1) % table->capacity;
     if (index == start) {
-      return nullptr;
+      break;
     }
   }
 
@@ -58,7 +55,7 @@ OrderArray *createOrderArray(size_t initCapacity) {
 }
 void destroyOrderArray(OrderArray *arr) {
   if (!arr) {
-    throw std::runtime_error("order is empty");
+    return;
   }
   delete[] arr->data;
   delete arr;
@@ -93,7 +90,7 @@ bool processLine(const std::string &line, HashTable *table, OrderArray *order) {
   if (endptr == str)
     return false;
 
-  while (*endptr && (*endptr == ' ' || *str == '\t')) {
+  while (*endptr && (*endptr == ' ' || *endptr == '\t')) {
     ++endptr;
   }
 

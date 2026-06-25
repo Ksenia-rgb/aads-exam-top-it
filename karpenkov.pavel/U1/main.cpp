@@ -1,3 +1,36 @@
+#include "structures.hpp"
+#include <fstream>
 #include <iostream>
 
-int main() { return 0; }
+int main(int argc, char *argv[]) {
+  using namespace karpenkov;
+  Args args = processArgs(argc, argv);
+  if (!args.valid)
+    return 1;
+  std::istream *in = &std::cin;
+  std::ifstream inputFile;
+  if (!args.inputFile.empty()) {
+    inputFile.open(args.inputFile);
+    if (!inputFile.is_open())
+      return 2;
+    in = &inputFile;
+  }
+  std::ostream *out = &std::cout;
+  std::ofstream outputFile;
+  if (!args.outputFile.empty()) {
+    outputFile.open(args.outputFile);
+    if (!outputFile.is_open())
+      return 2;
+    out = &outputFile;
+  }
+  HashTable *table = createHashTable(16);
+  OrderArray *order = createOrderArray(16);
+  size_t successCount = 0;
+  size_t ignoredCount = 0;
+  goodStringsCount(*in, table, order, successCount, ignoredCount);
+  writeData(*out, table, order);
+  std::cerr << successCount << " " << ignoredCount << std::endl;
+  destroyOrderArray(order);
+  hashTableDestroy(table);
+  return 0;
+}

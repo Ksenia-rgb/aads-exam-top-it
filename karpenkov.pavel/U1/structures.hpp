@@ -27,7 +27,7 @@ struct Args {
   bool valid;
 };
 HashTable *createHashTable(size_t initCapacity);
-void hashTableDestroy();
+void hashTableDestroy(HashTable *tableL);
 void hashTableInsert(HashTable *table, const Person &person);
 Person *hashTableGet(const HashTable *table, size_t id);
 OrderArray *createOrderArray(size_t initCapacity);
