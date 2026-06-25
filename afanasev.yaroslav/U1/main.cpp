@@ -4,6 +4,30 @@
 #include <string>
 #include <sstream>
 
+namespace
+{
+  bool parseArg(const std::string & arg, const std::string & prefix, bool & flag, std::string & filename)
+  {
+    if (arg.rfind(prefix, 0) == 0)
+    {
+      if (flag)
+      {
+        std::cerr << "Duplicate " << prefix << " argument\n";
+        return false;
+      }
+      filename = arg.substr(prefix.size());
+      if (filename.empty())
+      {
+        std::cerr << "Invalid argument: empty filename\n";
+        return false;
+      }
+      flag = true;
+      return true;
+    }
+    return false;
+  }
+}
+
 int main(int argc, char * argv[])
 {
   using namespace afanasev;
@@ -20,43 +44,10 @@ int main(int argc, char * argv[])
   for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
-    if (arg.rfind("in:", 0) == 0)
-    {
-      if (hasIn)
-      {
-        std::cerr << "Duplicate input argument\n";
-        return 1;
-      }
-      std::string name = arg.substr(3);
-      if (name.empty())
-      {
-        std::cerr << "Invalid argument: empty filename\n";
-        return 1;
-      }
-      hasIn = true;
-      inFile = name;
-    }
-    else if (arg.rfind("out:", 0) == 0)
-    {
-      if (hasOut)
-      {
-        std::cerr << "Duplicate output argument\n";
-        return 1;
-      }
-      std::string name = arg.substr(3);
-      if (name.empty())
-      {
-        std::cerr << "Invalid argument: empty filename\n";
-        return 1;
-      }
-      hasOut = true;
-      outFile = arg.substr(4);
-    }
-    else
-    {
-      std::cerr << "Invalid argument\n";
-      return 1;
-    }
+    if (parseArg(arg, "in:", hasIn, inFile)) continue;
+    if (parseArg(arg, "out:", hasOut, outFile)) continue;
+    std::cerr << "Invalid argument\n";
+    return 1;
   }
 
   std::ifstream inStream;
