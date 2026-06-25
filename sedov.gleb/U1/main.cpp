@@ -26,7 +26,6 @@ int main(int argc, char ** argv)
   }
   sedov::Vector< sedov::Person > persons = sedov::makeVec< sedov::Person >(4);
   sedov::hashTable< size_t > seen = sedov::makeHashTable< size_t >(16);
-  size_t successCount = 0;
   size_t ignoreCount = 0;
   try
   {
@@ -53,6 +52,7 @@ int main(int argc, char ** argv)
         sedov::Person p;
         if (!sedov::parseLine(line, p))
         {
+          ++ignoreCount;
           continue;
         }
         if (!sedov::insertHashTable(seen, p.id))
@@ -61,7 +61,6 @@ int main(int argc, char ** argv)
           continue;
         }
         sedov::pushBackVec(persons, p);
-        ++successCount;
       }
     }
     {
@@ -82,7 +81,10 @@ int main(int argc, char ** argv)
         * outStream << persons.data[i].id << " " << persons.data[i].info << "\n";
       }
     }
-    std::cerr << successCount << " " << ignoreCount << "\n";
+    if (persons.size > 0 || ignoreCount > 0)
+    {
+      std::cerr << persons.size << " " << ignoreCount << "\n";
+    }
     cleanupResources(persons, seen);
     return 0;
   }
