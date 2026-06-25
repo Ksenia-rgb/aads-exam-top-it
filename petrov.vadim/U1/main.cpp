@@ -17,7 +17,7 @@ int main(int argc, char const *argv[])
 
   for (int i = 1; i < argc; ++i)
   {
-    std::string arg = argv[i];    
+    std::string arg = argv[i];
     if (arg.length() >= 3 && arg[0] == 'i' && arg[1] == 'n' && arg[2] == ':')
     {
       if (!inFile.empty())
@@ -63,7 +63,7 @@ int main(int argc, char const *argv[])
   std::istream& in = inFile.empty() ? std::cin : fin;
   std::ostream& out = outFile.empty() ? std::cout : fout;
   petrov::Data myData{nullptr, 0, 0};
-  
+
   petrov::processStream(in, myData);
   petrov::printData(out, myData);
   delete[] myData.data_;
