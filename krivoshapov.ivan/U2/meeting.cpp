@@ -49,8 +49,24 @@ namespace krivoshapov
     }
   }
 
-  bool readMeetings(std::istream &, Database &)
+  bool readMeetings(std::istream &in, Database &db)
   {
-    return true;
+    std::size_t a = 0, b = 0, dur = 0;
+    while (in >> a)
+    {
+      if (!(in >> b >> dur))
+      {
+        return false;
+      }
+      if (a == b)
+      {
+        continue;
+      }
+      ensurePerson(db, a);
+      ensurePerson(db, b);
+      Meeting m = {a, b, dur};
+      pushBack(db.meetings, m);
+    }
+    return in.eof();
   }
 }
