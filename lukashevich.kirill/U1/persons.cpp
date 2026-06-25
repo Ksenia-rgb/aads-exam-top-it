@@ -19,5 +19,17 @@ bool lukashevich::detail::isSpace(char ch)
 
 std::string lukashevich::detail::tri(const std::string& text)
 {
-  
+  size_t begin = 0;
+
+  while((begin < text.size()) && isSpace(text[begin])) {
+    ++begin;
+  }
+
+  size_t end = text.size();
+
+  while ((end > begin) && isSpace(text[end - 1])) {
+    --end;
+  }
+
+  return text.substr(begin, end - begin);
 }
