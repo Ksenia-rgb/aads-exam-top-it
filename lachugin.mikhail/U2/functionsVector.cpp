@@ -39,6 +39,19 @@ namespace lachugin
     return nullptr;
   }
 
+  const Person* findPerson(const Vector< Person >& persons, size_t id)
+  {
+    for (size_t i = 0; i < persons.size; i++)
+    {
+      if (persons.data[i].id == id)
+      {
+        return &persons.data[i];
+      }
+    }
+
+    return nullptr;
+  }
+
   void addAnonPerson(Vector< Person >& persons, size_t id)
   {
     if (containsPerson(persons, id))
@@ -82,24 +95,22 @@ namespace lachugin
 
   void desc(const Vector< Person >& persons, size_t id)
   {
-    for (size_t i = 0; i < persons.size; i++)
-    {
-      if (persons.data[i].id == id)
-      {
-        if (persons.data[i].info.empty())
-        {
-          std::cout << "<ANON>\n";
-        }
-        else
-        {
-          std::cout << persons.data[i].info << '\n';
-        }
+    const Person* person = findPerson(persons, id);
 
-        return;
-      }
+    if (person == nullptr)
+    {
+      std::cout << "INVALID COMMAND\n";
+      return;
     }
 
-    std::cout << "INVALID COMMAND\n";
+    if (person->info.empty())
+    {
+      std::cout << "<ANON>\n";
+    }
+    else
+    {
+      std::cout << person->info << '\n';
+    }
   }
 
 }

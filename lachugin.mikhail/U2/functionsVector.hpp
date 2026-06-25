@@ -12,6 +12,7 @@ namespace lachugin
   bool readMeeting(std::istream& in, Meeting& meeting);
   bool containsPerson(const Vector< Person >& persons, size_t id);
   Person* findPerson(Vector< Person >& persons, size_t id);
+  const Person* findPerson(const Vector< Person >& persons, size_t id);
   void addPerson(Vector< Person >& persons, size_t id);
 
   void desc(const Vector< Person >& persons, size_t id);
