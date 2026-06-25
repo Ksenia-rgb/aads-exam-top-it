@@ -45,7 +45,18 @@ namespace kitserov
     }
     c.size_ = write;
   }
-
+  void replaceIdInMeetings(MeetingsContainer& c, std::size_t oldId, std::size_t newId) {
+    for (std::size_t i = 0; i < c.size_; ++i) {
+      if (c.data_[i].id1_ == oldId) {
+        c.data_[i].id1_ = newId;
+      }
+      if (c.data_[i].id2_ == oldId) {
+        c.data_[i].id2_ = newId;
+      }
+    }
+    removeSelfMeetings(c);
+  }
+  std::pair< size_t, int >
 }
 
 
