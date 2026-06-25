@@ -51,4 +51,24 @@ namespace shigarev {
       arr.capacity_ = newCap;
     }
   }
+ 
+  template< class T >
+  void pushBack(DynArray< T >& arr, const T& value)
+  {
+    if (arr.size_ >= arr.capacity_) {
+      detail::grow(arr);
+    }
+    arr.data_[arr.size_] = value;
+    ++arr.size_;
+  }
+ 
+  template< class T >
+  void pushBack(DynArray< T >& arr, T&& value)
+  {
+    if (arr.size_ >= arr.capacity_) {
+      detail::grow(arr);
+    }
+    arr.data_[arr.size_] = std::move(value);
+    ++arr.size_;
+  }
 }
