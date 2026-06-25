@@ -1,5 +1,5 @@
 #ifndef DB_HPP
-#define DB_HPP 
+#define DB_HPP
 #include <cstddef>
 #include "utils.hpp"
 namespace levkin {

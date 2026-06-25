@@ -1,6 +1,6 @@
 #include "db.hpp"
 #include "db.hpp"
-#include <iostream>
+#include <fstream>
 namespace levkin {
   void freeDB(DB& db)
   {
