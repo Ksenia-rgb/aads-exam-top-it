@@ -34,7 +34,7 @@ namespace muhamadiarov
     return in;
   }
 
-  bool check(size_t* numbers, size_t& size, size_t& count, size_t id)
+  bool check(size_t*& numbers, size_t& size, size_t& count, size_t id)
   {
     for (size_t i = 0; i < size; ++i)
     {
@@ -52,10 +52,11 @@ namespace muhamadiarov
       {
         newNumbers[i] = numbers[i];
       }
-      newNumbers[size] = id;
+      newNumbers[size++] = id;
       delete [] numbers;
       numbers = newNumbers;
     }
+    numbers[size++] = id;
     return true;
   }
 }
@@ -76,6 +77,7 @@ int main(int argc, char *argv[])
     if (!file.is_open())
     {
       std::cerr << "Can't open file\n";
+      delete [] numbers;
       return 1;
     }
 
@@ -120,6 +122,10 @@ int main(int argc, char *argv[])
     muh::Person& person = queue.top();
     std::cout << person.id << ' ' << person.info << '\n';
     queue.pop();
+  }
+  if (size == 0)
+  {
+    std::cout << '\n';
   }
   return 0;
 }
