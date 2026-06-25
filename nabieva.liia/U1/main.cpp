@@ -9,5 +9,6 @@ namespace nabieva {
 int main(int argc, char** argv)
 {
 	std::ifstream inputFile;
+	nabieva::PersonStorage storage;
 
 }

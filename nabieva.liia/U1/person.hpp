@@ -19,6 +19,20 @@ namespace nabieva
     std::size_t size;
     std::size_t capacity;
   };
+
+  void nabieva::initStorage(PersonStorage& storage)
+  {
+    storage.data = 0;
+    storage.size = 0;
+    storage.capacity = 0;
+  }
+
+  void nabieva::initStorage(PersonStorage& storage)
+  {
+    storage.data = 0;
+    storage.size = 0;
+    storage.capacity = 0;
+  }
 }
 
 #endif
