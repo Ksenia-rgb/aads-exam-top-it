@@ -95,6 +95,24 @@ void bukreev::input(List< Person >* people, std::istream& in)
       continue;
     }
 
+    bool doubleId = false;
+    List< Person >* h = people->next;
+    while (h != people)
+    {
+      if (h->val.id == id)
+      {
+        doubleId = true;
+        break;
+      }
+      h = h->next;
+    }
+
+    if (doubleId)
+    {
+      bad++;
+      continue;
+    }
+
     while (std::isspace(line[i]) && i < line.size())
     {
       i++;
