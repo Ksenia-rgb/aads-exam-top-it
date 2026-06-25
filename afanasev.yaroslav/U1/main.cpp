@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
   if (argc > 3)
   {
     std::cerr << "Too many arguments\n";
-    return 1;
+    return 0;
   }
 
   for (int i = 1; i < argc; ++i)
@@ -131,6 +131,7 @@ int main(int argc, char * argv[])
   if (!count)
   {
     *out << '\n';
+    ignored = 0;
   }
 
   if (hasOut)
