@@ -4,6 +4,7 @@
 #include <string>
 #include <cstddef>
 #include <climits>
+#include <cstdint>
 
 std::istream& vasyakin::readPerson(std::istream& in, vasyakin::Person& person, bool& valid)
 {

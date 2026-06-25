@@ -135,8 +135,8 @@ void vasyakin::detail::mergeEdges(Graph*& root, size_t target, Adjacency* source
 
 void vasyakin::detail::doDeanon(std::ostream& out, Graph*& root, size_t anon, size_t target)
 {
-  Graph * anonVertex = findBst(root, anon);
-  Graph * targetVertex = findBst(root, target);
+  Graph* anonVertex = findBst(root, anon);
+  Graph* targetVertex = findBst(root, target);
 
   if (anonVertex == nullptr || targetVertex == nullptr)
   {
@@ -306,7 +306,7 @@ void vasyakin::detail::cmdBound(std::istream& in, std::ostream& out, Graph* root
     return;
   }
 
-  Graph * vertex = findBst(root, id);
+  Graph* vertex = findBst(root, id);
 
   if (vertex == nullptr)
   {
@@ -317,7 +317,7 @@ void vasyakin::detail::cmdBound(std::istream& in, std::ostream& out, Graph* root
   if (greater)
   {
     printMeetings(out, vertex, 0, time, false, true);
-  } 
+  }
   else
   {
     printMeetings(out, vertex, time, 0, true, false);
