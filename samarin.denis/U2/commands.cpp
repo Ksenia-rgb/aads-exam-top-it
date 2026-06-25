@@ -94,26 +94,31 @@ namespace {
       Bound bound, std::size_t threshold)
   {
     samarin::detail::list_t< DurationPair > selected{ nullptr, nullptr };
-    for (const MeetingNode * node = data.meetings.head; node != nullptr; node = node->next) {
-      const samarin::Meeting & meeting = node->value;
-      std::size_t partner = 0;
-      if (meeting.first == id) {
-        partner = meeting.second;
-      } else if (meeting.second == id) {
-        partner = meeting.first;
-      } else {
-        continue;
+    try {
+      for (const MeetingNode * node = data.meetings.head; node != nullptr; node = node->next) {
+        const samarin::Meeting & meeting = node->value;
+        std::size_t partner = 0;
+        if (meeting.first == id) {
+          partner = meeting.second;
+        } else if (meeting.second == id) {
+          partner = meeting.first;
+        } else {
+          continue;
+        }
+        const bool keep = (bound == Bound::none)
+            || (bound == Bound::below && meeting.duration < threshold)
+            || (bound == Bound::above && meeting.duration > threshold);
+        if (keep) {
+          const DurationPair entry = std::make_pair(partner, meeting.duration);
+          samarin::detail::insertSorted(selected, entry, meetingComesBefore);
+        }
       }
-      const bool keep = (bound == Bound::none)
-          || (bound == Bound::below && meeting.duration < threshold)
-          || (bound == Bound::above && meeting.duration > threshold);
-      if (keep) {
-        const DurationPair entry = std::make_pair(partner, meeting.duration);
-        samarin::detail::insertSorted(selected, entry, meetingComesBefore);
+      for (const PairNode * node = selected.head; node != nullptr; node = node->next) {
+        out << node->value.first << ' ' << node->value.second << '\n';
       }
-    }
-    for (const PairNode * node = selected.head; node != nullptr; node = node->next) {
-      out << node->value.first << ' ' << node->value.second << '\n';
+    } catch (...) {
+      samarin::detail::clear(selected);
+      throw;
     }
     samarin::detail::clear(selected);
   }
