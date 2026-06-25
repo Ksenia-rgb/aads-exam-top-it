@@ -77,18 +77,19 @@ int main(int argc, char *argv[])
   karpenko::Node *tail = NULL;
   size_t accepted = 0;
   size_t ignored = 0;
-  bool hasLines = false;
+  bool hasNonEmptyLines = false;
 
   try
   {
     std::string line;
     while (std::getline(*inPtr, line))
     {
-      hasLines = true;
       if (isWhitespaceLine(line))
       {
         continue;
       }
+
+      hasNonEmptyLines = true;
 
       karpenko::Person p;
       bool ok = karpenko::parseLine(line, p);
@@ -138,7 +139,7 @@ int main(int argc, char *argv[])
   try
   {
     karpenko::printList(head, *outPtr);
-    if (hasLines)
+    if (hasNonEmptyLines)
     {
       karpenko::printStats(accepted, ignored, std::cerr);
     }
