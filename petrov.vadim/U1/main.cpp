@@ -40,33 +40,35 @@ int main(int argc, char const *argv[])
     }
   }
 
-  std::ifstream fin;
+  petrov::Data myData{nullptr, 0, 0};
   if (!inFile.empty())
   {
-    fin.open(inFile);
+    std::ifstream fin(inFile);
     if (!fin.is_open())
     {
       return 2;
     }
+    petrov::processStream(fin, myData);
+  }
+  else
+  {
+    petrov::processStream(std::cin, myData);
   }
 
-  std::ofstream fout;
   if (!outFile.empty())
   {
-    fout.open(outFile);
+    std::ofstream fout(outFile);
     if (!fout.is_open())
     {
+      delete[] myData.data_;
       return 2;
     }
+    petrov::printData(fout, myData);
   }
-
-  std::istream& in = inFile.empty() ? std::cin : fin;
-  std::ostream& out = outFile.empty() ? std::cout : fout;
-  petrov::Data myData{nullptr, 0, 0};
-
-  petrov::processStream(in, myData);
-  petrov::printData(out, myData);
+  else
+  {
+    petrov::printData(std::cout, myData);
+  }
   delete[] myData.data_;
-
   return 0;
 }
