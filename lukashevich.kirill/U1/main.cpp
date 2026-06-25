@@ -30,9 +30,10 @@ int main(int argc, char* argv[])
       inputName = arg.substr(3);
       hasInput = true;
     } else if ((arg.size() > 4) && (arg[0] == 'o')
-        && (arg[0] == 'u') && (arg[0] == 't') && (arg[0] == ':')) {
+        && (arg[1] == 'u') && (arg[2] == 't') && (arg[3] == ':')) {
         if (hasOutput) {
           std::cerr << "invalid arguments\n";
+          return 1;
         }
 
         outputName = arg.substr(4);
@@ -67,6 +68,10 @@ int main(int argc, char* argv[])
     std::string line;
 
     while (std::getline(*input, line)) {
+      if (lukashevich::detail::trim(line).empty()) {
+        continue;
+      }
+
       size_t pos = 0;
 
       while ((pos < line.size()) && lukashevich::detail::isSpace(line[pos])) {
