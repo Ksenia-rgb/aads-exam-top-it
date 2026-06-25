@@ -56,6 +56,48 @@ namespace alisov
     ++vec.size;
   }
 
+  bool id_unique(const Vector< Person > &vec, const size_t id)
+  {
+    for (size_t i = 0; i < vec.size; ++i) {
+      if (vec.data[i].id == id) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool parse_person(const std::string &line, Person &out_person)
+  {
+    if (line.empty()) {
+      return false;
+    }
+    const size_t first_non_space = line.find_first_not_of(" \n");
+    if (first_non_space == std::string::npos) {
+      return false;
+    }
+    if (line[first_non_space] < '0' || line[first_non_space] > '9') {
+      return false;
+    }
+    const size_t id_end = line.find_first_of(" \n", first_non_space);
+    const std::string id_str = (id_end == std::string::npos) ? line.substr(first_non_space)
+                                                             : line.substr(first_non_space, id_end - first_non_space);
+    size_t parsed_bytes = 0;
+    const unsigned long long temp_id = std::stoull(id_str, &parsed_bytes);
+    if (parsed_bytes != id_str.length()) {
+      return false;
+    }
+    if (id_end == std::string::npos) {
+      return false;
+    }
+    const size_t info_start = line.find_first_not_of(" \n", id_end);
+    if (info_start == std::string::npos) {
+      return false;
+    }
+    const size_t info_end = line.find_last_not_of(" \n");
+    out_person.id = static_cast< size_t >(temp_id);
+    out_person.info = line.substr(info_start, info_end - info_start + 1);
+    return true;
+  }
 }
 
 int main(int argc, char *argv[])
