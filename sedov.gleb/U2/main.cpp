@@ -12,7 +12,7 @@ namespace
   {
     sedov::Graph *& root;
     GraphGuard(sedov::Graph *& r):
-      root(r) 
+      root(r)
     {}
     ~GraphGuard()
     {
