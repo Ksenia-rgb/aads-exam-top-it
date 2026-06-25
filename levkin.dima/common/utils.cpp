@@ -14,7 +14,9 @@ namespace levkin {
       return std::isdigit(static_cast< unsigned char >(ch));
     }
   }
-  Pair* reallocate(Vec& v)
+  template < class T >
+
+  Pair* reallocate(Vec< T >& v)
   {
     size_t nw_cap = (v.cap == 0) ? 1 : 2 * v.cap;
     Pair* nw = new Pair[nw_cap];
@@ -28,7 +30,9 @@ namespace levkin {
     v.data = nw;
     return nw;
   }
-  void readToVec(Vec& v, std::istream& is, size_t& total, size_t& ignored)
+  template < class T >
+  void
+  readToVec< T >(Vec< T >& v, std::istream& is, size_t& total, size_t& ignored)
   {
     std::string line;
     while (std::getline(is, line)) {
@@ -97,7 +101,8 @@ namespace levkin {
       total++;
     }
   }
-  void writeFromVec(const Vec& v, std::ostream& os)
+  template < class T >
+  void writeFromVec(const Vec< T >& v, std::ostream& os)
   {
     for (size_t i = 0; i < v.size; ++i) {
       os << v.data[i].first << " " << v.data[i].second << "\n";
