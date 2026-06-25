@@ -1,7 +1,7 @@
 #include <iostream>
-#include <input.hpp>
 #include <person.hpp>
 #include <vector.hpp>
+#include "input.hpp"
 
 int main(int argc, char ** argv)
 {
