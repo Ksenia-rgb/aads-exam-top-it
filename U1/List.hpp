@@ -31,5 +31,17 @@ namespace novikov
     }
   };
 
+  template < class T >
+  void clear(List<T>& list)
+  {
+    Node<T>* cur = list.head;
+    while(cur)
+    {
+      Node<T>* next = cur->next;
+      delete cur;
+      cur = next;
+    }
+    list.head = nullptr;
+  };
 }
 #endif
