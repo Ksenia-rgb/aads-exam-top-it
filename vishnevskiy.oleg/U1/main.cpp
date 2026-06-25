@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
   {
     return 1;
   }
-  for (size_t i = 1; i < argc; ++i)
+  for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
     try
@@ -181,11 +181,9 @@ int main(int argc, char *argv[])
   vishnevskiy::HashTable<size_t, std::string, size_t(*)(size_t), bool(*)(size_t, size_t)> personTable(200, hashSizeT, equalSizeT);
   Person person;
   int parseResult;
-  std::cout << "Table size: " << personTable.getSize() << std::endl;
 
   while ((parseResult = parseLine(*inPtr, person)) != 1)
   {
-    std::cout << "Table size: " << personTable.getSize() << std::endl;
     if (parseResult == 2)
     {
       continue;
