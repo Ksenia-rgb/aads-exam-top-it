@@ -1,5 +1,6 @@
-#include <iostream>
+#include "person.hpp"
 
-main()
+int main()
 {
+  return 0;
 }
