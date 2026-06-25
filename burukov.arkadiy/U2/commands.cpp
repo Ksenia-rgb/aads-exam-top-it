@@ -6,8 +6,9 @@
 #include <string>
 #include <utility>
 
-#include "array.hpp"
-#include "array_sort.hpp"
+#include <array.hpp>
+#include <array_sort.hpp>
+
 #include "model.hpp"
 
 namespace burukov
@@ -72,6 +73,7 @@ namespace burukov
       darray< Edge > sorted = sortedEdges(vertex);
       try
       {
+        bool hasOutput = false;
         for (size_t i = 0; i < sorted.size; ++i)
         {
           const Edge& edge = sorted.data[i];
@@ -84,6 +86,11 @@ namespace burukov
             continue;
           }
           out << edge.partner << " " << edge.duration << "\n";
+          hasOutput = true;
+        }
+        if (!hasOutput)
+        {
+          out << "\n";
         }
       }
       catch (...)
@@ -115,9 +122,16 @@ namespace burukov
       darray< size_t > ids = sortedIds(graph, false);
       try
       {
-        for (size_t i = 0; i < ids.size; ++i)
+        if (ids.size == 0)
         {
-          out << ids.data[i] << "\n";
+          out << "\n";
+        }
+        else
+        {
+          for (size_t i = 0; i < ids.size; ++i)
+          {
+            out << ids.data[i] << "\n";
+          }
         }
       }
       catch (...)
@@ -207,6 +221,7 @@ namespace burukov
       {
         size_t last = 0;
         bool hasLast = false;
+        bool hasOutput = false;
         for (size_t i = 0; i < sorted.size; ++i)
         {
           size_t partner = sorted.data[i].partner;
@@ -226,9 +241,14 @@ namespace burukov
           if (present)
           {
             out << partner << "\n";
+            hasOutput = true;
           }
           last = partner;
           hasLast = true;
+        }
+        if (!hasOutput)
+        {
+          out << "\n";
         }
       }
       catch (...)
