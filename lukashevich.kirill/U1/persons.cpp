@@ -33,3 +33,8 @@ std::string lukashevich::detail::tri(const std::string& text)
 
   return text.substr(begin, end - begin);
 }
+
+bool lukashevich::detail::parseUnsigned(const std::string& text, size_t begin, size_t& value, size_t& end)
+{
+  
+}
