@@ -103,6 +103,14 @@ int alekseev::runU1(
     }
 
     writePersons(*outputTarget, persons);
+    if (outputFile.is_open())
+    {
+      outputFile.close();
+      if (!outputFile)
+      {
+        throw std::runtime_error("output close failure");
+      }
+    }
     if (stats.hasInput)
     {
       error << stats.success << ' ' << stats.ignored << '\n';
