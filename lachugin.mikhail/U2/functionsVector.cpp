@@ -53,7 +53,7 @@ namespace lachugin
     return nullptr;
   }
 
-  void addAnonPerson(Vector< Person >& persons, size_t id)
+  void addPerson(Vector< Person >& persons, size_t id)
   {
     if (containsPerson(persons, id))
     {
