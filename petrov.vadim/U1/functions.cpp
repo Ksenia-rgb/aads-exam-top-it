@@ -56,7 +56,7 @@ void petrov::processStream(std::istream& in, Data& data)
   Person current;
   while (in)
   {
-    if (in.eof())
+    if (in.peek() == std::char_traits< char >::eof())
     {
       break;
     }
