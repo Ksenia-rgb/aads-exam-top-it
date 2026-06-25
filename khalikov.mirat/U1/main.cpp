@@ -53,25 +53,16 @@ int main(int argc, char **argv)
     return 1;
   }
   std::ifstream inF;
-  std::ofstream outF;
   if (!inFile.empty()) {
     inF.open(inFile);
     if (!inF.is_open()) {
       return 2;
     }
   }
-  if (!outFile.empty()) {
-    outF.open(outFile);
-    if (!outF.is_open()) {
-      return 2;
-    }
-  }
 
   std::istream &in = inFile.empty() ? std::cin : inF;
-  std::ostream &out = outFile.empty() ? std::cout : outF;
 
   khalikov::List< khalikov::Person > *h = nullptr;
-  std::string line;
   size_t success = 0;
   size_t unsuccess = 0;
   while (in.peek() != EOF) {
@@ -82,7 +73,24 @@ int main(int argc, char **argv)
       unsuccess++;
     }
   }
+
+  if (!inFile.empty()) {
+    inF.close();
+  }
+
+  std::ofstream outF;
+  if (!outFile.empty()) {
+    outF.open(outFile);
+    if (!outF.is_open()) {
+      return 2;
+    }
+  }
+  std::ostream &out = outFile.empty() ? std::cout : outF;
+
   khalikov::output(h, out);
   khalikov::clear(h);
+  if (!outFile.empty()) {
+    outF.close();
+  }
   std::cerr << success << ' ' << unsuccess << '\n';
 }

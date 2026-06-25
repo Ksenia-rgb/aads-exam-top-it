@@ -35,7 +35,7 @@ namespace khalikov {
     while (in.peek() == ' ') {
       in.get();
     }
-    if (in.peek() == '\n') {
+    if (in.peek() == '\n' || in.peek() == 't') {
       in.get();
       return false;
     }
