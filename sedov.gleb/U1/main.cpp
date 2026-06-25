@@ -21,17 +21,18 @@ int main(int argc, char ** argv)
 {
   if (argc > 3)
   {
-    return 1;
+    std::cerr << "Too many arguments\n";
+    return 0;
   }
   sedov::Args args = sedov::parseArgs(argc, argv);
   if (!args.valid)
   {
+    std::cerr << "Invalid arguments\n";
     return 1;
   }
   sedov::Vector< sedov::Person > persons = sedov::makeVec< sedov::Person >(4);
   sedov::hashTable< size_t > seen = sedov::makeHashTable< size_t >(16);
   size_t ignoreCount = 0;
-  bool hasInput = false;
   try
   {
     {
@@ -50,7 +51,6 @@ int main(int argc, char ** argv)
       std::string line;
       while (std::getline(* inStream, line))
       {
-        hasInput = true;
         if (line.empty())
         {
           continue;
@@ -87,10 +87,7 @@ int main(int argc, char ** argv)
         * outStream << persons.data[i].id << " " << persons.data[i].info << "\n";
       }
     }
-    if (hasInput)
-    {
-      std::cerr << persons.size << " " << ignoreCount << "\n";
-    }
+    std::cerr << persons.size << " " << ignoreCount << "\n";
     cleanupResources(persons, seen);
     return 0;
   }
