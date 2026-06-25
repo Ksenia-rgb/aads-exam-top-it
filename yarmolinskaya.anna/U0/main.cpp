@@ -1,4 +1,7 @@
 #include <iostream>
 
-int main() {}
+int main()
+{
+  std::cout << "yarmolinskaya.anna\n";
+}
 
