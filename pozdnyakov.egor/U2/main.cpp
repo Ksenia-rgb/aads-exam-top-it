@@ -1,6 +1,6 @@
 #include <fstream>
 #include <iostream>
-#include "logic.hpp"
+#include "interactive.hpp"
 
 int main(const int argc, char *argv[])
 {

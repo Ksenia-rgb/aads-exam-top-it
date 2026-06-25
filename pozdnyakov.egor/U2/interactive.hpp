@@ -1,7 +1,7 @@
-#ifndef LOGIC_HPP
-#define LOGIC_HPP
+#ifndef INTERACTIVE_HPP
+#define INTERACTIVE_HPP
 
-#include "common/common.hpp"
+#include "../common/common.hpp"
 #include <iostream>
 #include <string>
 
