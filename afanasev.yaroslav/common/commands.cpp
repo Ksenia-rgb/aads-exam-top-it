@@ -45,7 +45,7 @@ namespace afanasev
   }
 
   void cmdDeanonymize(std::istringstream & iss, Person *& persons, size_t & count,
-    size_t & capacity,Meeting *& meetings, size_t & mCount)
+    size_t &, Meeting *& meetings, size_t & mCount)
   {
     size_t anonId, id;
     if (!(iss >> anonId >> id))
