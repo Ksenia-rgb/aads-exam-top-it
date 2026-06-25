@@ -21,6 +21,15 @@ namespace nabieva
     array.size = 0;
     array.capacity = 0;
   }
+
+  template< typename T >
+  void clear(DynamicArray< T >& array)
+  {
+    delete[] array.data;
+    array.data = 0;
+    array.size = 0;
+    array.capacity = 0;
+  }
 }
 
 #endif
