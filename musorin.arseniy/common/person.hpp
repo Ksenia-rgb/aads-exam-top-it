@@ -8,6 +8,7 @@ struct Person
 {
   size_t id;
   std::string info;
+  bool parseLine(const std::string & line, Person & person);
 };
 }
 #endif
