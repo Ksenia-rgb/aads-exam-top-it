@@ -35,11 +35,31 @@ int main(int argc, char * argv[])
   std::string inFile, outFile;
   bool hasIn = false, hasOut = false;
 
+  if (argc > 3)
+  {
+    std::cerr << "Too many arguments\n";
+    return 2;
+  }
+
   for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
-    if (parseArg(arg, "in:", hasIn, inFile)) continue;
-    if (parseArg(arg, "out:", hasOut, outFile)) continue;
+    if (arg.rfind("in:", 0) == 0)
+    {
+      if (!parseArg(arg, "in:", hasIn, inFile))
+      {
+        return 1;
+      }
+      continue;
+    }
+    if (arg.rfind("out:", 0) == 0)
+    {
+      if (!parseArg(arg, "out:", hasOut, outFile))
+      {
+        return 1;
+      }
+      continue;
+    }
     std::cerr << "Invalid argument\n";
     return 1;
   }
@@ -112,7 +132,7 @@ int main(int argc, char * argv[])
     outStream.close();
   }
 
-  if (count > 0 || ignored > 0)
+  if (count > 0)
   {
     std::cerr << count << ' ' << ignored << '\n';
   }
