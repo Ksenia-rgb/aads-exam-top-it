@@ -3,6 +3,19 @@
 #include "db.hpp"
 namespace levkin {
   namespace {
+    void findCommonElements(const Vec< size_t >& v1,
+                            const Vec< size_t >& v2,
+                            Vec< size_t >& res)
+    {
+      for (size_t i = 0; i < v1.size; ++i) {
+        for (size_t j = 0; j < v2.size; ++j) {
+          if (v1.data[i] == v2.data[j]) {
+            pushBack(res, v1.data[i]);
+            break;
+          }
+        }
+      }
+    }
     void collectUniquePartners(const DB& db,
                                size_t target_id,
                                Vec< size_t >& partners)
@@ -187,7 +200,7 @@ namespace levkin {
     }
     printFilterMeets(db, id, os, 2, duration);
   }
-  
+
   void commons(const DB& db, std::istream& is, std::ostream& os)
   {
     size_t id1, id2;
