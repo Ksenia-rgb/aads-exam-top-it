@@ -24,16 +24,16 @@ int main(int argc, char* argv[])
     input = std::addressof(in_file);
   }
 
-  std::ostream* output = &std::cout;
-  std::ofstream out_file;
+  // std::ostream* output = &std::cout;
+  // std::ofstream out_file;
 
-  if (!out_name.empty()) {
-    out_file.open(out_name);
-    if (!out_file) {
-      return 2;
-    }
-    output = std::addressof(out_file);
-  }
+  // if (!out_name.empty()) {
+  //   out_file.open(out_name);
+  //   if (!out_file) {
+  //     return 2;
+  //   }
+  //   output = std::addressof(out_file);
+  // }
 
   zubarev::PersonArray persons;
   zubarev::HashSet ids;
@@ -48,15 +48,14 @@ int main(int argc, char* argv[])
   while (std::getline(*input, line)) {
     size_t pos = 0;
 
-    while (pos < line.size() && line[pos] == ' ') {
+    while (pos < line.size() && std::isspace(static_cast< unsigned char >(line[pos]))) {
       ++pos;
     }
 
     size_t id = 0;
-
     bool hasId = false;
 
-    while (pos < line.size() && line[pos] >= '0' && line[pos] <= '9') {
+    while (pos < line.size() && std::isdigit(static_cast< unsigned char >(line[pos]))) {
       hasId = true;
 
       id = id * 10 + line[pos] - '0';
@@ -64,28 +63,55 @@ int main(int argc, char* argv[])
       ++pos;
     }
 
-    while (pos < line.size() && line[pos] == ' ') {
+    if (!hasId) {
+      ++ignored;
+      continue;
+    }
+
+    if (pos < line.size() && !std::isspace(static_cast< unsigned char >(line[pos]))) {
+      ++ignored;
+      continue;
+    }
+
+    while (pos < line.size() && std::isspace(static_cast< unsigned char >(line[pos]))) {
       ++pos;
     }
 
-    if (!hasId || pos == line.size()) {
-      ignored++;
+    if (pos == line.size()) {
+      ++ignored;
       continue;
     }
 
-    if (zubarev::exists(persons, id)) {
+    if (zubarev::contains(ids, id)) {
       ignored++;
       continue;
     }
-
     zubarev::Person person;
 
     person.id = id;
     person.info = line.substr(pos);
 
-    push(persons, person);
+    zubarev::push(persons, person);
+
+    zubarev::insert(ids, id);
 
     ++correct;
+  }
+
+  std::ostream* output = &std::cout;
+  std::ofstream out_file;
+
+  if (!out_name.empty()) {
+    out_file.open(out_name);
+
+    if (!out_file) {
+      destroy(persons);
+      destroy(ids);
+
+      return 2;
+    }
+
+    output = std::addressof(out_file);
   }
 
   for (size_t i = 0; i < persons.size; ++i) {
@@ -96,4 +122,6 @@ int main(int argc, char* argv[])
 
   destroy(persons);
   destroy(ids);
+
+  return 0;
 }
