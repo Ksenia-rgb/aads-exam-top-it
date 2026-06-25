@@ -10,7 +10,7 @@ namespace khalikov {
   };
 
   template< class T >
-  void pushBack(List< T > * h, const T &val)
+  void pushBack(List< T > *&h, const T &val)
   {
     List< T > *node = new List< T >;
     node->val = val;
@@ -36,7 +36,7 @@ namespace khalikov {
       delete curr;
       curr = next;
     }
-    delete h;
+    h = nullptr;
   }
 
 }
