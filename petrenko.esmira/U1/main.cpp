@@ -3,7 +3,7 @@
 int main(int argc, char* argv[]) {
   if (argc > 3) {
     std::cerr << "Error: Too many arguments" << "\n";
-    return 1;
+    return 0;
   }
 
   std::string inputFilename;
