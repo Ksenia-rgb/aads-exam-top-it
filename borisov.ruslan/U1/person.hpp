@@ -19,6 +19,7 @@ namespace borisov
   };
 
   bool containsId(const PersonNode *head, size_t id);
+  PersonNode *readPersons(std::istream &in, size_t &count, size_t &skipped);
   void writePersons(std::ostream &out, const PersonNode *head);
   void freePersons(PersonNode *head);
 }
