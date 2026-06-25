@@ -28,6 +28,35 @@ namespace lukashevich
 
   template< class T >
   void destroyArray(Array< T >& array) noexcept
+  {
+    delete[] array.data_;
+    array.data_ = nullptr;
+    array.size_ = 0;
+    array.capacity_ = 0;
+  }
+
+  template< class T >
+  void resArray(Array< T >& array, size_t newCapacity)
+  {
+    if (newCapacity <= array.capacity_) {
+      return;
+    }
+
+    T* newData = new T[newCapacity];
+
+    try {
+      for (size_t i = 0; i < array.size_; ++i) {
+        newData[i] = array.data_[i];
+      }
+    } catch (...) {
+      delete[] newData;
+      throw;
+    }
+
+    delete[] array.data_;
+    array.data_ = newData;
+    array.capacity_ = newCapacity;
+  }
 }
 
 #endif
