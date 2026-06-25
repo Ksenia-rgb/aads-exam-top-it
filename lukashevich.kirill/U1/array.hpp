@@ -2,6 +2,8 @@
 #define ARRAY_HPP
 
 #include <cstddef>
+#include <limits>
+#include <stdexcept>
 
 namespace lukashevich
 {
