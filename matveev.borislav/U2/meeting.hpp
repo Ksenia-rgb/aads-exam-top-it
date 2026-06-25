@@ -22,6 +22,12 @@ namespace matveev
   size_t findPersonIndex(const Array< Person > &persons, size_t id);
   void addMeetingPersons(const Array< Meeting > &meetings, Array< Person > &persons);
   bool executePersonCommand(const std::string &line, Array< Person > &persons, std::ostream &out);
+  bool executeMeetingCommand(
+  const std::string &line,
+  const Array< Person > &persons,
+  const Array< Meeting > &meetings,
+  std::ostream &out
+  );
 }
 
 #endif

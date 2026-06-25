@@ -111,7 +111,10 @@ int main(int argc, char **argv)
 
   while (std::getline(std::cin, command))
   {
-    if (!matveev::executePersonCommand(command, persons, std::cout))
+    if (
+      !matveev::executePersonCommand(command, persons, std::cout) &&
+      !matveev::executeMeetingCommand(command, persons, meetings, std::cout)
+    )
     {
       std::cout << "<INVALID COMMAND>\n";
     }

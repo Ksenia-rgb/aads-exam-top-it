@@ -8,6 +8,12 @@
 
 namespace
 {
+  struct MeetingOutput
+  {
+    size_t id;
+    size_t duration;
+  };
+
   bool isDigit(char symbol)
   {
     return symbol >= '0' && symbol <= '9';
@@ -187,6 +193,108 @@ namespace
       out << next << '\n';
       previous = next;
       hasPrevious = true;
+    }
+  }
+
+  bool getOtherId(const matveev::Meeting &meeting, size_t id, size_t &otherId)
+  {
+    if (meeting.first == id)
+    {
+      otherId = meeting.second;
+      return true;
+    }
+
+    if (meeting.second == id)
+    {
+      otherId = meeting.first;
+      return true;
+    }
+
+    return false;
+  }
+
+  bool isDurationNeeded(size_t duration, size_t time, int mode)
+  {
+    if (mode == 1)
+    {
+      return duration < time;
+    }
+
+    if (mode == 2)
+    {
+      return duration > time;
+    }
+
+    return true;
+  }
+
+  bool isBefore(const MeetingOutput &lhs, const MeetingOutput &rhs)
+  {
+    if (lhs.id != rhs.id)
+    {
+      return lhs.id < rhs.id;
+    }
+
+    return lhs.duration < rhs.duration;
+  }
+
+  void swapMeetingOutput(MeetingOutput &lhs, MeetingOutput &rhs)
+  {
+    MeetingOutput tmp = lhs;
+    lhs = rhs;
+    rhs = tmp;
+  }
+
+  void sortMeetingOutput(matveev::Array< MeetingOutput > &output)
+  {
+    for (size_t i = 0; i < output.size; ++i)
+    {
+      size_t minIndex = i;
+
+      for (size_t j = i + 1; j < output.size; ++j)
+      {
+        if (isBefore(output.data[j], output.data[minIndex]))
+        {
+          minIndex = j;
+        }
+      }
+
+      if (minIndex != i)
+      {
+        swapMeetingOutput(output.data[i], output.data[minIndex]);
+      }
+    }
+  }
+
+  void writeMeetingOutput(std::ostream &out, matveev::Array< MeetingOutput > &output)
+  {
+    sortMeetingOutput(output);
+
+    for (size_t i = 0; i < output.size; ++i)
+    {
+      out << output.data[i].id << ' ' << output.data[i].duration << '\n';
+    }
+  }
+
+  void collectMeetingOutput(
+    const matveev::Array< matveev::Meeting > &meetings,
+    size_t id,
+    size_t time,
+    int mode,
+    matveev::Array< MeetingOutput > &output
+  )
+  {
+    for (size_t i = 0; i < meetings.size; ++i)
+    {
+      size_t otherId = 0;
+
+      if (getOtherId(meetings.data[i], id, otherId) && isDurationNeeded(meetings.data[i].duration, time, mode))
+      {
+        MeetingOutput row;
+        row.id = otherId;
+        row.duration = meetings.data[i].duration;
+        pushBack(output, row);
+      }
     }
   }
 }
@@ -370,6 +478,66 @@ bool matveev::executePersonCommand(const std::string &line, Array< Person > &per
     }
 
     return static_cast< bool >(output);
+  }
+
+  return false;
+}
+
+bool matveev::executeMeetingCommand(
+  const std::string &line,
+  const Array< Person > &persons,
+  const Array< Meeting > &meetings,
+  std::ostream &out
+)
+{
+  size_t pos = 0;
+  std::string command;
+
+  if (!readWord(line, pos, command))
+  {
+    return false;
+  }
+
+  if (command == "meets")
+  {
+    size_t id = 0;
+
+    if (!readSizeT(line, pos, id) || !isEnd(line, pos))
+    {
+      return false;
+    }
+
+    if (findPersonIndex(persons, id) == persons.size)
+    {
+      return false;
+    }
+
+    Array< MeetingOutput > output;
+    collectMeetingOutput(meetings, id, 0, 0, output);
+    writeMeetingOutput(out, output);
+    return true;
+  }
+
+  if (command == "less" || command == "greater")
+  {
+    size_t time = 0;
+    size_t id = 0;
+
+    if (!readSizeT(line, pos, time) || !readSizeT(line, pos, id) || !isEnd(line, pos))
+    {
+      return false;
+    }
+
+    if (findPersonIndex(persons, id) == persons.size)
+    {
+      return false;
+    }
+
+    int mode = command == "less" ? 1 : 2;
+    Array< MeetingOutput > output;
+    collectMeetingOutput(meetings, id, time, mode, output);
+    writeMeetingOutput(out, output);
+    return true;
   }
 
   return false;
