@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "person.hpp"
+#include "list.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -64,7 +66,9 @@ int main(int argc, char* argv[])
     out = &outputFileStream;
   }
 
+  vishnyakov::List< vishnyakov::Person > persons;
   std::string line;
+
   while (std::getline(*in, line))
   {
     *out << line << "\n";
