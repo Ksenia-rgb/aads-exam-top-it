@@ -45,5 +45,12 @@ namespace petrov
         return 1;
       }
     }
+    if (df.empty())
+    {
+      std::cerr << "err\n";
+      return 1;
+    }
+    Pvec ps = {nullptr, 0, 0};
+    Mvec ms = {nullptr, 0, 0};
   }
 }
