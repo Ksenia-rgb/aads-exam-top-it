@@ -14,18 +14,13 @@ namespace matveev
     inName.clear();
     outName.clear();
 
-    if (argc > 3)
-    {
-      return false;
-    }
-
     for (int i = 1; i < argc; ++i)
     {
       std::string arg(argv[i]);
 
       if (arg.compare(0, 3, "in:") == 0)
       {
-        if (inSet || arg.size() == 3)
+        if (inSet)
         {
           return false;
         }
@@ -34,7 +29,7 @@ namespace matveev
       }
       else if (arg.compare(0, 4, "out:") == 0)
       {
-        if (outSet || arg.size() == 4)
+        if (outSet)
         {
           return false;
         }
@@ -53,6 +48,12 @@ namespace matveev
 
 int main(int argc, char **argv)
 {
+  if (argc > 3)
+  {
+    std::cerr << "Invalid arguments\n";
+    return 0;
+  }
+
   bool inSet = false;
   bool outSet = false;
   std::string inName;
