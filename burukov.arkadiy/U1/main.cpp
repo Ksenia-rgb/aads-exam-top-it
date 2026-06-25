@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
 #include "args.hpp"
 #include "array.hpp"
 #include "hashtable.hpp"
@@ -26,7 +27,12 @@ namespace
       while (std::getline(in, line))
       {
         burukov::Person p{0, ""};
-        if (!burukov::parseLine(line, p))
+        burukov::ParseResult pr = burukov::parseLine(line, p);
+        if (pr == burukov::PARSE_BLANK)
+        {
+          continue;
+        }
+        if (pr == burukov::PARSE_INVALID)
         {
           ++stats.ignored;
         }
@@ -85,7 +91,10 @@ namespace
     }
     std::ostream& out = args.hasOut ? static_cast< std::ostream& >(outFile) : std::cout;
     writeAll(out, persons);
-    std::cerr << stats.accepted << " " << stats.ignored << "\n";
+    if (stats.accepted + stats.ignored > 0)
+    {
+      std::cerr << stats.accepted << " " << stats.ignored << "\n";
+    }
     return 0;
   }
 

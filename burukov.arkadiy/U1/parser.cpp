@@ -1,17 +1,19 @@
 #include "parser.hpp"
+
 #include <cstddef>
 #include <string>
+
 #include "person.hpp"
 
 namespace burukov
 {
 
-  bool parseLine(const std::string& line, Person& out)
+  ParseResult parseLine(const std::string& line, Person& out)
   {
     size_t pos = line.find_first_not_of(" \t");
     if (pos == std::string::npos)
     {
-      return false;
+      return PARSE_BLANK;
     }
     size_t id = 0;
     bool hasDigit = false;
@@ -23,16 +25,16 @@ namespace burukov
     }
     if (!hasDigit)
     {
-      return false;
+      return PARSE_INVALID;
     }
     size_t start = line.find_first_not_of(" \t", pos);
     if (start == std::string::npos || start == pos)
     {
-      return false;
+      return PARSE_INVALID;
     }
     out.id = id;
     out.info = line.substr(start);
-    return true;
+    return PARSE_OK;
   }
 
 }
