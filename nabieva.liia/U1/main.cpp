@@ -64,10 +64,6 @@ namespace nabieva {
 
 int main(int argc, char** argv)
 {
-  if (argc > 3)
-  {
-    return 0;
-  }
   nabieva::ProgramArgs args = { 0, 0 };
   if (!readArgs(argc, argv, args))
   {
@@ -109,10 +105,7 @@ int main(int argc, char** argv)
   }
 
   nabieva::printPersons(*output, storage);
-  if (stats.accepted != 0 || stats.ignored != 0)
-  {
-    std::cerr << stats.accepted << ' ' << stats.ignored << '\n';
-  }
+  std::cerr << stats.accepted << ' ' << stats.ignored << '\n';
 
   nabieva::destroyStorage(storage);
 }
