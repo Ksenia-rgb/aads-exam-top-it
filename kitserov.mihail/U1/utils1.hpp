@@ -12,12 +12,15 @@ namespace kitserov
     for (std::size_t i = 0; i < container.size_; ++i) {
       out << container.data_[i].id_ << ' ' << container.data_[i].info_ << '\n';
     }
+    if (container.size_ == 0) {
+      out << "\n";
+    }
   }
   bool readLine(const std::string& line, size_t& id, std::string& info)
   {
     size_t pos = 0;
     const size_t len = line.size();
-    while (pos < len && line[pos] == ' ') {
+    while (pos < len && (line[pos] == ' ' || line[pos] == '\t')) {
       ++pos;
     }
     if (pos == len) {
@@ -33,13 +36,16 @@ namespace kitserov
     if (!hasDigit) {
       return false;
     }
-    while (pos < len && line[pos] == ' ') {
+    while (pos < len && (line[pos] == ' ' || line[pos] == '\t')) {
       ++pos;
     }
     if (pos < len) {
       info = line.substr(pos);
     } else {
       info.clear();
+    }
+    if (info.find_first_not_of(" \t") == std::string::npos) {
+      return false;
     }
     return true;
   }
