@@ -23,6 +23,8 @@ namespace petrov
     Meeting* dat;
     size_t s, c;
   };
+
+  size_t cycle(int argc, char** argv);
 }
 
 #endif
