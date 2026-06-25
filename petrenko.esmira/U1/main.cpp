@@ -57,8 +57,8 @@ int main(int argc, char* argv[]) {
   if (valid > 0 || ignored > 0) {
     std::cerr << valid << " " << ignored << "\n";
   } else {
-    std::cerr << "Error: Empty line" << "\n";
-    /*std::cout << "\n";*/
+    std::cout << "\n";
+    std::cerr << valid << " " << ignored << "\n";
   }
   if (outputFile.is_open()) {
     outputFile.close();
