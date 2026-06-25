@@ -51,11 +51,15 @@ namespace {
     return true;
   }
 
+  bool parseOne(const std::string & line, std::size_t & position, std::size_t & value)
+  {
+    return parseNumber(nextWord(line, position), value);
+  }
+
   bool parseTwo(const std::string & line, std::size_t & position, std::size_t & first,
       std::size_t & second)
   {
-    return parseNumber(nextWord(line, position), first)
-        && parseNumber(nextWord(line, position), second);
+    return parseOne(line, position, first) && parseOne(line, position, second);
   }
 
   bool parseQuoted(const std::string & line, std::size_t & position, std::string & value)
@@ -284,7 +288,7 @@ namespace {
       doAnons(out, data);
     } else if (command == "desc") {
       std::size_t id = 0;
-      if (parseNumber(nextWord(line, position), id)) {
+      if (parseOne(line, position, id)) {
         doDesc(out, data, id);
       } else {
         printInvalid(out);
@@ -292,14 +296,14 @@ namespace {
     } else if (command == "redesc") {
       std::size_t id = 0;
       std::string description;
-      if (parseNumber(nextWord(line, position), id) && parseQuoted(line, position, description)) {
+      if (parseOne(line, position, id) && parseQuoted(line, position, description)) {
         doRedesc(out, data, id, description);
       } else {
         printInvalid(out);
       }
     } else if (command == "meets") {
       std::size_t id = 0;
-      if (parseNumber(nextWord(line, position), id)) {
+      if (parseOne(line, position, id)) {
         doMeets(out, data, id);
       } else {
         printInvalid(out);
