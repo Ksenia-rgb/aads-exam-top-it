@@ -1,9 +1,10 @@
 #define BOOST_TEST_MODULE U1_PERSON
+
+#include <string>
+
 #include <boost/test/included/unit_test.hpp>
 
 #include "person_io.hpp"
-
-#include <string>
 
 #include <person_data.hpp>
 

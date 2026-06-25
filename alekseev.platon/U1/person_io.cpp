@@ -15,7 +15,7 @@ bool alekseev::parseProgramOptions(int argc, char** argv, ProgramOptions& option
   options.hasInput = false;
   options.hasOutput = false;
 
-  if (argc < 1 || argc > 3)
+  if ((argc < 1) || (argc > 3))
   {
     return false;
   }
@@ -29,7 +29,7 @@ bool alekseev::parseProgramOptions(int argc, char** argv, ProgramOptions& option
     }
     if (startsWith(argument, "in:"))
     {
-      if (options.hasInput || argument[3] == '\0')
+      if (options.hasInput || (argument[3] == '\0'))
       {
         return false;
       }
@@ -38,7 +38,7 @@ bool alekseev::parseProgramOptions(int argc, char** argv, ProgramOptions& option
     }
     else if (startsWith(argument, "out:"))
     {
-      if (options.hasOutput || argument[4] == '\0')
+      if (options.hasOutput || (argument[4] == '\0'))
       {
         return false;
       }
@@ -53,8 +53,7 @@ bool alekseev::parseProgramOptions(int argc, char** argv, ProgramOptions& option
   return true;
 }
 
-int alekseev::runU1(
-    int argc,
+int alekseev::runU1(int argc,
     char** argv,
     std::istream& input,
     std::ostream& output,

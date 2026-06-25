@@ -14,8 +14,7 @@ namespace alekseev
   };
 
   bool parseProgramOptions(int argc, char** argv, ProgramOptions& options);
-  int runU1(
-      int argc,
+  int runU1(int argc,
       char** argv,
       std::istream& input,
       std::ostream& output,
