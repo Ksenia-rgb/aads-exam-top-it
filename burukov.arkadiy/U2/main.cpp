@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <args.hpp>
+#include "args.hpp"
 #include "commands.hpp"
 #include "loader.hpp"
 #include "model.hpp"

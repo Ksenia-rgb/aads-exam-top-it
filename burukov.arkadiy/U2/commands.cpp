@@ -30,6 +30,28 @@ namespace burukov
       return a < b;
     }
 
+    darray< size_t > sortedIds(Graph& graph, bool wantDescribed)
+    {
+      darray< size_t > ids = makeArray< size_t >(graph.vertices.size);
+      try
+      {
+        for (size_t i = 0; i < graph.vertices.size; ++i)
+        {
+          if (graph.vertices.data[i].described == wantDescribed)
+          {
+            pushBackArray(ids, std::move(graph.vertices.data[i].id));
+          }
+        }
+        sortArray(ids, sizeLess);
+      }
+      catch (...)
+      {
+        clearArray(ids);
+        throw;
+      }
+      return ids;
+    }
+
     darray< Edge > sortedEdges(const Vertex& vertex)
     {
       darray< Edge > sorted = copyArray(vertex.edges, vertex.edges.size);
@@ -90,17 +112,9 @@ namespace burukov
 
     void cmdAnons(std::ostream& out, Graph& graph)
     {
-      darray< size_t > ids = makeArray< size_t >(graph.vertices.size);
+      darray< size_t > ids = sortedIds(graph, false);
       try
       {
-        for (size_t i = 0; i < graph.vertices.size; ++i)
-        {
-          if (!graph.vertices.data[i].described)
-          {
-            pushBackArray(ids, std::move(graph.vertices.data[i].id));
-          }
-        }
-        sortArray(ids, sizeLess);
         for (size_t i = 0; i < ids.size; ++i)
         {
           out << ids.data[i] << "\n";
@@ -302,17 +316,9 @@ namespace burukov
         out << "<INVALID COMMAND>\n";
         return;
       }
-      darray< size_t > ids = makeArray< size_t >(graph.vertices.size);
+      darray< size_t > ids = sortedIds(graph, true);
       try
       {
-        for (size_t i = 0; i < graph.vertices.size; ++i)
-        {
-          if (graph.vertices.data[i].described)
-          {
-            pushBackArray(ids, std::move(graph.vertices.data[i].id));
-          }
-        }
-        sortArray(ids, sizeLess);
         for (size_t i = 0; i < ids.size; ++i)
         {
           Vertex* vertex = findVertex(graph, ids.data[i]);
