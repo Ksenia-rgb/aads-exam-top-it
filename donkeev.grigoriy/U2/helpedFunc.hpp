@@ -15,5 +15,6 @@ namespace donkeev
 
   void pushMeeting(MeetingList&, size_t, size_t, size_t);
   void clearMeetingList(MeetingList&);
+  Person* findPerson(const PersonList&, size_t);
 }
 #endif

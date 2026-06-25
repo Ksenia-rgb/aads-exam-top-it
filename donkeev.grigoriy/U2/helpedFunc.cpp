@@ -144,3 +144,17 @@ void donkeev::clearMeetingList(MeetingList& list)
   list.tail_ = nullptr;
   list.size_ = 0;
 }
+
+donkeev::Person* donkeev::findPerson(const PersonList& list, size_t id)
+{
+  PersonNode* current = list.head_;
+  while (current)
+  {
+    if (current->data->id == id)
+    {
+      return current->data;
+    }
+    current = current->next_;
+  }
+  return nullptr;
+}
