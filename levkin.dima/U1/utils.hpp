@@ -1,5 +1,5 @@
 #ifndef UTILS_HPP
-#define UTILS_HPP 
+#define UTILS_HPP
 #include <cstddef>
 #include <iosfwd>
 #include <string>
