@@ -45,4 +45,14 @@ int main(int argc, char *argv[])
     }
     out = &outFileStream;
   }
+
+  novikov::List< novikov::Person > persons;
+  persons.head = nullptr;
+  novikov::HashTable< bool, size_t > seen;
+  seen.capacity = 101;
+  seen.size = 0;
+  seen.data = new novikov::HashNode< bool, size_t > *[seen.capacity];
+  for (size_t i = 0; i < seen.capacity; ++i) {
+    seen.data[i] = nullptr;
+  }
 }
