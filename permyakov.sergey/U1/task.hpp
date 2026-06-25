@@ -20,18 +20,17 @@ namespace permyakov
     list< T > * next;
   };
 
-  template< class T > void clear(list< T > lst)
+  template< class T > void clear(list< T > * lst)
   {
-    list< T > * tmpLst = lst;
-    while (tmpLst->next) {
-      list< T > * prv = tmpLst;
-      tmpLlst = rmpLst->next;
+    while (lst->next) {
+      list< T > * prv = lst;
+      lst = lst->next;
       delete prv;
     }
-    delete tmpLst;
+    delete lst;
   }
 
-  template< class T > list< T > * addAfter(list< T > & lst, const T val)
+  template< class T > list< T > * addAfter(list< T > * lst, const T val)
   {
     list< T > * nwNode = new list< T >();
     nwNode->data = val;
@@ -40,7 +39,7 @@ namespace permyakov
     return nwNode;
   }
 
-  template< class T > void addToEnd(list< T > & lst, const T val)
+  template< class T > void addToEnd(list< T > * lst, const T val)
   {
     list< T > * tmpLst = lst;
     while (tmpLst->next) {
@@ -49,13 +48,13 @@ namespace permyakov
     addAfter(tmpLst, val);
   }
 
-  std::pair< size_t, size_t > input(std::istream & in, list< Person > & lst)
+  std::pair< size_t, size_t > input(std::istream & in, list< Person > * lst)
   {
     std::pair< size_t, size_t > res = {0, 0};
     std::string line;
     while (std::getline(in, line)) {
       if (line.empty()) {
-        res.second()++;
+        res.second++;
         continue;
       }
       Person pers;
@@ -73,30 +72,30 @@ namespace permyakov
               break;
             }
           }
-        } else if (infoP.isEmpty() && c == ' ') {
-          continue
+        } else if (infoP.empty() && c == ' ') {
+          continue;
         } else {
           infoP += c;
         }
       }
-      if (!pers.id || pers.info.idEmpty()) {
-        res.second()++;
+      if (!pers.id || pers.info.empty()) {
+        res.second++;
         continue;
       }
       addToEnd(lst, pers);
-      res.first()++;
+      res.first++;
     }
-    return result;
+    return res;
   }
 
-  void output(std::osream & out, list< Person > & lst)
+  void output(std::ostream & out, list< Person > * lst)
   {
     list< Person > * tmpLst = lst;
     while (tmpLst->next) {
-      out << tmpLst->id << ' ' << tmpLst->info << '\n';
-      tmpLst->next;
+      out << tmpLst->data.id << ' ' << tmpLst->data.info << '\n';
+      tmpLst = tmpLst->next;
     }
-    out << tmpLst->id << ' ' << tmpLst->info << '\n';
+    out << tmpLst->data.id << ' ' << tmpLst->data.info << '\n';
   }
 }
 
