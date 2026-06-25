@@ -142,6 +142,10 @@ Args processArgs(int argc, char *argv[]) {
   args.valid = true;
   bool hasInput = false;
   bool hasOutput = false;
+  if (argc > 3) {
+    args.valid = false;
+    return args;
+  }
   for (int i = 1; i < argc; ++i) {
     std::string arg = argv[i];
     if (arg.rfind("in:", 0) == 0) {

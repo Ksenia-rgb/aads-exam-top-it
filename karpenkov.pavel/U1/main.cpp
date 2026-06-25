@@ -15,6 +15,11 @@ int main(int argc, char *argv[]) {
       return 2;
     in = &inputFile;
   }
+  HashTable *table = createHashTable(16);
+  OrderArray *order = createOrderArray(16);
+  size_t successCount = 0;
+  size_t ignoredCount = 0;
+  goodStringsCount(*in, table, order, successCount, ignoredCount);
   std::ostream *out = &std::cout;
   std::ofstream outputFile;
   if (!args.outputFile.empty()) {
@@ -23,11 +28,6 @@ int main(int argc, char *argv[]) {
       return 2;
     out = &outputFile;
   }
-  HashTable *table = createHashTable(16);
-  OrderArray *order = createOrderArray(16);
-  size_t successCount = 0;
-  size_t ignoredCount = 0;
-  goodStringsCount(*in, table, order, successCount, ignoredCount);
   writeData(*out, table, order);
   std::cerr << successCount << " " << ignoredCount << std::endl;
   destroyOrderArray(order);
