@@ -172,6 +172,16 @@ namespace {
     printMeetings(out, data, id, Bound::none, 0);
   }
 
+  void doBounded(std::ostream & out, samarin::Dataset & data, std::size_t threshold,
+      std::size_t id, Bound bound)
+  {
+    if (samarin::findPerson(data, id) == nullptr) {
+      printInvalid(out);
+      return;
+    }
+    printMeetings(out, data, id, bound, threshold);
+  }
+
   void executeLine(std::ostream & out, samarin::Dataset & data, const std::string & line)
   {
     std::size_t position = 0;
@@ -200,6 +210,22 @@ namespace {
       std::size_t id = 0;
       if (parseNumber(nextWord(line, position), id)) {
         doMeets(out, data, id);
+      } else {
+        printInvalid(out);
+      }
+    } else if (command == "less") {
+      std::size_t threshold = 0;
+      std::size_t id = 0;
+      if (parseNumber(nextWord(line, position), threshold) && parseNumber(nextWord(line, position), id)) {
+        doBounded(out, data, threshold, id, Bound::below);
+      } else {
+        printInvalid(out);
+      }
+    } else if (command == "greater") {
+      std::size_t threshold = 0;
+      std::size_t id = 0;
+      if (parseNumber(nextWord(line, position), threshold) && parseNumber(nextWord(line, position), id)) {
+        doBounded(out, data, threshold, id, Bound::above);
       } else {
         printInvalid(out);
       }
