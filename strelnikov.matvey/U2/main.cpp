@@ -1,12 +1,14 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <limits>
-#include "functionality.cpp"
-#include "commands.hpp"
 #include "context.hpp"
+#include "commands.hpp"
+
+using namespace strelnikov;
 
 int main(int argc, char *argv[])
 {
-  using namespace strelnikov;
   std::string in_file, data_file;
   bool has_in = false;
 
@@ -16,39 +18,52 @@ int main(int argc, char *argv[])
   }
 
   Context ctx;
-  dynarray_init(ctx.persons, 0);
-  dynarray_init(ctx.meetings, 0);
+  context_init(ctx);
 
   if (has_in) {
+    std::ifstream test(in_file);
+    if (!test.is_open()) {
+      std::cerr << "Cannot open input file\n";
+      context_destroy(ctx);
+      return 2;
+    }
+    test.close();
     if (!load_persons(in_file, ctx)) {
-      std::cerr << "Cannot open in file\n";
-      dynarray_destroy(ctx.persons);
-      dynarray_destroy(ctx.meetings);
+      std::cerr << "Error reading persons\n";
+      context_destroy(ctx);
       return 2;
     }
   }
 
+  std::ifstream data_test(data_file);
+  if (!data_test.is_open()) {
+    std::cerr << "Cannot open data file\n";
+    context_destroy(ctx);
+    return 2;
+  }
+  data_test.close();
+
   if (!load_meetings(data_file, ctx)) {
-    std::cerr << "Cannot open data file or bad data\n";
-    dynarray_destroy(ctx.persons);
-    dynarray_destroy(ctx.meetings);
+    std::cerr << "Error reading meetings\n";
+    context_destroy(ctx);
     return 3;
   }
 
   std::string cmd;
   while (std::cin >> cmd) {
-    bool fnd = false;
+    bool found = false;
     for (size_t i = 0; i < cmdCnt; ++i) {
       if (cmd == cmds[i].name) {
-        fnd = true;
-        if (!cmds[i].handler(std::cin, std::cout, ctx)) {
+        found = true;
+        bool success = cmds[i].handler(std::cin, std::cout, ctx);
+        if (!success) {
           std::cout << "<INVALID COMMAND>\n";
         }
         break;
       }
     }
 
-    if (!fnd) {
+    if (!found) {
       std::cout << "<INVALID COMMAND>\n";
     }
 
@@ -58,12 +73,10 @@ int main(int argc, char *argv[])
 
   if (!std::cin.eof()) {
     std::cerr << "Bad input!\n";
-    dynarray_destroy(ctx.persons);
-    dynarray_destroy(ctx.meetings);
+    context_destroy(ctx);
     return 1;
   }
 
-  dynarray_destroy(ctx.persons);
-  dynarray_destroy(ctx.meetings);
+  context_destroy(ctx);
   return 0;
 }

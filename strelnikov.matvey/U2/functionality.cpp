@@ -4,6 +4,7 @@
 
 namespace strelnikov
 {
+
   int parse_args(int argc, char *argv[], std::string &in_file, std::string &data_file, bool &has_in)
   {
     bool has_data = false;
@@ -42,40 +43,49 @@ namespace strelnikov
       if (line.empty())
         continue;
 
-      size_t id = 0;
       size_t pos = 0;
-      for (char c : line) {
-        if (c < '0' || c > '9')
-          break;
-        id = id * 10 + (c - '0');
-        pos++;
+      while (pos < line.length() && (line[pos] == ' ' || line[pos] == '\t')) {
+        ++pos;
       }
 
-      if (pos == 0 || pos == line.length())
+      if (pos >= line.length())
         continue;
 
-      std::string info = line.substr(pos);
-      size_t start = info.find_first_not_of(" \t");
-      if (start == std::string::npos)
+      if (line[pos] < '0' || line[pos] > '9')
         continue;
-      info = info.substr(start);
+
+      size_t id = 0;
+      bool has_digit = false;
+      while (pos < line.length() && line[pos] >= '0' && line[pos] <= '9') {
+        id = id * 10 + (line[pos] - '0');
+        has_digit = true;
+        ++pos;
+      }
+
+      if (!has_digit)
+        continue;
+
+      while (pos < line.length() && (line[pos] == ' ' || line[pos] == '\t')) {
+        ++pos;
+      }
+
+      std::string info = "";
+      if (pos < line.length()) {
+        info = line.substr(pos);
+      }
 
       if (info.empty())
         continue;
 
-      bool exists = false;
-      for (size_t i = 0; i < ctx.persons.size; ++i) {
-        if (ctx.persons.data[i].id == id) {
-          exists = true;
-          break;
-        }
-      }
+      PersonData *existing = context_find_person(ctx, id);
+      if (existing != nullptr)
+        continue;
 
-      if (!exists) {
-        Person p{id, info};
-        dynarray_push(ctx.persons, p);
-      }
+      context_ensure_person(ctx, id);
+      PersonData *p = context_find_person(ctx, id);
+      p->info = info;
     }
+
     return true;
   }
 
@@ -87,14 +97,7 @@ namespace strelnikov
 
     size_t id1, id2, duration;
     while (file >> id1 >> id2 >> duration) {
-      if (id1 == id2)
-        continue;
-
-      ensure_person(ctx, id1);
-      ensure_person(ctx, id2);
-
-      Meeting m{id1, id2, duration};
-      dynarray_push(ctx.meetings, m);
+      context_add_meeting(ctx, id1, id2, duration);
     }
 
     if (file.fail() && !file.eof())
