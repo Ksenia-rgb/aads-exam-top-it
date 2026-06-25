@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
   if (argc > 3)
   {
     std::cerr << "Bad parametrs\n";
-    return 1;
+    return 0;
   }
 
   int inCount = 0;
