@@ -41,7 +41,21 @@ namespace donkeev
     ++list.size_;
   }
 
-   
+  bool isUniqueId(const PersonList& list, size_t id)
+  {
+    PersonNode* current = list.head_;
+    while (current)
+    {
+      if (current->data.id == id)
+      {
+        return false;
+      }
+      current = current->next_;
+    }
+    return true;
+  }
+
+  
 }
 
 int main()
