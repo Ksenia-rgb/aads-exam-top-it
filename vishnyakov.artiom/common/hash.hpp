@@ -297,6 +297,63 @@ public:
     return size_;
   }
 
+  class Iterator
+  {
+  public:
+    Iterator(Node* table, size_t capacity, size_t index):
+      table_(table),
+      capacity_(capacity),
+      index_(index)
+    {
+      advanceToNextOccupied();
+    }
+
+    bool operator!=(const Iterator& other) const
+    {
+      return index_ != other.index_;
+    }
+
+    Iterator& operator++()
+    {
+      ++index_;
+      advanceToNextOccupied();
+      return *this;
+    }
+
+    Node& operator*() const
+    {
+      return table_[index_];
+    }
+
+    Node* operator->() const
+    {
+      return &table_[index_];
+    }
+
+  private:
+    Node* table_;
+    size_t capacity_;
+    size_t index_;
+
+    void advanceToNextOccupied()
+    {
+      while (index_ < capacity_ && !table_[index_].occupied)
+      {
+        ++index_;
+      }
+    }
+  };
+
+  Iterator begin()
+  {
+    return Iterator(table_, capacity_, 0);
+  }
+
+  Iterator end()
+  {
+    return Iterator(table_, capacity_, capacity_);
+  }
+
 private:
   Node* table_;
   size_t capacity_;

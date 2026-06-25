@@ -257,11 +257,11 @@ int main(int argc, char* argv[])
     {
       List< size_t > anonIds;
 
-      for (ListNode< Person >* node = persons.begin(); node != persons.end(); node = node->next)
+      for (HashTable< size_t, Person >::Iterator it = persons.begin(); it != persons.end(); ++it)
       {
-        if (node->data.info.empty())
+        if (it->value.info.empty())
         {
-          anonIds.pushBack(node->data.id);
+          anonIds.pushBack(it->key);
         }
       }
 
@@ -634,11 +634,11 @@ int main(int argc, char* argv[])
         continue;
       }
 
-      for (ListNode< Person >* node = persons.begin(); node != persons.end(); node = node->next)
+      for (HashTable< size_t, Person >::Iterator it = persons.begin(); it != persons.end(); ++it)
       {
-        if (!node->data.info.empty())
+        if (!it->value.info.empty())
         {
-          outStream << node->data.id << " " << node->data.info << "\n";
+          outStream << it->key << " " << it->value.info << "\n";
         }
       }
     }
