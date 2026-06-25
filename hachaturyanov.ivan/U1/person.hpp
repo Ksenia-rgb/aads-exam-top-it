@@ -10,6 +10,11 @@ namespace hachaturyanov
     size_t id;
     std::string info;
   };
+
+  struct Data {
+    size_t success;
+    size_t ignored;
+  }
 }
 
 #endif

@@ -2,10 +2,14 @@
 #define COMMANDS_HPP
 
 #include <iostream>
+#include "../common/hash_table.hpp"
 
 namespace hachaturyanov
 {
-  void readData(std::istream &in, Person* persons);
+  using PersonTable = HashTable< size_t, std::string, std::hash< size_t >, std::equal_to< size_t > >;
+
+  
+  Data readData(std::istream &in, PersonTable &persons);
 }
 
 #endif

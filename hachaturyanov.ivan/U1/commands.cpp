@@ -1,12 +1,32 @@
 #include "commands.hpp"
 
+#include <functional>
+
 namespace hachaturyanov
 {
-  void readData(std::istream &in, Person* persons)
+  std::pair< List< size_t >, Data > readData(std::istream &in, PersonTable &persons)
   {
     std::string line = "";
+    List< size_t > ids;
+    Data data;
     while(getline(in, line)) {
-      
+      bool success = false;
+      List< std::string > strs = split(line);
+      if (strs.size() == 2) {
+        if (isdigit(*(strs.begin()))) {
+          std::pair< std::string, std::string > pair = splitInTwo(line);
+          if (!persons.has(std::stoull(pair.first))) {
+            persons.add(std::stoull(pair.first), pair.second);
+            ids.addEnd(std::stoull(pair.first));
+            success = true;
+            data.success++;
+          }
+        }
+      }
+      if (!success) {
+        data.ignored++;
+      }
     }
+    return { ids, data };
   }
 }
