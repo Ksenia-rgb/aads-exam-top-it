@@ -125,5 +125,15 @@ void goodStringsCount(std::istream &in, HashTable *table, OrderArray *order,
     }
   }
 }
+void writeData(std::ostream &out, const HashTable *table,
+               const OrderArray *order) {
+  for (size_t i = 0; i < orderArraySize(order); ++i) {
+    size_t id = orderArrayGet(order, i);
+    const Person *person = hashTableGet(table, id);
+    if (person) {
+      out << person->id << " " << person->info << '\n';
+    }
+  }
+}
 
 } // namespace karpenkov
