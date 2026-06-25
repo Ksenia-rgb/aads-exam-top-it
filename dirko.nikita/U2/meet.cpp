@@ -104,3 +104,54 @@ void dirko::cmdAnons(std::istream &, std::ostream &output, Vector< Person > &per
 
   clear(anons);
 }
+
+void dirko::cmdDeanon(std::istream &input, std::ostream &output, Vector< Person > &persons, Vector< Meet > &meets)
+{
+  size_t anonId = 0;
+  size_t id = 0;
+
+  input >> anonId >> id;
+
+  if (!input) {
+    output << "<INVALID COMMAND>\n";
+    return;
+  }
+
+  const Person *anon = findPersonById(persons, anonId);
+
+  if (anon == nullptr || !anon->info.empty()) {
+    output << "<INVALID COMMAND>\n";
+    return;
+  }
+
+  const Person *target = findPersonById(persons, id);
+
+  if (target == nullptr || target->info.empty()) {
+    output << "<INVALID COMMAND>\n";
+    return;
+  }
+
+  for (size_t i = 0; i < meets.size; ++i) {
+    if (meets.data[i].first == anonId) {
+      meets.data[i].first = id;
+    }
+
+    if (meets.data[i].second == anonId) {
+      meets.data[i].second = id;
+    }
+  }
+
+  Vector< Person > newPersons;
+  init(newPersons);
+
+  for (size_t i = 0; i < persons.size; ++i) {
+    if (persons.data[i].id != anonId) {
+      add(newPersons, persons.data[i]);
+    }
+  }
+
+  clear(persons);
+  persons = newPersons;
+
+  removeSelfMeets(meets);
+}

@@ -66,3 +66,24 @@ std::ostream &dirko::output(std::ostream &out, Vector< Person > &persons)
   }
   return out;
 }
+dirko::Person *dirko::findPersonById(Vector< Person > &persons, size_t id)
+{
+  for (size_t i = 0; i < persons.size; ++i) {
+    if (persons.data[i].id == id) {
+      return persons.data + i;
+    }
+  }
+
+  return nullptr;
+}
+
+const dirko::Person *dirko::findPersonById(const Vector< Person > &persons, size_t id)
+{
+  for (size_t i = 0; i < persons.size; ++i) {
+    if (persons.data[i].id == id) {
+      return persons.data + i;
+    }
+  }
+
+  return nullptr;
+}

@@ -13,6 +13,8 @@ namespace dirko
   };
   std::istream &input(std::istream &in, Vector< Person > &persons, size_t &ignored);
   std::ostream &output(std::ostream &out, Vector< Person > &persons);
+  Person *findPersonById(Vector< Person > &persons, size_t id);
+  const Person *findPersonById(const Vector< Person > &persons, size_t id);
 }
 
 #endif
