@@ -65,7 +65,6 @@ int main(int argc, char* argv[])
   while (std::getline(input, line)) {
     size_t first = line.find_first_not_of(" \t");
     if (first == std::string::npos) {
-      ++ignored;
       continue;
     }
     size_t space = line.find_first_of(" \t", first);
@@ -126,9 +125,13 @@ int main(int argc, char* argv[])
   }
   std::ostream& output = outFile.empty() ? std::cout : fout;
 
-  for (size_t i = 0; i < persons.size_; ++i) {
-    output << persons.data_[i].id << " " << persons.data_[i].info << "\n";
-  }
+  if (persons.size_ == 0) {
+      output << "\n";
+    } else {
+      for (size_t i = 0; i < persons.size_; ++i) {
+        output << persons.data_[i].id << " " << persons.data_[i].info << "\n";
+      }
+    }
 
   std::cerr << success << " " << ignored << "\n";
   gordejchik::destroy(persons);
