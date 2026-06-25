@@ -132,3 +132,31 @@ void karpovich::printMeets(std::ostream &output, const Vector< Meet > &meets, si
 
   destroyVector(result);
 }
+
+void karpovich::printAnons(std::ostream &output, const Vector< Person > &persons)
+{
+  Vector< size_t > anons;
+  initVector(anons);
+
+  for (size_t i = 0; i < persons.size; ++i) {
+    if (persons.data[i].info.empty()) {
+      pushBack(anons, persons.data[i].id);
+    }
+  }
+
+  for (size_t i = 0; i < anons.size; ++i) {
+    for (size_t j = i + 1; j < anons.size; ++j) {
+      if (anons.data[j] < anons.data[i]) {
+        size_t temp = anons.data[i];
+        anons.data[i] = anons.data[j];
+        anons.data[j] = temp;
+      }
+    }
+  }
+
+  for (size_t i = 0; i < anons.size; ++i) {
+    output << anons.data[i] << '\n';
+  }
+
+  destroyVector(anons);
+}
