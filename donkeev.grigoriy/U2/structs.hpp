@@ -26,6 +26,21 @@ struct Person
     size_t size_;
   };
 
+  struct MeetingNode
+  {
+    std::pair<size_t, size_t> ids;
+    size_t duration;
+    MeetingNode* next_;
+    MeetingNode* prev_;
+  };
+
+  struct MeetingList
+  {
+    MeetingNode* head_;
+    MeetingNode* tail_;
+    size_t size_;
+  };
+
 }
 
 #endif
