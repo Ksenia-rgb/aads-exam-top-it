@@ -66,6 +66,10 @@ namespace yalovsky
     std::string line;
     while (std::getline(in, line))
     {
+      if (line.empty())
+      {
+        continue;
+      }
       size_t pos = 0;
       size_t id = 0;
       if (!detail::readId(line, pos, id))

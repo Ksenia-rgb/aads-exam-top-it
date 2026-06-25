@@ -7,8 +7,6 @@
 
 namespace yalovsky
 {
-  namespace
-  {
     const int statusOk = 0;
     const int statusBadArgs = 1;
     const int statusOpenError = 2;
@@ -21,7 +19,6 @@ namespace yalovsky
       }
       return text.compare(0, prefix.size(), prefix) == 0;
     }
-  }
 }
 
 int main(int argc, char** argv)
@@ -91,6 +88,7 @@ int main(int argc, char** argv)
 
     if (hasOutput)
     {
+      std::cout << "in file " << outputName << '\n';
       std::ofstream output(outputName);
       if (!output.is_open())
       {
@@ -105,7 +103,7 @@ int main(int argc, char** argv)
       yalovsky::printPersons(std::cout, persons);
     }
   }
-  catch (...)
+  catch (const std::bad_alloc&)
   {
     yalovsky::freeArray(persons);
     std::cerr << "internal error" << '\n';
