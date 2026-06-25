@@ -21,9 +21,9 @@ int main(int argc, char* argv[]) {
   std::ostream* output = &std::cout;
   std::ifstream file_in;
   std::ofstream file_out;
-
+  bool out = 0, in = 0;
   if (argc >= 2 && argc <= 3) {
-    bool out = 0, in = 0;
+
     for (int i = 1; i < argc; i++) {
       std::stringstream ss(argv[i]);
       std::string type, arg;
@@ -94,6 +94,11 @@ int main(int argc, char* argv[]) {
   for (size_t i = 0; i < ids.size(); i++) {
     *output << *iter << ' ' << *htable.find(*iter) << '\n';
     ++iter;
+  }
+  if (out) {
+    file_out.close();
+  } if (in) {
+    file_in.close();
   }
   return 0;
 }
