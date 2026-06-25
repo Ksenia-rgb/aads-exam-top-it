@@ -15,7 +15,7 @@ namespace chernov {
   };
 
   void addMeeting(Vector< Meeting > & meetings, size_t from, size_t to, size_t duration, const Date & date);
-
+  chernov::Vector< Meeting > filterMeetingsByPerson(const Vector< Meeting > & meetings, size_t id);
 }
 
 #endif
