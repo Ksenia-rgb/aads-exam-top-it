@@ -11,6 +11,7 @@ int main(const int argc, char *argv[])
 
   pozdnyakov::DynamicArray< pozdnyakov::Person > persons;
   pozdnyakov::initArray(persons);
+
   pozdnyakov::ProcessStats stats;
   stats.successCount = 0;
   stats.ignoredCount = 0;
@@ -40,7 +41,7 @@ int main(const int argc, char *argv[])
   }
 
   std::cerr << stats.successCount << " " << stats.ignoredCount << "\n";
-  pozdnyakov::destroyArray(persons);
 
+  pozdnyakov::destroyArray(persons);
   return 0;
 }

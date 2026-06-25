@@ -96,6 +96,23 @@ namespace pozdnyakov
 
     std::string line;
     while (std::getline(in, line)) {
+
+      if (!line.empty() && line[line.length() - 1] == '\r') {
+        line.erase(line.length() - 1);
+      }
+
+      bool isBlank = true;
+      for (size_t i = 0; i < line.length(); ++i) {
+        if (line[i] != ' ' && line[i] != '\t') {
+          isBlank = false;
+          break;
+        }
+      }
+
+      if (isBlank) {
+        continue;
+      }
+
       const ParseResult parsed = parseLine(line);
       if (parsed.success) {
         if (containsId(arr, parsed.person.id)) {
