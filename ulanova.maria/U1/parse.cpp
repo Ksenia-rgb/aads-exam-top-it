@@ -6,49 +6,50 @@
 
 namespace ulanova
 {
-  Array< Person > readPersons(std::istream & in)
+  static bool readPerson(std::istream & in, Person & person)
+  {
+    size_t id = 0;
+    if (!(in >> id))
+    {
+      in.clear();
+      std::string skip;
+      std::getline(in, skip);
+      return false;
+    }
+    while (in.peek() == ' ' || in.peek() == '\t')
+    {
+      in.ignore();
+    }
+    std::string info;
+    std::getline(in, info);
+    if (info.empty())
+    {
+      return false;
+    }
+    person = Person{id, info};
+    return true;
+  }
+
+  ParseResult readPersons(std::istream & in)
   {
     Array< Person > arr = mArray< Person >();
-    size_t ignoredCount = 0;
-    std::string line;
-    while (std::getline(in, line))
+    size_t accepted = 0;
+    size_t ignored = 0;
+    in >> std::ws;
+    while (!in.eof())
     {
-      size_t id = 0;
-      size_t pos = 0;
-      bool valid = false;
-      while (pos < line.size() && line[pos] == ' ')
+      Person p{0, ""};
+      if (readPerson(in, p) && !containsId(arr, p.id))
       {
-        ++pos;
+        pushBack(arr, p);
+        ++accepted;
       }
-      while (pos < line.size() && line[pos] >= '0' && line[pos] <= '9')
+      else
       {
-        id = id * 10 + (line[pos] - '0');
-        ++pos;
-        valid = true;
+        ++ignored;
       }
-      if (!valid)
-      {
-        ++ignoredCount;
-        continue;
-      }
-      while (pos < line.size() && line[pos] == ' ')
-      {
-        ++pos;
-      }
-      const std::string info = line.substr(pos);
-      if (info.empty())
-      {
-        ++ignoredCount;
-        continue;
-      }
-      if (containsId(arr, id))
-      {
-        ++ignoredCount;
-        continue;
-      }
-      pushBack(arr, Person{id, info});
+      in >> std::ws;
     }
-    ignored = ignoredCount;
-    return arr;
+    return ParseResult{arr, accepted, ignored};
   }
 }

@@ -7,9 +7,14 @@
 
 namespace ulanova
 {
-  size_t ignored = 0;
+  struct ParseResult
+  {
+    Array< Person > persons;
+    size_t accepted;
+    size_t ignored;
+  };
 
-  Array< Person > readPersons(std::istream & in);
+  ParseResult readPersons(std::istream & in);
 }
 
 #endif
