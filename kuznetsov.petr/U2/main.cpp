@@ -19,7 +19,7 @@ int main(int argc, char** argv)
   size_t countInp = 0, countData = 0;
   if (argc > 3) {
     std::cerr << "Too many args\n";
-    return 1;
+    return 0;
   }
 
   if (argc > 1) {
@@ -102,8 +102,8 @@ int main(int argc, char** argv)
     } catch (const std::logic_error&) {
       std::cout << "<INVALID COMMAND>\n";
       std::cin.clear();
-      std::cin.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
     }
+    std::cin.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
   }
 
   kuz::clearHashTable(queryCmds);

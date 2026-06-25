@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include "../common/darray.hpp"
+
 void kuznetsov::detail::sort(darray< size_t >& arr)
 {
   for (size_t i = 0; i < arr.size; ++i) {
@@ -46,22 +48,23 @@ void kuznetsov::anons(std::istream&, std::ostream& out, darray< Meeting >&, darr
     }
     out << ids.data[i];
   }
+  clearDarray(ids);
 }
 
 void kuznetsov::deanon(std::istream& in, std::ostream&, darray< Meeting >& mts, darray< Person >& prs)
 {
-  size_t anonId, id;
-  in >> anonId >> id;
-  if (in.fail()) {
-    throw std::logic_error("Smth go bad");
+  size_t anonId = 0, id = 0;
+  if (!(in >> anonId >> id)) {
+    throw std::logic_error("deanon");
   }
-  if (prs.data[detail::findPersonIdx(prs, anonId)].info != "") {
-    throw std::logic_error("Bad anon");
+  size_t anonIdx = detail::findPersonIdx(prs, anonId);
+  size_t idIdx = detail::findPersonIdx(prs, id);
+  if (anonIdx == prs.cap || idIdx == prs.cap) {
+    throw std::logic_error("deanon");
   }
-  if (prs.data[detail::findPersonIdx(prs, id)].info == "") {
-    throw std::logic_error("Bad id");
+  if (prs.data[anonIdx].info != "" || prs.data[idIdx].info == "") {
+    throw std::logic_error("deanon");
   }
-
   for (size_t i = 0; i < mts.size; ++i) {
     if (mts.data[i].id1 == anonId) {
       mts.data[i].id1 = id;
@@ -74,10 +77,11 @@ void kuznetsov::deanon(std::istream& in, std::ostream&, darray< Meeting >& mts, 
   while (i < mts.size) {
     if (mts.data[i].id1 == mts.data[i].id2) {
       removeDarray(mts, i);
-      i -= 2;
+    } else {
+      ++i;
     }
-    i += 1;
   }
+  removeDarray(prs, anonIdx);
 }
 
 void kuznetsov::detail::sort(darray< meetingRecord >& arr)
@@ -321,10 +325,15 @@ void kuznetsov::out_persons(std::istream& in, std::ostream&, darray< Meeting >&,
   if (!ofile) {
     throw std::logic_error("out-persons");
   }
+  bool any = false;
   for (size_t i = 0; i < pers.size; ++i) {
     if (pers.data[i].info != "") {
       ofile << pers.data[i].id << ' ' << pers.data[i].info << '\n';
+      any = true;
     }
+  }
+  if (!any) {
+    ofile << '\n';
   }
 }
 
