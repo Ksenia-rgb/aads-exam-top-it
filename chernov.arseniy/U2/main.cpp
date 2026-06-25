@@ -7,36 +7,41 @@ int main(int argc, char * argv[])
 {
   using namespace chernov;
 
-  std::string inFile, dataFile;
-  if (!parseArgsU2(argc, argv, inFile, dataFile)) {
-    std::cerr << "Invalid arguments\n";
-    return 1;
-  }
-
   Vector< Person > persons;
-  init(persons);
-
-  if (!inFile.empty()) {
-    size_t ignored = 0;
-    int ret = readPersonsFromFile(inFile, persons, ignored);
-    if (ret != 0) {
-      destroy(persons);
-      return ret;
-    }
-  }
-
   Vector< Meeting > meetings;
-  init(meetings);
   Vector< size_t > allIds;
+
+  init(persons);
+  init(meetings);
   init(allIds);
 
   try {
+    std::string inFile, dataFile;
+    if (!parseArgsU2(argc, argv, inFile, dataFile)) {
+      std::cerr << "Invalid arguments\n";
+      destroy(persons);
+      destroy(meetings);
+      destroy(allIds);
+      return 1;
+    }
+
+    if (!inFile.empty()) {
+      size_t ignored = 0;
+      int ret = readPersonsFromFile(inFile, persons, ignored);
+      if (ret != 0) {
+        destroy(persons);
+        destroy(meetings);
+        destroy(allIds);
+        return ret;
+      }
+    }
+
     if (!dataFile.empty()) {
       int ret = readMeetingsFromFile(dataFile, meetings, allIds);
       if (ret != 0) {
-        destroy(allIds);
-        destroy(meetings);
         destroy(persons);
+        destroy(meetings);
+        destroy(allIds);
         return ret;
       }
     }
@@ -88,9 +93,14 @@ int main(int argc, char * argv[])
 
       destroy(tokens);
     }
-  } catch (...) {
-    destroy(allIds);
-    destroy(meetings);
+
     destroy(persons);
+    destroy(meetings);
+    destroy(allIds);
+  } catch (...) {
+    destroy(persons);
+    destroy(meetings);
+    destroy(allIds);
+    throw;
   }
 }
