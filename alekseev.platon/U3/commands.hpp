@@ -44,6 +44,20 @@ namespace alekseev
       std::ostream& output,
       const DateArray& dates,
       const RangeState& range);
+  bool handleAfter(
+      const std::string& arguments,
+      const DateArray& dates,
+      RangeState& range,
+      RangeStateArray& history);
+  bool handleBefore(
+      const std::string& arguments,
+      const DateArray& dates,
+      RangeState& range,
+      RangeStateArray& history);
+  bool handlePopRange(
+      const std::string& arguments,
+      RangeState& range,
+      RangeStateArray& history);
 }
 
 #endif

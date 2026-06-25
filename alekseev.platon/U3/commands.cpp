@@ -22,6 +22,19 @@ namespace alekseev
       return position == arguments.size();
     }
 
+    bool parseDateArguments(
+        const std::string& arguments,
+        Date& date)
+    {
+      size_t position = 0;
+      if (!parseDateFromCommand(arguments, position, date))
+      {
+        return false;
+      }
+      position = skipSpaces(arguments, position);
+      return position == arguments.size();
+    }
+
     void writeMeetingViews(
         std::ostream& output,
         const MeetingViewArray& views)
@@ -77,8 +90,6 @@ bool alekseev::executeCommandLine(
     RangeState& range,
     RangeStateArray& history)
 {
-  static_cast< void >(meetings);
-  static_cast< void >(history);
   const size_t commandBegin = skipSpaces(line, 0);
   size_t commandEnd = commandBegin;
   while (commandEnd < line.size() && !isSpace(line[commandEnd]))
@@ -113,6 +124,18 @@ bool alekseev::executeCommandLine(
   if (command == "range")
   {
     return handleRange(arguments, output, dates, range);
+  }
+  if (command == "after")
+  {
+    return handleAfter(arguments, dates, range, history);
+  }
+  if (command == "before")
+  {
+    return handleBefore(arguments, dates, range, history);
+  }
+  if (command == "pop-range")
+  {
+    return handlePopRange(arguments, range, history);
   }
   return false;
 }
@@ -221,4 +244,48 @@ bool alekseev::handleRange(
   }
   printRange(output, dates, range);
   return true;
+}
+
+bool alekseev::handleAfter(
+    const std::string& arguments,
+    const DateArray& dates,
+    RangeState& range,
+    RangeStateArray& history)
+{
+  Date date = {0, 0, 0};
+  if (range.empty || !parseDateArguments(arguments, date))
+  {
+    return false;
+  }
+  pushRangeState(history, range);
+  applyAfter(dates, date, range);
+  return true;
+}
+
+bool alekseev::handleBefore(
+    const std::string& arguments,
+    const DateArray& dates,
+    RangeState& range,
+    RangeStateArray& history)
+{
+  Date date = {0, 0, 0};
+  if (range.empty || !parseDateArguments(arguments, date))
+  {
+    return false;
+  }
+  pushRangeState(history, range);
+  applyBefore(dates, date, range);
+  return true;
+}
+
+bool alekseev::handlePopRange(
+    const std::string& arguments,
+    RangeState& range,
+    RangeStateArray& history)
+{
+  if (skipSpaces(arguments, 0) != arguments.size())
+  {
+    return false;
+  }
+  return popRangeState(history, range);
 }
