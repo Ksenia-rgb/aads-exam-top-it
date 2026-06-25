@@ -110,10 +110,12 @@ int main(int argc, char* argv[])
   }
 
   for (size_t i = 0; i < persons.size; ++i) {
-    *output << persons.data[i].id << " " << persons.data[i].info;
+    *output << persons.data[i].id << " " << persons.data[i].info << '\n';
   }
 
-  *output << '\n';
+  if (persons.size == 0) {
+    *output << '\n';
+  }
 
   std::cerr << correct << " " << ignored << '\n';
 
