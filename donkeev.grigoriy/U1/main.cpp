@@ -56,9 +56,25 @@ namespace donkeev
     return true;
   }
 
+  bool isNumber(const std::string& str)
+  {
+    if (str.empty())
+    {
+      return false;
+    }
+    for (char ch : str)
+    {
+      if (!std::isdigit(static_cast<unsigned char>(ch)))
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
   std::string nextWord(const std::string& str, size_t& pos)
   {
-    while (pos < str.length() && str[pos] == ' ')
+    while (pos < str.length() && (str[pos] == ' ' || str[pos] == '\t'))
     {
       ++pos;
     }
@@ -69,7 +85,7 @@ namespace donkeev
     }
     
     size_t start = pos;
-    while (pos < str.length() && str[pos] != ' ')
+    while (pos < str.length() && str[pos] != ' ' && str[pos] != '\t')
     {
       ++pos;
     }
@@ -77,32 +93,30 @@ namespace donkeev
     return str.substr(start, pos - start);
   }
 
-  void readingPersons(std::istream& input, PersonList& list)
+  void readingPersons(std::istream& input, PersonList& list, size_t& ignored)
   {
     std::string line;
-    while (!input.eof())
+    while (std::getline(input, line))
     {
-      if (!std::getline(input, line))
-      {
-        throw std::runtime_error("Bad input");
-      }
-
       size_t pos = 0;   
       std::string idStr = nextWord(line, pos);
-      if (idStr.empty())
+      if (!isNumber(idStr))
       {
-        throw std::runtime_error("Bad input");
+        ++ignored;
+        continue;
       }
       size_t id = std::stoull(idStr);
 
       std::string description = nextWord(line, pos);
       if (description.empty())
       {
+        ++ignored;
         continue;
       }
 
       if (!isUniqueId(list, id))
       {
+        ++ignored;
         continue;
       }
       Person* pers = new Person;
