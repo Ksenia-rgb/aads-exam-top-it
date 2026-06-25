@@ -28,11 +28,11 @@ namespace
 
 namespace goltsov
 {
-  std::pair< size_t, size_t > readPersons(HashTable& ht, std::istream& is, List** l)
+  std::pair< size_t, size_t > readPersons(HashTable< Person >& ht, std::istream& is, List< Person >** l)
   {
     size_t id;
     std::string info;
-    List* start_l = *l;
+    List< Person >* start_l = *l;
     size_t good = 0, bad = 0;
     while (is)
     {
@@ -44,16 +44,16 @@ namespace goltsov
           is >> info;
           try
           {
-            insertPerson(ht, id, {id, info});
+            insertToHT< Person >(ht, id, {id, info});
             ++good;
             if (*l)
             {
-              (*l)->next = newListNode(id, {id, info}, *l, nullptr);
+              (*l)->next = newListNode< Person >(id, {id, info}, *l, nullptr);
               (*l) = (*l)->next;
             }
             else
             {
-              *l = newListNode(id, {id, info}, *l, nullptr);
+              *l = newListNode< Person >(id, {id, info}, *l, nullptr);
               start_l = *l;
             }
           }
@@ -74,7 +74,7 @@ namespace goltsov
     *l = start_l;
     return {good, bad};
   }
-  std::ostream& printRes(std::ostream& os, List* l)
+  std::ostream& printRes(std::ostream& os, List< Person >* l)
   {
     if (l)
     {
@@ -90,7 +90,7 @@ namespace goltsov
   }
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   std::fstream inFile;
   std::fstream outFile;
@@ -126,8 +126,8 @@ int main(int argc, char** argv)
       return 1;
     }
   }
-  goltsov::HashTable ht = goltsov::newHT(100);
-  goltsov::List* l = nullptr;
+  goltsov::HashTable ht = goltsov::newHT< goltsov::Person >(100);
+  goltsov::List< goltsov::Person >* l = nullptr;
   std::pair< size_t, size_t > res = goltsov::readPersons(ht, *is, &l);
   if (!outFilename.empty())
   {
