@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "utils.hpp"
 int main(int argc, char* argv[])
 {
@@ -25,9 +26,40 @@ int main(int argc, char* argv[])
       return 1;
     }
   }
-  levkin::Vec my_vector = {0, 0, nullptr};
+  levkin::Vec persons = {0, 0, nullptr};
   size_t total = 0;
   size_t ignored = 0;
-  std::cerr << total - ignored << "\n";
-  std::cerr << ignored << "\n";
+  std::istream* input_stream = &std::cin;
+  std::ifstream fileIs;
+  if (has_in) {
+    fileIs.open(in_file);
+    if (!fileIs.is_open()) {
+      return 2;
+    }
+    input_stream = &fileIs;
+  }
+  levkin::readToVec(persons, *input_stream, total, ignored);
+  if (fileIs.is_open()) {
+    fileIs.close();
+  }
+  std::ostream* output_stream = &std::cout;
+  std::ofstream file_out;
+  if (has_out) {
+    file_out.open(out_file);
+    if (!file_out.is_open()) {
+      delete[] persons.data;
+      return 2;
+    }
+    output_stream = &file_out;
+  }
+  for (size_t i = 0; i < persons.size; ++i) {
+    *output_stream << persons.data[i].first << " " << persons.data[i].second
+                   << "\n";
+  }
+  if (file_out.is_open()) {
+    file_out.close();
+  }
+  std::cerr << total << " " << ignored << "\n";
+  delete[] persons.data;
+  return 0;
 }
