@@ -15,6 +15,7 @@ namespace muraviev
     {
       return false;
     }
+
     for (size_t index = 1; index < argc; ++index)
     {
       const std::string argument = argv[index];

@@ -25,7 +25,7 @@ namespace muraviev
 
   bool hasPersonId(const PersonList& list, const size_t id)
   {
-    PersonNode* current = list.head;
+    const PersonNode* current = list.head;
     while (current != nullptr)
     {
       if (current->person.id == id)
@@ -57,6 +57,7 @@ namespace muraviev
     {
       return false;
     }
+
     size_t id = 0;
     size_t position = 0;
     const size_t maximum = std::numeric_limits< size_t >::max();
@@ -71,6 +72,7 @@ namespace muraviev
       id = id * 10 + digit;
       ++position;
     }
+
     while (position < line.size() &&
         (line[position] == ' ' || line[position] == '\t'))
     {
@@ -80,6 +82,7 @@ namespace muraviev
     {
       return false;
     }
+
     person.id = id;
     person.info = line.substr(position);
     return true;
@@ -107,7 +110,7 @@ namespace muraviev
 
   void printPersons(std::ostream& output, const PersonList& persons)
   {
-    PersonNode* current = persons.head;
+    const PersonNode* current = persons.head;
     while (current != nullptr)
     {
       output << current->person.id << ' ' << current->person.info << '\n';
