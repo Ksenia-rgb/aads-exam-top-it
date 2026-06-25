@@ -112,22 +112,30 @@ int main(int argc, char** argv)
       destroyHashTable(seenIds);
       return 2;
     }
-    for (size_t i = 0; i < persons.size; ++i) {
-      fout << persons.data[i].id << " " << persons.data[i].info << "\n";
-    }
-    std::cout << "in file " << outFile << "\n";
-    for (size_t i = 0; i < persons.size; ++i) {
-      std::cout << persons.data[i].id << " " << persons.data[i].info << "\n";
+    if (persons.size == 0) {
+      fout << "\n";
+      std::cout << "in file " << outFile << "\n\n";
+    } else {
+      for (size_t i = 0; i < persons.size; ++i) {
+        fout << persons.data[i].id << " " << persons.data[i].info << "\n";
+      }
+      std::cout << "in file " << outFile << "\n";
+      for (size_t i = 0; i < persons.size; ++i) {
+        std::cout << persons.data[i].id << " " << persons.data[i].info << "\n";
+      }
     }
     fout.close();
   } else {
-    for (size_t i = 0; i < persons.size; ++i) {
-      std::cout << persons.data[i].id << " " << persons.data[i].info << "\n";
+    if (persons.size == 0) {
+      std::cout << "\n";
+    } else {
+      for (size_t i = 0; i < persons.size; ++i) {
+        std::cout << persons.data[i].id << " " << persons.data[i].info << "\n";
+      }
     }
   }
 
   destroyArray(persons);
   destroyHashTable(seenIds);
 
-  return 0;
 }
