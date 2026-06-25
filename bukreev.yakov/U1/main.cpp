@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 
   std::string fin = "", fout = "";
   int s = processArgs(argc, argv, fin, fout);
-  if (s != 0 && s != 2)
+  if (s != 0)
   {
     return s;
   }
@@ -159,7 +159,7 @@ int bukreev::processArgs(int argc, char* argv[], std::string& fin, std::string& 
 {
   if (argc > 3)
   {
-    return 2;
+    return 1;
   }
 
   for (int i = 1; i < argc; i++)
