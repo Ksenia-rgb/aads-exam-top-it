@@ -77,6 +77,18 @@ bool lukashevich::hasMeetingWith(const Database& database, size_t id, size_t oth
 bool lukashevich::pushUniqueId(Array< size_t >& ids, size_t id)
 {
   for (size_t i = 0; i < ids.size_; ++i) {
+    if (ids.data_[i] == id) {
+      return false;
+    }
+  }
+
+  pushBack(ids, id);
+  return true;
+}
+
+void lukashevich::sortIds(Array< size_t >& ids)
+{
+  for (size_t i = 0; i < ids.size_; ++i) {
     size_t minIndex = i;
 
     for (size_t j = i + 1; j < ids.data_[minIndex]) {
@@ -92,9 +104,6 @@ bool lukashevich::pushUniqueId(Array< size_t >& ids, size_t id)
     }
   }
 }
-
-void lukashevich::sortIds(Array< size_t >& ids)
-{}
 
 void lukashevich::sortMeetingViews(Array< MeetingView >& views)
 {}
