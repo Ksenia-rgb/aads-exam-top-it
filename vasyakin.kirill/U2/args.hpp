@@ -5,7 +5,7 @@
 
 namespace vasyakin
 {
-  bool splitArg(const std::string & arg, const std::string & key, std::string & value);
+  bool splitArg(const std::string& arg, const std::string& key, std::string& value);
 }
 
 #endif
