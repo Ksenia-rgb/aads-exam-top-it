@@ -22,7 +22,8 @@ namespace petrov
   personArr* createPersonArray(size_t capacity);
   void destroyPersonArray(personArr* array);
   void pushPerson(personArr* array, const Person& person);
-  bool isDuplicate(const personArr* array, size_t id);
+  bool isDuplicate(const personArr* array, const size_t id);
+  bool parseLine(const std::string& line, Person& person);
 }
 
 #endif

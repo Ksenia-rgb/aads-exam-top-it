@@ -61,7 +61,7 @@ namespace petrov
     ++array->size;
   }
 
-  bool isDuplicate(const personArr* array, size_t id)
+  bool isDuplicate(const personArr* array, const size_t id)
   {
     for (size_t i = 0; i < array->size; ++i)
     {
@@ -71,5 +71,40 @@ namespace petrov
       }
     }
     return false;
+  }
+
+  bool parseLine(const std::string& line, Person& person)
+  {
+    size_t pos = 0;
+    while (pos < line.length() && std::isspace(static_cast<unsigned char>(line[pos])))
+    {
+      ++pos;
+    }
+    if (pos == line.length() || !std::isdigit(static_cast<unsigned char>(line[pos])))
+    {
+      return false;
+    }
+    size_t endPos = 0;
+    size_t id = 0;
+    try
+    {
+      id = std::stoull(line.substr(pos), &endPos);
+    }
+    catch (...)
+    {
+      return false;
+    }
+    pos += endPos;
+    while (pos < line.length() && std::isspace(static_cast<unsigned char>(line[pos])))
+    {
+      ++pos;
+    }
+    if (pos == line.length())
+    {
+      return false;
+    }
+    person.id = id;
+    person.info = line.substr(pos);
+    return true;
   }
 }
