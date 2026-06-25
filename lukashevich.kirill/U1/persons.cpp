@@ -36,5 +36,25 @@ std::string lukashevich::detail::tri(const std::string& text)
 
 bool lukashevich::detail::parseUnsigned(const std::string& text, size_t begin, size_t& value, size_t& end)
 {
-  
+  if ((begin >= text.size()) || (text[begin] < '0') || (text[begin] > '9')) {
+    return false;
+  }
+
+  size_t res = 0;
+  size_t pos = begin;
+
+  while ((pos < text.size()) && (text[pos] >= '0') && (text[pos] <= '9')) {
+    const size_t digit = static_cast< size_t >(text[pos] - '0');
+
+    if (res > (std::numeric_limits< size_t >::max() - digit) / 10) {
+      return false;
+    }
+
+    res = res * 10 + digit;
+    ++pos;
+  }
+
+  value = res;
+  end = pos;
+  return true;
 }
