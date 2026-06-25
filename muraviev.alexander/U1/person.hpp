@@ -2,6 +2,7 @@
 #define PERSON_HPP
 
 #include <cstddef>
+#include <iosfwd>
 #include <string>
 
 namespace muraviev
@@ -29,6 +30,8 @@ namespace muraviev
   bool hasPersonId(const PersonList& list, size_t id);
   void appendPerson(PersonList& list, const Person& person);
   bool parsePersonLine(const std::string& line, Person& person);
+  void readPersons(std::istream& input, PersonList& persons,
+      size_t& accepted, size_t& ignored);
 }
 
 #endif

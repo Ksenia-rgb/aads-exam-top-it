@@ -1,5 +1,7 @@
 #include "person.hpp"
 
+#include <istream>
+
 namespace muraviev
 {
   void initList(PersonList& list)
@@ -74,5 +76,24 @@ namespace muraviev
     person.id = id;
     person.info = line.substr(position);
     return true;
+  }
+
+  void readPersons(std::istream& input, PersonList& persons,
+      size_t& accepted, size_t& ignored)
+  {
+    std::string line;
+    while (std::getline(input, line))
+    {
+      Person person;
+      if (!parsePersonLine(line, person))
+      {
+        ++ignored;
+      }
+      else
+      {
+        appendPerson(persons, person);
+        ++accepted;
+      }
+    }
   }
 }
