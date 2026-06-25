@@ -15,7 +15,6 @@ int main(int argc, char* argv[])
   {
     losev::Args args = losev::parseArgs(argc, argv);
 
-    // Читаем людей
     losev::PersonStorage people;
     initPersonStorage(people);
 
