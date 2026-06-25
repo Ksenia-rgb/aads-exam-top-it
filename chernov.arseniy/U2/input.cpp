@@ -1,4 +1,7 @@
 #include "input.hpp"
+#include <fstream>
+#include <iostream>
+#include <utils.hpp>
 
 bool chernov::parseArgs(int argc, char ** argv, std::string & inFile, std::string & dataFile)
 {
@@ -31,4 +34,65 @@ bool chernov::parseArgs(int argc, char ** argv, std::string & inFile, std::strin
   }
 
   return hasData;
+}
+
+int chernov::readMeetings(const std::string & filename, Vector< Meeting > & meetings, Vector< size_t > & allIds)
+{
+  std::ifstream fin(filename);
+  if (!fin.is_open()) {
+    std::cerr << "Cannot open data file\n";
+    return 2;
+  }
+
+  std::string line;
+  while (std::getline(fin, line)) {
+    size_t start = line.find_first_not_of(" \t");
+    if (start == std::string::npos) {
+      continue;
+    }
+
+    size_t id1 = 0, id2 = 0, duration = 0;
+    size_t pos = start;
+    size_t count = 0;
+    bool ok = true;
+
+    for (int i = 0; i < 3; ++i) {
+      size_t space = line.find_first_of(" \t", pos);
+      if (space == std::string::npos && i < 2) {
+        ok = false;
+        break;
+      }
+      std::string token = line.substr(pos, (space == std::string::npos) ? std::string::npos : space - pos);
+      if (token.empty()) {
+        ok = false;
+        break;
+      }
+      try {
+        size_t val = std::stoull(token);
+        if (i == 0) {
+          id1 = val;
+        } else if (i == 1) {
+          id2 = val;
+        } else if (i == 2) {
+          duration = val;
+        }
+      } catch (...) {
+        ok = false;
+        break;
+      }
+      pos = (space == std::string::npos) ? std::string::npos : space + 1;
+      ++count;
+    }
+
+    if (!ok || count != 3) {
+      std::cerr << "Invalid meeting data\n";
+      return 3;
+    }
+
+    Date date{0, 0, 0};
+    addMeeting(meetings, id1, id2, duration, date);
+    addUniqueId(allIds, id1);
+    addUniqueId(allIds, id2);
+  }
+  return 0;
 }
