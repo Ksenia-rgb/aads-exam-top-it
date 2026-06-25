@@ -5,7 +5,7 @@ int main(int argc, char ** argv)
   using namespace malashenko;
   if (argc > 3)
   {
-    std::cerr << "Wrong amount of parameters";
+    std::cerr << "Wrong amount of parameters\n";
     return 0;
   }
   std::string in_file;
