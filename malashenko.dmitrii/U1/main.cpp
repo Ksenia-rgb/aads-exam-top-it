@@ -1,138 +1,12 @@
-#include <iostream>
-#include <cstddef>
-#include <fstream>
-#include <string>
-
-namespace malashenko
-{
-  struct Person {
-    size_t id;
-    std::string info;
-  };
-
-  template< class T >
-  struct Vec {
-    T* data;
-    size_t size, capacity;
-  };
-
-  template< class T >
-  void init(Vec< T >& vec, size_t cap)
-  {
-    vec.data = new T[cap];
-    vec.capacity = cap;
-    vec.size = 0;
-  }
-
-  template< class T >
-  void pushBack(Vec< T >& vec, T val)
-  {
-    if (vec.size >= vec.capacity)
-    {
-      size_t new_capacity = vec.capacity * 2;
-      T* new_data = new T[new_capacity];
-      for (size_t i = 0; i < vec.size; ++i)
-      {
-        new_data[i] = vec.data[i];
-      }
-      delete[] vec.data;
-      vec.data = new_data;
-      vec.capacity = new_capacity;
-    }
-    vec.data[vec.size++] = val;
-  }
-
-  template <typename T>
-  void destroy(Vec< T >& vec)
-  {
-    delete[] vec.data;
-    vec.data = nullptr;
-    vec.size = 0;
-    vec.capacity = 0;
-  }
-
-  bool containsId(const Vec< Person >& vec, size_t id)
-  {
-    for (size_t i = 0; i < vec.size; ++i)
-    {
-      if (vec.data[i].id == id)
-      {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool read_line(std::istream& in, std::string& line)
-  {
-    line.clear();
-    char ch;
-    while (in.get(ch))
-    {
-      if (ch == '\n')
-      {
-        return true;
-      }
-      if (ch == '\r')
-      {
-        char next;
-        if (in.get(next))
-        {
-          if (next != '\n')
-          {
-            in.putback(next);
-          }
-        }
-        return true;
-      }
-      line += ch;
-    }
-    return !line.empty();
-  }
-
-bool parse_line(const std::string& line, size_t& id, std::string& info) {
-    size_t len = line.size();
-    if (len == 0) {
-        return false;
-    }
-
-    size_t pos = 0;
-
-    while (pos < len && line[pos] != ' ') {
-        ++pos;
-    }
-
-    std::string idStr = line.substr(0, pos);
-    try
-    {
-      id = std::stoull(idStr);
-    }
-    catch(...)
-    {
-      return false;
-    }
-
-
-    while (pos < len && line[pos] == ' ')
-    {
-      ++pos;
-    }
-
-    if (pos >= len) {
-        return false;
-    }
-
-    info = line.substr(pos);
-    return true;
-}
-}
+#include "solution.hpp"
 
 int main(int argc, char ** argv)
 {
   using namespace malashenko;
   if (argc > 3)
   {
-    return 1;
+    std::cerr << "Wrong amount of parameters";
+    return 0;
   }
   std::string in_file;
   std::string out_file;
@@ -144,6 +18,7 @@ int main(int argc, char ** argv)
     {
       if (!in_file.empty())
       {
+        std::cerr << "Can't be 2 input files\n";
         return 1;
       }
 
@@ -151,6 +26,7 @@ int main(int argc, char ** argv)
 
       if (in_file.empty())
       {
+        std::cerr << "Wrong name for input file\n";
         return 1;
       }
 
@@ -159,18 +35,20 @@ int main(int argc, char ** argv)
     {
       if (!out_file.empty())
       {
-        return 1;
+        std::cerr << "Can't be 2 output files\n";
       }
 
       out_file = arg.substr(4);
 
       if (out_file.empty())
       {
+        std::cerr << "Wrong name for output file\n";
         return 1;
       }
     }
     else
     {
+      std::cerr << "Unknown parametr\n";
       return 1;
     }
   }
@@ -183,6 +61,7 @@ int main(int argc, char ** argv)
     in_fs.open(in_file);
     if (!in_fs)
     {
+      std::cerr << "Can't open the input file\n";
       return 2;
     }
     input = &in_fs;
@@ -193,11 +72,6 @@ int main(int argc, char ** argv)
 
   size_t success = 0;
   size_t skiped = 0;
-  while (input)
-  {
-    size_t id;
-    in_fs >> id;
-  }
 
   std::string line;
   while (read_line(*input, line))
@@ -238,6 +112,7 @@ int main(int argc, char ** argv)
       if (!out_fs.is_open())
       {
         destroy(persons);
+        std::cerr << "Can't open the output file\n";
         return 2;
       }
       output = &out_fs;
