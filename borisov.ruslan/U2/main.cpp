@@ -189,9 +189,10 @@ int main(int argc, char **argv)
     }
     size_t count = 0;
     size_t skipped = 0;
+    bool hasInput = false;
     try
     {
-      persons = borisov::readPersons(inFile, count, skipped);
+      persons = borisov::readPersons(inFile, count, skipped, hasInput);
     }
     catch (...)
     {
