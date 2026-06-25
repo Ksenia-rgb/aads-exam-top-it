@@ -54,6 +54,16 @@ public:
     return *this;
   }
 
+  ListNode< T >* begin() const
+  {
+    return head_;
+  }
+
+  ListNode< T >* end() const
+  {
+    return nullptr;
+  }
+
   void pushBack(const T& value)
   {
     ListNode< T >* node = new ListNode< T >(value);

@@ -133,7 +133,9 @@ int main(int argc, char* argv[])
     ++successful;
   }
 
-  for (vishnyakov::ListNode< vishnyakov::Person >* current = persons.head_; current != nullptr; current = current->next)
+  for (vishnyakov::ListNode< vishnyakov::Person >* current = persons.begin(); 
+      current != persons.end(); 
+      current = current->next)
   {
     *out << current->data.id << " " << current->data.info << "\n";
   }
