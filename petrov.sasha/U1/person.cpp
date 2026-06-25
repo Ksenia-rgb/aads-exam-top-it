@@ -60,4 +60,16 @@ namespace petrov
     array->data[array->size] = person;
     ++array->size;
   }
+
+  bool isDuplicate(const personArr* array, size_t id)
+  {
+    for (size_t i = 0; i < array->size; ++i)
+    {
+      if (array->data[i].id == id)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 }
