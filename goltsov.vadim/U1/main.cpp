@@ -1,13 +1,14 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cctype>
 #include "hashtable.hpp"
 
 namespace
 {
   std::istream& skipSpaces(std::istream& is)
   {
-    while (is.peek() == ' ')
+    while (std::isspace(is.peek()))
     {
       is.get();
     }
@@ -32,35 +33,53 @@ namespace goltsov
   {
     size_t id;
     std::string info;
-    List< Person >* start_l = *l;
+    List<Person>* start_l = *l;
     size_t good = 0, bad = 0;
     while (is)
     {
+      if (is.peek() == '\n' || is.peek() == EOF)
+      {
+        is.get();
+        continue;
+      }
+      size_t start = info.find_first_not_of(" \t");
+      if (start != std::string::npos)
+      {
+        info = info.substr(start);
+      }
+      else
+      {
+        info.clear();
+      }
       if (is >> id)
       {
         skipSpaces(is);
-        if (!isEOL(is))
+        std::getline(is, info);
+        if (!info.empty())
         {
-          is >> info;
           try
           {
-            insertToHT< Person >(ht, id, {id, info});
+            insertToHT<Person>(ht, id, {id, info});
             ++good;
             if (*l)
             {
-              (*l)->next = newListNode< Person >(id, {id, info}, *l, nullptr);
+              (*l)->next = newListNode<Person>(id, {id, info}, *l, nullptr);
               (*l) = (*l)->next;
             }
             else
             {
-              *l = newListNode< Person >(id, {id, info}, *l, nullptr);
+              *l = newListNode<Person>(id, {id, info}, *l, nullptr);
               start_l = *l;
             }
           }
-          catch (...)
+          catch (const std::runtime_error&)
           {
             ++bad;
           }
+        }
+        else
+        {
+          ++bad;
         }
       }
       else
@@ -68,6 +87,8 @@ namespace goltsov
         if (!is.eof())
         {
           is.clear();
+          is.get();
+          ++bad;
         }
       }
     }
