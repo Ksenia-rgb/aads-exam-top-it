@@ -26,5 +26,33 @@ int main(int argc, char* argv[]) {
     std::cerr << "Error: Too many arguments" << "\n";
     return 1;
   }
+  petrenko::DataProcessor processor;
+  std::ifstream inputFile;
+  if (!inputFilename.empty()) {
+    inputFile.open(inputFilename);
+    if (!inputFile.is_open()) {
+      std::cerr << "Error: Cannot open input file: " << inputFilename << "\n";
+      return 2;
+    }
+    processor.processInput(inputFile);
+    inputFile.close();
+  } else {
+    processor.processInput(std::cin);
+  }
+  std::ofstream outputFile;
+  std::ostream* outputStream = &std::cout;
+  if (!outputFilename.empty()) {
+    outputFile.open(outputFilename);
+    if (!outputFile.is_open()) {
+      std::cerr << "Error: Cannot open output file: " << outputFilename << "\n";
+      return 2;
+    }
+    outputStream = &outputFile;
+  }
+  processor.outputResults(*outputStream);
+  std::cerr << processor.getValidCount() << " " << processor.getIgnoredCount() << "\n";
+  if (outputFile.is_open()) {
+    outputFile.close();
+  }
   return 0;
 }
