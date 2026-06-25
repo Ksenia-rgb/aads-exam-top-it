@@ -1,21 +1,7 @@
-struct Person
-
-{
-
-  size_t id;
-
-  std::string info;
-};
-
-struct PersonArray
-
-{
-
-  Person* data;
-
-  size_t size;
-
-  size_t capacity;
-};
+#include <iostream>
+#include "functions.hpp"
+#include "person.hpp"
 int main()
-{}
+{
+  
+}
