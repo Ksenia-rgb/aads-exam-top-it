@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <utils.hpp>
@@ -19,19 +20,16 @@ namespace kondrat
     size_t time;
   };
 
-  struct PersonStorage
+  template< class T >
+  struct Storage
   {
-    Person * data;
+    T * data;
     size_t size;
     size_t capacity;
   };
 
-  struct MeetingStorage
-  {
-    Meeting * data;
-    size_t size;
-    size_t capacity;
-  };
+  using PersonStorage = Storage< Person >;
+  using MeetingStorage = Storage< Meeting >;
 
   struct ProgramArgs
   {
@@ -40,6 +38,14 @@ namespace kondrat
   };
 
   bool parseArgs(int argc, char ** argv, ProgramArgs & args);
+  template< class T >
+  void initStorage(Storage< T > & storage);
+  template< class T >
+  void destroyStorage(Storage< T > & storage);
+  template< class T >
+  void reserve(Storage< T > & storage, size_t capacity);
+  template< class T >
+  void pushBack(Storage< T > & storage, const T & value);
 }
 
 bool kondrat::parseArgs(int argc, char ** argv, ProgramArgs & args)
@@ -76,6 +82,60 @@ bool kondrat::parseArgs(int argc, char ** argv, ProgramArgs & args)
   }
 
   return args.data != nullptr;
+}
+
+template< class T >
+void kondrat::initStorage(Storage< T > & storage)
+{
+  storage.data = nullptr;
+  storage.size = 0;
+  storage.capacity = 0;
+}
+
+template< class T >
+void kondrat::destroyStorage(Storage< T > & storage)
+{
+  delete[] storage.data;
+  initStorage(storage);
+}
+
+template< class T >
+void kondrat::reserve(Storage< T > & storage, size_t capacity)
+{
+  if (capacity <= storage.capacity)
+  {
+    return;
+  }
+
+  T * newData = new T[capacity];
+  try
+  {
+    for (size_t i = 0; i < storage.size; ++i)
+    {
+      newData[i] = storage.data[i];
+    }
+  }
+  catch (...)
+  {
+    delete[] newData;
+    throw;
+  }
+
+  delete[] storage.data;
+  storage.data = newData;
+  storage.capacity = capacity;
+}
+
+template< class T >
+void kondrat::pushBack(Storage< T > & storage, const T & value)
+{
+  if (storage.size == storage.capacity)
+  {
+    reserve(storage, nextCapacity(storage.capacity));
+  }
+
+  storage.data[storage.size] = value;
+  ++storage.size;
 }
 
 int main(int argc, char ** argv)
