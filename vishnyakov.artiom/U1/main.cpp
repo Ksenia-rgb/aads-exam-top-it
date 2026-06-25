@@ -2,10 +2,10 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include "person.hpp"
-#include "list.hpp"
-#include "hash.hpp"
-#include "string_utils.hpp"
+#include <person.hpp>
+#include <list.hpp>
+#include <hash.hpp>
+#include <string_utils.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -80,7 +80,6 @@ int main(int argc, char* argv[])
   size_t successful = 0;
   size_t ignored = 0;
   std::string line;
-  bool hasData = false;
 
   while (std::getline(in, line))
   {
