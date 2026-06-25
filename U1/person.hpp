@@ -37,7 +37,6 @@ namespace petrov
     }
     return 1;
   }
-
 }
 
 #endif
