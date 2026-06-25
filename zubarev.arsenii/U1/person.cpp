@@ -47,8 +47,23 @@ void zubarev::destroy(HashSet& set)
   delete[] set.used;
 }
 size_t zubarev::hash(const HashSet& set, size_t value)
-{}
+{
+  return value % set.capacity;
+}
 bool zubarev::contains(const HashSet& set, size_t value)
-{}
+{
+  size_t pos = hash(set, value);
+
+  for (size_t i = 0; i < set.capacity; ++i) {
+    size_t cur = (pos + i) % set.capacity;
+    if (!set.used[cur]) {
+      return false;
+    }
+    if (set.data[cur] == value) {
+      return true;
+    }
+  }
+  return false;
+}
 void zubarev::insert(HashSet& set, size_t value)
 {}
