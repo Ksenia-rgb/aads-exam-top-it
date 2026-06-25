@@ -30,5 +30,8 @@ void destroyOrderArray(OrderArray *arr);
 void orderArrayPush(OrderArray *arr, size_t id);
 size_t orderArrayGet(const OrderArray *arr, size_t index);
 size_t orderArraySize(const OrderArray *arr);
+bool processLine(const std::string &line, HashTable *table, OrderArray *order);
+void goodStringsCount(std::istream &in, HashTable *table, OrderArray *order,
+                      size_t &successCount, size_t &ignoredCount);
 } // namespace karpenkov
 #endif

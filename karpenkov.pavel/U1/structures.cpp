@@ -80,5 +80,37 @@ size_t orderArrayGet(const OrderArray *arr, size_t index) {
   return arr->data[index];
 }
 size_t orderArraySize(const OrderArray *arr) { return arr->size; }
+bool processLine(const std::string &line, HashTable *table, OrderArray *order) {
+  const char *str = line.c_str();
+  while (*str && (*str == ' ' || *str == '\t')) {
+    ++str;
+  }
+  if (!*str)
+    return false;
+
+  char *endptr;
+  unsigned long long id = strtoull(str, &endptr, 10);
+  if (endptr == str)
+    return false;
+
+  while (*endptr && (*endptr == ' ' || *str == '\t')) {
+    ++endptr;
+  }
+
+  std::string info = endptr;
+  if (info.empty())
+    return false;
+
+  if (hashTableGet(table, id) != nullptr)
+    return false;
+
+  Person person;
+  person.id = id;
+  person.info = info;
+  hashTableInsert(table, person);
+  orderArrayPush(order, id);
+
+  return true;
+}
 
 } // namespace karpenkov
