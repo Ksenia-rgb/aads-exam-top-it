@@ -62,7 +62,7 @@ int chernov::readMeetings(const std::string & filename, Vector< Meeting > & meet
         ok = false;
         break;
       }
-      std::string token = line.substr(pos, (space == std::string::npos) ? std::string::npos : space - pos);
+      std::string token = (space == std::string::npos) ? line.substr(pos) : line.substr(pos, space - pos);
       if (token.empty()) {
         ok = false;
         break;
@@ -85,6 +85,12 @@ int chernov::readMeetings(const std::string & filename, Vector< Meeting > & meet
     }
 
     if (!ok || count != 3) {
+      std::cerr << "Invalid meeting data\n";
+      return 3;
+    }
+
+    size_t after = line.find_first_not_of(" \t", pos);
+    if (after != std::string::npos) {
       std::cerr << "Invalid meeting data\n";
       return 3;
     }
