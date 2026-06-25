@@ -85,6 +85,52 @@ BOOST_AUTO_TEST_CASE(read_dated_meetings_keeps_self_meeting_dates)
   std::remove(filename);
 }
 
+BOOST_AUTO_TEST_CASE(read_dated_meetings_keeps_date_from_incomplete_row)
+{
+  const char* filename = "out/u3-incomplete-dated-meeting.txt";
+  writeTextFile(filename,
+      "10 10 1010 56 57 10\n"
+      "5 5 1005 32 41\n");
+  std::ifstream input(filename);
+  shaykhraziev::List< shaykhraziev::DatedMeeting > meetings;
+  shaykhraziev::List< shaykhraziev::Date > dates;
+  shaykhraziev::HashTable< size_t, bool > knownIds;
+  shaykhraziev::initList(meetings);
+  shaykhraziev::initList(dates);
+  shaykhraziev::initHashTable(knownIds, 17, shaykhraziev::hashSizeT, shaykhraziev::equalSizeT);
+
+  BOOST_TEST(shaykhraziev::readDatedMeetings(input, meetings, knownIds, dates));
+  BOOST_TEST(meetings.size == 1);
+  BOOST_TEST(dates.size == 2);
+  BOOST_TEST(dates.head->value.day == 5);
+  BOOST_TEST(dates.tail->value.day == 10);
+
+  shaykhraziev::clearHashTable(knownIds);
+  shaykhraziev::clearList(dates);
+  shaykhraziev::clearList(meetings);
+  std::remove(filename);
+}
+
+BOOST_AUTO_TEST_CASE(read_dated_meetings_rejects_only_incomplete_rows)
+{
+  const char* filename = "out/u3-only-incomplete-dated-meeting.txt";
+  writeTextFile(filename, "1 1 2026 33 41\n");
+  std::ifstream input(filename);
+  shaykhraziev::List< shaykhraziev::DatedMeeting > meetings;
+  shaykhraziev::List< shaykhraziev::Date > dates;
+  shaykhraziev::HashTable< size_t, bool > knownIds;
+  shaykhraziev::initList(meetings);
+  shaykhraziev::initList(dates);
+  shaykhraziev::initHashTable(knownIds, 17, shaykhraziev::hashSizeT, shaykhraziev::equalSizeT);
+
+  BOOST_TEST(!shaykhraziev::readDatedMeetings(input, meetings, knownIds, dates));
+
+  shaykhraziev::clearHashTable(knownIds);
+  shaykhraziev::clearList(dates);
+  shaykhraziev::clearList(meetings);
+  std::remove(filename);
+}
+
 BOOST_AUTO_TEST_CASE(parse_u3_args_accepts_many_data_files)
 {
   char arg0[] = "lab";
@@ -151,6 +197,36 @@ BOOST_AUTO_TEST_CASE(load_u3_data_from_several_files)
   shaykhraziev::clearU3Storage(storage);
   shaykhraziev::clearU3Args(args);
   std::remove(personsName);
+  std::remove(firstData);
+  std::remove(secondData);
+}
+
+BOOST_AUTO_TEST_CASE(load_u3_data_keeps_dates_from_incomplete_rows_in_data_files)
+{
+  const char* firstData = "out/u3-data-mixed-first.txt";
+  const char* secondData = "out/u3-data-mixed-second.txt";
+  writeTextFile(firstData, "9 99 1700 33 31 10\n");
+  writeTextFile(secondData,
+      "5 5 1005 32 41\n"
+      "12 33 1946 32 41 20\n");
+  char arg0[] = "lab";
+  char arg1[] = "data:out/u3-data-mixed-first.txt";
+  char arg2[] = "data:out/u3-data-mixed-second.txt";
+  char* argv[] = { arg0, arg1, arg2 };
+  shaykhraziev::U3Args args;
+  shaykhraziev::U3Storage storage;
+  shaykhraziev::initU3Args(args);
+  shaykhraziev::initU3Storage(storage);
+
+  BOOST_TEST(shaykhraziev::parseU3Args(3, argv, args));
+  BOOST_TEST(shaykhraziev::loadU3Data(args, storage) == 0);
+  BOOST_TEST(storage.meetings.size == 2);
+  BOOST_TEST(storage.dates.size == 3);
+  BOOST_TEST(storage.ranges.tail->value.from.day == 5);
+  BOOST_TEST(storage.ranges.tail->value.to.day == 12);
+
+  shaykhraziev::clearU3Storage(storage);
+  shaykhraziev::clearU3Args(args);
   std::remove(firstData);
   std::remove(secondData);
 }

@@ -3,6 +3,31 @@
 #include "../common/date.hpp"
 #include "../common/parse.hpp"
 
+namespace
+{
+  bool parseDatePrefix(const std::string& line, shaykhraziev::Date& date)
+  {
+    size_t position = 0;
+    size_t day = 0;
+    size_t month = 0;
+    size_t year = 0;
+    if (!shaykhraziev::parseSizeTPrefix(line, day, position))
+    {
+      return false;
+    }
+    if (!shaykhraziev::parseSizeTPrefix(line, month, position))
+    {
+      return false;
+    }
+    if (!shaykhraziev::parseSizeTPrefix(line, year, position))
+    {
+      return false;
+    }
+    date = shaykhraziev::Date{ day, month, year };
+    return true;
+  }
+}
+
 bool shaykhraziev::parseDatedMeetingLine(const std::string& line, DatedMeeting& meeting)
 {
   size_t position = 0;
@@ -53,6 +78,8 @@ bool shaykhraziev::readDatedMeetings(std::istream& input,
     List< Date >& dates)
 {
   std::string line;
+  bool hasMeetingRow = false;
+  bool hasInvalidRow = false;
   while (std::getline(input, line))
   {
     if (skipSpaces(line, 0) == line.size())
@@ -62,8 +89,15 @@ bool shaykhraziev::readDatedMeetings(std::istream& input,
     DatedMeeting meeting = { Date{ 0, 0, 0 }, 0, 0, 0 };
     if (!parseDatedMeetingLine(line, meeting))
     {
-      return false;
+      Date date = { 0, 0, 0 };
+      if (parseDatePrefix(line, date))
+      {
+        insertOrderedUniqueDate(dates, date);
+      }
+      hasInvalidRow = true;
+      continue;
     }
+    hasMeetingRow = true;
     insertOrderedUniqueDate(dates, meeting.date);
     if (meeting.first != meeting.second)
     {
@@ -73,5 +107,5 @@ bool shaykhraziev::readDatedMeetings(std::istream& input,
       pushBack(meetings, meeting);
     }
   }
-  return true;
+  return !hasInvalidRow || hasMeetingRow;
 }
