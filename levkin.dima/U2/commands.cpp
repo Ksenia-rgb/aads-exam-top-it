@@ -200,7 +200,6 @@ namespace levkin {
     }
     printFilterMeets(db, id, os, 2, duration);
   }
-
   void commons(const DB& db, std::istream& is, std::ostream& os)
   {
     size_t id1, id2;
@@ -215,14 +214,7 @@ namespace levkin {
     try {
       collectUniquePartners(db, id1, partners1);
       collectUniquePartners(db, id2, partners2);
-      for (size_t i = 0; i < partners1.size; ++i) {
-        for (size_t j = 0; j < partners2.size; ++j) {
-          if (partners1.data[i] == partners2.data[j]) {
-            pushBack(common_ids, partners1.data[i]);
-            break;
-          }
-        }
-      }
+      findCommonElements(partners1, partners2, common_ids);
       selectionSort(common_ids);
       for (size_t i = 0; i < common_ids.size; ++i) {
         os << common_ids.data[i] << "\n";
