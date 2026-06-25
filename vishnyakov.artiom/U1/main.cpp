@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 {
   std::string inputFile;
   std::string outputFile;
-  bool hasInput = false;
+  bool hasInputArg = false;
 
   for (int i = 1; i < argc; ++i)
   {
@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
         return 1;
       }
       inputFile = arg.substr(3);
-      hasInput = true;
+      hasInputArg = true;
     }
     else if (arg.rfind("out:", 0) == 0)
     {
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
     ++successful;
   }
 
-  if (hasData || hasInput)
+  if (hasData || hasInputArg)
   {
     std::cerr << successful << " " << ignored << "\n";
   }
