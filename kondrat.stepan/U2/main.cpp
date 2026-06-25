@@ -52,12 +52,14 @@ namespace kondrat
   bool isBlank(const std::string & line);
   bool parsePerson(const std::string & line, Person & person);
   Person * findPerson(PersonStorage & storage, size_t id);
+  const Person * findPerson(const PersonStorage & storage, size_t id);
   bool containsPerson(const PersonStorage & storage, size_t id);
   void ensureAnonPerson(PersonStorage & storage, size_t id);
   void readPersons(std::istream & input, PersonStorage & storage);
   bool parseMeeting(const std::string & line, Meeting & meeting);
   bool readMeetings(std::istream & input, MeetingStorage & meetings, PersonStorage & persons);
   void printAnons(std::ostream & output, const PersonStorage & persons);
+  bool printDesc(std::ostream & output, const PersonStorage & persons, size_t id);
   void processCommands(std::istream & input, std::ostream & output, const PersonStorage & persons);
 }
 
@@ -233,6 +235,12 @@ bool kondrat::containsPerson(const PersonStorage & storage, size_t id)
 
 kondrat::Person * kondrat::findPerson(PersonStorage & storage, size_t id)
 {
+  const PersonStorage & constStorage = storage;
+  return const_cast< Person * >(findPerson(constStorage, id));
+}
+
+const kondrat::Person * kondrat::findPerson(const PersonStorage & storage, size_t id)
+{
   for (size_t i = 0; i < storage.size; ++i)
   {
     if (storage.data[i].id == id)
@@ -377,6 +385,25 @@ void kondrat::printAnons(std::ostream & output, const PersonStorage & persons)
   destroyStorage(ids);
 }
 
+bool kondrat::printDesc(std::ostream & output, const PersonStorage & persons, size_t id)
+{
+  const Person * person = findPerson(persons, id);
+  if (person == nullptr)
+  {
+    return false;
+  }
+
+  if (person->described)
+  {
+    output << person->info << '\n';
+  }
+  else
+  {
+    output << "<ANON>\n";
+  }
+  return true;
+}
+
 void kondrat::processCommands(std::istream & input, std::ostream & output, const PersonStorage & persons)
 {
   std::string command;
@@ -385,6 +412,14 @@ void kondrat::processCommands(std::istream & input, std::ostream & output, const
     if (command == "anons")
     {
       printAnons(output, persons);
+    }
+    else if (command == "desc")
+    {
+      size_t id = 0;
+      if (!(input >> id) || !printDesc(output, persons, id))
+      {
+        output << "<INVALID COMMAND>\n";
+      }
     }
     else
     {
