@@ -113,7 +113,6 @@ public:
       size_t descStart = idEnd;
       skipWhitespace(line, descStart);
       if (descStart >= line.length()) {
-        addPerson(id);
         continue;
       }
       std::string description = line.substr(descStart);
@@ -121,10 +120,9 @@ public:
         description.pop_back();
       }
       if (description.empty()) {
-        addPerson(id);
-      } else {
-        addPerson(id, description);
+        continue;
       }
+      addPerson(id, description);
     }
   }
 
@@ -209,7 +207,7 @@ public:
     }
     std::sort(anonIds.begin(), anonIds.end());
     for (size_t i = 0; i < anonIds.size(); i++) {
-      std::cout << anonIds[i] << "" << "\n";
+      std::cout << anonIds[i] << "\n";
     }
   }
 
@@ -265,7 +263,7 @@ public:
     if (person->info.empty()) {
       std::cout << "<ANON>" << "\n";
     } else {
-      std::cout << person->info << "" << "\n";
+      std::cout << person->info << "\n";
     }
   }
 
@@ -284,7 +282,7 @@ public:
     sortMeetings(result, id);
     for (size_t i = 0; i < result.size(); i++) {
       size_t other = (result[i].id1 == id) ? result[i].id2 : result[i].id1;
-      std::cout << other << " " << result[i].duration << "" << "\n";
+      std::cout << other << " " << result[i].duration << "\n";
     }
   }
 
@@ -294,30 +292,37 @@ public:
       return;
     }
     std::vector<size_t> common;
+    std::vector<size_t> meetings1;
+    std::vector<size_t> meetings2;
+
     for (size_t i = 0; i < meetings.size(); i++) {
       if ((meetings[i].id1 == id1 || meetings[i].id2 == id1) &&
           !(meetings[i].id1 == 0 && meetings[i].id2 == 0)) {
         size_t other = (meetings[i].id1 == id1) ? meetings[i].id2 : meetings[i].id1;
-        if (other == id1 || other == id2) {
-          continue;
+        if (other != id1 && other != id2) {
+          meetings1.push_back(other);
         }
-        if (!findPerson(other)) {
-          continue;
-        }
-        for (size_t j = 0; j < meetings.size(); j++) {
-          if ((meetings[j].id1 == id2 || meetings[j].id2 == id2) &&
-              !(meetings[j].id1 == 0 && meetings[j].id2 == 0)) {
-            size_t other2 = (meetings[j].id1 == id2) ? meetings[j].id2 : meetings[j].id1;
-            if (other2 == other && !findInVector(common, other)) {
-              common.push_back(other);
-            }
-          }
+      }
+      if ((meetings[i].id1 == id2 || meetings[i].id2 == id2) &&
+          !(meetings[i].id1 == 0 && meetings[i].id2 == 0)) {
+        size_t other = (meetings[i].id1 == id2) ? meetings[i].id2 : meetings[i].id1;
+        if (other != id1 && other != id2) {
+          meetings2.push_back(other);
         }
       }
     }
+
+    for (size_t i = 0; i < meetings1.size(); i++) {
+      for (size_t j = 0; j < meetings2.size(); j++) {
+        if (meetings1[i] == meetings2[j] && !findInVector(common, meetings1[i])) {
+          common.push_back(meetings1[i]);
+        }
+      }
+    }
+
     std::sort(common.begin(), common.end());
     for (size_t i = 0; i < common.size(); i++) {
-      std::cout << common[i] << "" << "\n";
+      std::cout << common[i] << "\n";
     }
   }
 
@@ -337,7 +342,7 @@ public:
     sortMeetings(result, id);
     for (size_t i = 0; i < result.size(); i++) {
       size_t other = (result[i].id1 == id) ? result[i].id2 : result[i].id1;
-      std::cout << other << " " << result[i].duration << "" << "\n";
+      std::cout << other << " " << result[i].duration << "\n";
     }
   }
 
@@ -357,7 +362,7 @@ public:
     sortMeetings(result, id);
     for (size_t i = 0; i < result.size(); i++) {
       size_t other = (result[i].id1 == id) ? result[i].id2 : result[i].id1;
-      std::cout << other << " " << result[i].duration << "" << "\n";
+      std::cout << other << " " << result[i].duration << "\n";
     }
   }
 
@@ -365,12 +370,12 @@ public:
     std::ofstream outputFile;
     outputFile.open(filename);
     if (!outputFile.is_open()) {
-      std::cerr << "Error: Cannot open output file: " << filename << "" << "\n";
+      std::cerr << "Error: Cannot open output file: " << filename << "\n";
       exit(2);
     }
     for (size_t i = 0; i < persons.size(); i++) {
       if (!persons[i].info.empty()) {
-        outputFile << persons[i].id << " " << persons[i].info << "" << "\n";
+        outputFile << persons[i].id << " " << persons[i].info << "\n";
       }
     }
     outputFile.close();
