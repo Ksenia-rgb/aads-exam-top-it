@@ -123,6 +123,102 @@ bool loadMeets(std::istream & in, musorin::List< musorin::Person > & persons,
   }
   return true;
 }
+bool isSpaceChar(char ch)
+{
+  return ch == ' ' || ch == '\t';
+}
+bool isDigitChar(char ch)
+{
+  return ch >= '0' && ch <= '9';
+}
+void splitLine(const std::string & line, musorin::List< std::string > & tokens)
+{
+  std::size_t pos = 0;
+  while (pos < line.size())
+  {
+    while (pos < line.size() && isSpaceChar(line[pos]))
+    {
+      ++pos;
+    }
+    if (pos == line.size())
+    {
+      break;
+    }
+    const std::size_t start = pos;
+    while (pos < line.size() && !isSpaceChar(line[pos]))
+    {
+      ++pos;
+    }
+    musorin::pushBack(tokens, line.substr(start, pos - start));
+  }
+}
+bool toId(const std::string & token, std::size_t & value)
+{
+  if (token.empty())
+  {
+    return false;
+  }
+  std::size_t result = 0;
+  for (std::size_t i = 0; i < token.size(); ++i)
+  {
+    if (!isDigitChar(token[i]))
+    {
+      return false;
+    }
+    const std::size_t digit = static_cast< std::size_t >(token[i] - '0');
+    result = result * 10 + digit;
+  }
+  value = result;
+  return true;
+}
+void printInvalid(std::ostream & out)
+{
+  out << "<INVALID COMMAND>\n";
+}
+bool extractCommand(const std::string & line, std::string & command, std::string & rest)
+{
+  std::size_t pos = 0;
+  while (pos < line.size() && isSpaceChar(line[pos]))
+  {
+    ++pos;
+  }
+  if (pos == line.size())
+  {
+    return false;
+  }
+  const std::size_t start = pos;
+  while (pos < line.size() && !isSpaceChar(line[pos]))
+  {
+    ++pos;
+  }
+  command = line.substr(start, pos - start);
+  while (pos < line.size() && isSpaceChar(line[pos]))
+  {
+    ++pos;
+  }
+  rest = line.substr(pos);
+  return true;
+}
+void runCommands(musorin::List< musorin::Person > & persons, std::istream & in,
+  std::ostream & out)
+{
+  std::string line;
+  while (std::getline(in, line))
+  {
+    std::string command;
+    std::string rest;
+    if (!extractCommand(line, command, rest))
+    {
+      continue;
+    }
+    musorin::List< std::string > args;
+    musorin::initList(args);
+    splitLine(rest, args);
+    printInvalid(out);
+    musorin::clear(args);
+  }
+  (void)persons;
+}
 }
 int main(int argc, char * argv[])
 {
