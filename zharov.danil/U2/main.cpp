@@ -1,14 +1,17 @@
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <string>
+#include <hash_table.hpp>
 #include <io.hpp>
+#include "commands.hpp"
 
 int main(int argc, char** argv)
 {
   if (argc < 2 || argc > 3)
   {
     std::cerr << "Invalid arguments\n";
-    return 0;
+    return 1;
   }
   std::string inFile;
   std::string dataFile;
@@ -77,6 +80,57 @@ int main(int argc, char** argv)
     zharov::clear(meets);
     return 3;
   }
+
+  zharov::HashTable< std::string, zharov::Cmd > cmds =
+    zharov::makeHashTable< std::string, zharov::Cmd >(8);
+  zharov::insert(cmds, "deanon", zharov::runDeanon);
+  zharov::insert(cmds, "redesc", zharov::runRedesc);
+
+  zharov::HashTable< std::string, zharov::ConstCmd > constCmds =
+    zharov::makeHashTable< std::string, zharov::ConstCmd >(16);
+  zharov::insert(constCmds, "anons", zharov::runAnons);
+  zharov::insert(constCmds, "desc", zharov::runDesc);
+  zharov::insert(constCmds, "meets", zharov::runMeets);
+  zharov::insert(constCmds, "commons", zharov::runCommons);
+  zharov::insert(constCmds, "less", zharov::runLess);
+  zharov::insert(constCmds, "greater", zharov::runGreater);
+  zharov::insert(constCmds, "out-persons", zharov::runOutPersons);
+
+  zharov::Context ctx{std::addressof(persons), std::addressof(meets)};
+
+  std::string command;
+  while (std::cin >> command)
+  {
+    zharov::detail::Node< zharov::Entry< std::string, zharov::Cmd > >* node =
+      zharov::find(cmds, command);
+    zharov::detail::Node< zharov::Entry< std::string, zharov::ConstCmd > >* constNode =
+      zharov::find(constCmds, command);
+    if (node == nullptr && constNode == nullptr)
+    {
+      std::cout << "<INVALID COMMAND>\n";
+      std::cin.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
+      continue;
+    }
+    try
+    {
+      if (node != nullptr)
+      {
+        node->val.val(std::cout, std::cin, ctx);
+      }
+      else
+      {
+        constNode->val.val(std::cout, std::cin, ctx);
+      }
+    }
+    catch (...)
+    {
+      std::cout << "<INVALID COMMAND>\n";
+      std::cin.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
+    }
+  }
+
+  zharov::clear(cmds);
+  zharov::clear(constCmds);
   zharov::clear(persons);
   zharov::clear(meets);
 }
