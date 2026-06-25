@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
       return 3;
     }
 
-    has_valid_data = true; 
+    has_valid_data = true;
 
     if (!contains(state.ids, id1)) {
       zubarev::Person p;
