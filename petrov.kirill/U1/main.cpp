@@ -113,7 +113,7 @@ int main(int argc, char** argv)
     petrov::Person p;
     p.id = id_v;
     p.info = inf;
-    if (petrov::is_dubl(vec, p, s, c) == 0)
+    if (petrov::is_dubl(vec, p, s) == 0)
     {
       err++;
       continue;
