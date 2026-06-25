@@ -47,7 +47,11 @@ int main(int argc, char* argv[]) {
     outputStream = &outputFile;
   }
   processor.outputResults(*outputStream);
-  std::cerr << processor.getValidCount() << " " << processor.getIgnoredCount() << "\n";
+  size_t valid = processor.getValidCount();
+  size_t ignored = processor.getIgnoredCount();
+  if (valid > 0 || ignored > 0) {
+    std::cerr << valid << " " << ignored << "\n";
+  }
   if (outputFile.is_open()) {
     outputFile.close();
   }
