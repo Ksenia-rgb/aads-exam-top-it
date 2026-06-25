@@ -43,6 +43,10 @@ int main(int argc, char ** argv)
       std::ostream & output = options.hasOutput ? outputFile : std::cout;
       samarin::writeRecords(output, records);
       std::cerr << counts.accepted << ' ' << counts.ignored << '\n';
+      if (!output) {
+        std::cerr << "cannot write output\n";
+        code = 2;
+      }
     }
   } catch (const std::exception & error) {
     std::cerr << error.what() << '\n';
