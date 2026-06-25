@@ -5,9 +5,9 @@
 #include <cstddef>
 
 namespace gordejchik {
-  struct person_t {
-    size_t id_;
-    std::string info_;
+  struct Person {
+    size_t id;
+    std::string info;
   };
 }
 

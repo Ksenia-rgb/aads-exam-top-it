@@ -12,8 +12,8 @@ namespace gordejchik {
     size_t ignored_;
   };
 
-  read_result_t readPersons(std::istream& in, dynarray_t< person_t >& arr);
-  void writePersons(std::ostream& out, const dynarray_t< person_t >& arr);
+  read_result_t readPersons(std::istream& in, dynarray_t< Person >& arr);
+  void writePersons(std::ostream& out, const dynarray_t< Person >& arr);
 }
 
 #endif
