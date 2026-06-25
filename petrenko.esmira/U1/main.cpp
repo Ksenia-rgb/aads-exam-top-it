@@ -5,13 +5,13 @@ int main(int argc, char* argv[]) {
   std::string outputFilename;
   for (int i = 1; i < argc; i++) {
     std::string arg = argv[i];
-    if (arg.rfind("in:", 0) == 0) {
+    if (arg.length() >= 3 && arg.substr(0, 3) == "in:") {
       if (!inputFilename.empty()) {
         std::cerr << "Error: Input file specified twice" << "\n";
         return 1;
       }
       inputFilename = arg.substr(3);
-    } else if (arg.rfind("out:", 0) == 0) {
+    } else if (arg.length() >= 4 && arg.substr(0, 4) == "out:") {
       if (!outputFilename.empty()) {
         std::cerr << "Error: Output file specified twice" << "\n";
         return 1;
@@ -22,10 +22,7 @@ int main(int argc, char* argv[]) {
       return 1;
     }
   }
-  if (argc > 3) {
-    std::cerr << "Error: Too many arguments" << "\n";
-    return 1;
-  }
+
   petrenko::DataProcessor processor;
   std::ifstream inputFile;
   if (!inputFilename.empty()) {

@@ -78,13 +78,11 @@ public:
 
   void processLine(const std::string& line) {
     if (line.empty()) {
-      ignoredCount++;
       return;
     }
     size_t start = 0;
     skipWhitespace(line, start);
     if (start >= line.length()) {
-      ignoredCount++;
       return;
     }
     size_t idEnd = start;
