@@ -70,7 +70,7 @@ namespace lukashevich
         const size_t maxCapacity = std::numeric_limits< size_t >::max() / 2;
 
         if (array.capacity_ > maxCapacity) {
-          throw std::lenght_error("overflow capacity");
+          throw std::length_error("overflow capacity");
         }
 
         newCapacity = array.capacity_ * 2;
