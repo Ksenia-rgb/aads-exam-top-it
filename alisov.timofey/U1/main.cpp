@@ -71,7 +71,7 @@ namespace alisov
     if (line.empty()) {
       return false;
     }
-    const size_t first_non_space = line.find_first_not_of(" \n");
+    const size_t first_non_space = line.find_first_not_of(" \t\r\n");
     if (first_non_space == std::string::npos) {
       return false;
     }
@@ -102,13 +102,31 @@ namespace alisov
 
 int main(int argc, char *argv[])
 {
-  alisov::Vector< alisov::Person > people;
-  alisov::init(people);
-
-  if (argc < 1) {
-    return 1;
+  std::string in_file = "";
+  std::string out_file = "";
+  bool has_in = false;
+  bool has_out = false;
+  for (int i = 1; i < argc; ++i) {
+    const std::string arg = argv[i];
+    if (arg.substr(0, 3) == "in:") {
+      if (has_in) {
+        return 1;
+      }
+      in_file = arg.substr(3);
+      has_in = true;
+    } else if (arg.substr(0, 4) == "out:") {
+      if (has_out) {
+        return 1;
+      }
+      out_file = arg.substr(4);
+      has_out = true;
+    } else {
+      return 1;
+    }
   }
   if (argc > 3) {
     return 1;
   }
+  alisov::Vector< alisov::Person > people;
+  alisov::init(people);
 }
