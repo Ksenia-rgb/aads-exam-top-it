@@ -12,12 +12,11 @@ namespace {
 
   bool containsId(const samarin::detail::list_t< samarin::Person > & records, std::size_t id)
   {
-    for (const PersonNode * node = records.head; node != nullptr; node = node->next) {
-      if (node->value.id == id) {
-        return true;
-      }
-    }
-    return false;
+    const auto hasId = [id](const samarin::Person & person)
+    {
+      return person.id == id;
+    };
+    return samarin::detail::findValue(records, hasId) != nullptr;
   }
 }
 
