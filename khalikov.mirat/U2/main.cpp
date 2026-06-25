@@ -5,7 +5,7 @@
 #include "person.hpp"
 #include <map>
 #include <limits>
-
+#include "cmds.hpp"
 namespace khalikov {
 
   struct Data
