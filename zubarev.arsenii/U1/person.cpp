@@ -32,9 +32,20 @@ void zubarev::push(PersonArray& arr, const Person& value)
 }
 
 void zubarev::init(HashSet& set)
-{}
+{
+  set.capacity = 1024;
+  set.data = new size_t[set.capacity];
+  set.used = new bool[set.capacity];
+
+  for (size_t i = 0; i < set.capacity; ++i) {
+    set.used[i] = false;
+  }
+}
 void zubarev::destroy(HashSet& set)
-{}
+{
+  delete[] set.data;
+  delete[] set.used;
+}
 size_t zubarev::hash(const HashSet& set, size_t value)
 {}
 bool zubarev::contains(const HashSet& set, size_t value)
