@@ -55,4 +55,32 @@ int main(int argc, char *argv[])
   for (size_t i = 0; i < seen.capacity; ++i) {
     seen.data[i] = nullptr;
   }
+  size_t id;
+  std::string info;
+  size_t succesCount = 0;
+  size_t ignoredCount = 0;
+  while (*in >> id && !(in->eof())) {
+    *in >> info;
+    if (info.empty()) {
+      ignoredCount++;
+      continue;
+    }
+    if (novikov::is_has(seen, id)) {
+      ignoredCount++;
+      continue;
+    }
+    novikov::insert(seen, id, true);
+    novikov::push_back(persons, novikov::Person{id, info});
+    succesCount++;
+  }
+
+  novikov::Node< novikov::Person > *cur = persons.head;
+  while (cur) {
+    *out << cur->val.id << " " << cur->val.info << "\n";
+    cur = cur->next;
+  }
+  std::cerr << succesCount << " " << ignoredCount << "\n";
+  clear(persons);
+  clear(seen);
+  return 0;
 }
