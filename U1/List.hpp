@@ -3,16 +3,33 @@
 
 namespace novikov
 {
-  template < class T > struct Node
+  template < class T >
+  struct Node
   {
     T val;
     Node< T > *next;
   };
 
-  template < class T > struct List
+  template < class T >
+  struct List
   {
     Node< T > *head;
   };
-}
 
+  template < class T >
+  void push_back(List< T > &list, const T &val)
+  {
+    Node< T > *node = new Node< T >{val, nullptr};
+    if (!list.head) {
+      list.head = node;
+    } else {
+      Node< T > *cur = list.head;
+      while (cur->next) {
+        cur = cur->next;
+      }
+      cur->next = node;
+    }
+  };
+
+}
 #endif
