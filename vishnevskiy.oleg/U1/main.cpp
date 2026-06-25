@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  for (size_t i = 1; i < argc; ++i)
+  for (int i = 1; i < argc; ++i)
   {
     std::string arg = argv[i];
     try
