@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 
+#include "command-manager.hpp"
+
 int main(int argc, char* argv[]) {
   if (argc > 3) {
     std::cerr << "Too many args";
@@ -52,4 +54,8 @@ int main(int argc, char* argv[]) {
       }
     }
   }
+
+  volkovich::List<volkovich::Meet> mt;
+  volkovich::CommandManager cm(mt);
+
 }

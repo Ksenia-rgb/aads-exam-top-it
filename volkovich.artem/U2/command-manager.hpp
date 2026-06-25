@@ -3,8 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "../common/list.hpp"
 #include "../common/htable.hpp"
-
 
 namespace volkovich {
   class CommandManager {
@@ -21,11 +21,11 @@ namespace volkovich {
     void handleGreater(std::istream&, std::ostream&);
     void handleOutPersons(std::istream&, std::ostream&);
 
-    using Meets = HashTable<std::pair<size_t, size_t>>;
-    GraphTable& gr;
+    using Meets = volkovich::List<Meet>;
+    Meets& mt;
 
    public:
-    CommandManager(GraphTable& gr);
+    CommandManager(Meets& mt);
     void readCommand(const std::string& command, std::ostream& output);
   };
 }
