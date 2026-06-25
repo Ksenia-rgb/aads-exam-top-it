@@ -4,7 +4,7 @@
 
 bool lukashevich::detail::isSpace(char ch)
 {
-  return (ch == ' ') || (ch == '\t') || (ch == '\r');
+  return (ch == ' ') || (ch == '\t') || (ch == '\r') || (ch == '\v') || (ch == '\f');
 }
 
 std::string lukashevich::detail::trim(const std::string& text)

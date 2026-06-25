@@ -9,7 +9,6 @@
 int main(int argc, char* argv[])
 {
   if (argc > 3) {
-    std::cerr << "invalid arguments\n";
     return 1;
   }
 
@@ -147,7 +146,9 @@ int main(int argc, char* argv[])
       return 2;
     }
 
-    std::cerr << accepted << ' ' << ignored << '\n';
+    if ((accepted != 0) || (ignored != 0)) {
+      std::cerr << accepted << ' ' << ignored << '\n';
+    }
     lukashevich::destroyArray(persons);
     return 0;
 
