@@ -4,6 +4,10 @@
 
 int main(int argc, char* argv[])
 {
+  if (argc > 3) {
+    return 2;
+  }
+
   std::string in_name = "";
   std::string out_name = "";
 
@@ -106,8 +110,10 @@ int main(int argc, char* argv[])
   }
 
   for (size_t i = 0; i < persons.size; ++i) {
-    *output << persons.data[i].id << " " << persons.data[i].info << '\n';
+    *output << persons.data[i].id << " " << persons.data[i].info;
   }
+
+  *output << '\n';
 
   std::cerr << correct << " " << ignored << '\n';
 

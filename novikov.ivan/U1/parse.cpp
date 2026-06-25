@@ -2,10 +2,6 @@
 
 bool novikov::parse(int argc, char* argv[], std::string& input_file, std::string& output_file)
 {
-  if (argc > 3) {
-    return false;
-  }
-
   bool has_in = false;
   bool has_out = false;
 
