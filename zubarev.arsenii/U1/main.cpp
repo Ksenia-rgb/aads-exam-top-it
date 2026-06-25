@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     return 1;
   }
   if (argc > 3) {
-    std::cerr << "Too mane args";
+    std::cerr << "Too mane args" << '\n';
     return 0;
   }
 
