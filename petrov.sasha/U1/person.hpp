@@ -18,6 +18,8 @@ namespace petrov
     size_t size;
     size_t capacity;
   };
+
+  personArr* createPersonArray(size_t capacity);
 }
 
 #endif
