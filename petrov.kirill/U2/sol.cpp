@@ -365,5 +365,111 @@ namespace petrov
           std::cout << "<INVALID COMMAND>\n";
           continue;
         }
+                bool ex = false;
+        for (size_t i = 0; i < ps.s; ++i) {
+          if (ps.dat[i].del == 0 && ps.dat[i].id == r_id) {
+            ex = true;
+          }
+        }
+        if (!ex) {
+          std::cout << "<INVALID COMMAND>\n";
+          continue;
+        }
+        size_t mc = 0;
+        for (size_t i = 0; i < ms.s; ++i) {
+          if (ms.dat[i].del == 0) {
+            if (ms.dat[i].i1 == r_id || ms.dat[i].i2 == r_id) {
+              if (cmd == "meets" || (cmd == "less" && ms.dat[i].t < limit) || (cmd == "greater" && ms.dat[i].t > limit)) {
+                mc = mc + 1;
+              }
+            }
+          }
+        }
+        if (mc > 0) {
+          std::pair<size_t, size_t>* arr = new std::pair<size_t, size_t>[mc];
+          size_t cur = 0;
+          for (size_t i = 0; i < ms.s; ++i) {
+            if (ms.dat[i].del == 0) {
+              if (ms.dat[i].i1 == r_id || ms.dat[i].i2 == r_id) {
+                if (cmd == "meets" || (cmd == "less" && ms.dat[i].t < limit) || (cmd == "greater" && ms.dat[i].t > limit)) {
+                  size_t oth = ms.dat[i].i1;
+                  if (ms.dat[i].i1 == r_id) {
+                    oth = ms.dat[i].i2;
+                  }
+                  arr[cur] = std::make_pair(oth, ms.dat[i].t);
+                  cur = cur + 1;
+                }
+              }
+            }
+          }
+          for (size_t i = 0; i < mc; ++i) {
+            for (size_t j = i + 1; j < mc; ++j) {
+              bool swp = false;
+              if (arr[i].first > arr[j].first) {
+                swp = true;
+              } else if (arr[i].first == arr[j].first) {
+                if (arr[i].second > arr[j].second) {
+                  swp = true;
+                }
+              }
+              if (swp) {
+                std::pair<size_t, size_t> tmp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = tmp;
+              }
+            }
+          }
+          for (size_t i = 0; i < mc; ++i) {
+            std::cout << arr[i].first << " " << arr[i].second << "\n";
+          }
+          delete[] arr;
+        }
+      } else if (cmd == "commons") {
+        size_t id_a = 0;
+        size_t id_b = 0;
+        if (!(std::cin >> id_a >> id_b)) {
+          std::cin.clear();
+          std::string dummy = "";
+          std::cin >> dummy;
+          std::cout << "<INVALID COMMAND>\n";
+          continue;
+        }
+        bool ex_a = false;
+        bool ex_b = false;
+        for (size_t i = 0; i < ps.s; ++i) {
+          if (ps.dat[i].del == 0) {
+            if (ps.dat[i].id == id_a) {
+              ex_a = true;
+            }
+            if (ps.dat[i].id == id_b) {
+              ex_b = true;
+            }
+          }
+        }
+        if (!ex_a || !ex_b) {
+          std::cout << "<INVALID COMMAND>\n";
+          continue;
+        }
+        size_t cc = 0;
+        for (size_t i = 0; i < ps.s; ++i) {
+          if (ps.dat[i].del == 0) {
+            size_t cid = ps.dat[i].id;
+            bool m_a = false;
+            bool m_b = false;
+            for (size_t j = 0; j < ms.s; ++j) {
+              if (ms.dat[j].del == 0) {
+                if ((ms.dat[j].i1 == id_a && ms.dat[j].i2 == cid) || (ms.dat[j].i2 == id_a && ms.dat[j].i1 == cid)) {
+                  m_a = true;
+                }
+                if ((ms.dat[j].i1 == id_b && ms.dat[j].i2 == cid) || (ms.dat[j].i2 == id_b && ms.dat[j].i1 == cid)) {
+                  m_b = true;
+                }
+              }
+            }
+            if (m_a && m_b) {
+              cc = cc + 1;
+            }
+          }
+        }
   }
 }
