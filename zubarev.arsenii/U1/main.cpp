@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
     return 1;
   }
   if (argc > 3) {
+    std::cerr << "Too mane args";
     return 0;
   }
 
@@ -128,6 +129,7 @@ int main(int argc, char* argv[])
     std::cerr << correct << " " << ignored << '\n';
   } else {
     std::cout << '\n';
+    std::cerr << "0 0" << '\n';
   }
 
   destroy(persons);
