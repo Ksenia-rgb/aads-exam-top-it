@@ -22,7 +22,8 @@ int main(int argc, char** argv)
   std::ostream* output = &std::cout;
   size_t countInp = 0, countOut = 0;
   if (argc > 3) {
-    return 1;
+    std::cerr << "Too musn args\n";
+    return 0;
   }
 
   if (argc > 1) {
