@@ -85,8 +85,14 @@ int main(int argc, char* argv[])
 
     push(persons, person);
 
-    correct++;
+    ++correct;
   }
+
+  for (size_t i = 0; i < persons.size; ++i) {
+    *output << persons.data[i].id << " " << persons.data[i].info << '\n';
+  }
+
+  std::cerr << correct << " " << ignored << '\n';
 
   destroy(persons);
   destroy(ids);
