@@ -39,15 +39,17 @@ int main(int argc, char* argv[])
       ++pos;
     }
 
+    if (pos == line.size()) {
+      continue;
+    }
+
     size_t id = 0;
 
     bool hasId = false;
 
     while (pos < line.size() && std::isdigit(static_cast< unsigned char >(line[pos]))) {
       hasId = true;
-
       id = id * 10 + line[pos] - '0';
-
       ++pos;
     }
 

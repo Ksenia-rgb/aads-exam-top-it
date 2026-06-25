@@ -1,6 +1,6 @@
 #include "parse.hpp"
 
-bool novikov::parse(int argc, char** argv, std::string& input_file, std::string& output_file)
+bool novikov::parse(int argc, char* argv[], std::string& input_file, std::string& output_file)
 {
   if (argc > 3) {
     return false;
