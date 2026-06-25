@@ -16,9 +16,16 @@ struct HashTable {
   size_t size;
   size_t capacity;
 };
+struct OrderArray {
+  size_t *data;
+  size_t size;
+  size_t capacity;
+};
 HashTable *createHashTable(size_t initCapacity);
 void hashTableDestroy();
 void hashTableInsert(HashTable *table, const Person &person);
 Person *hashTableGet(const HashTable *table, size_t id);
+OrderArray *createOrderArray(size_t initCapacity);
+void destroyOrderArray(OrderArray *arr);
 } // namespace karpenkov
 #endif

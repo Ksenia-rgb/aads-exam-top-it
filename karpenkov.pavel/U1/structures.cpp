@@ -7,6 +7,10 @@ HashTable *createHashTable(size_t initCapacity) {
   HashTable *table = new HashTable;
   table->size = 0;
   table->capacity = initCapacity;
+  table->table = new HashPerson[initCapacity];
+  for (size_t i = 0; i < initCapacity; ++i) {
+    table->table[i].occupied = false;
+  }
   return table;
 }
 void hashTableDestroy(HashTable *tableL) {
@@ -17,7 +21,7 @@ void hashTableDestroy(HashTable *tableL) {
 }
 void hashTableInsert(HashTable *tableL, const Person &person) {
   if (tableL->capacity == 0) {
-    tableL = createHashTable(16);
+    HashTable *tableL = createHashTable(16);
   }
   size_t index = HashFunction(person.id, tableL->capacity);
   while (tableL->table[index].occupied) {
