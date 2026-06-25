@@ -62,7 +62,6 @@ int main(int argc, char* argv[])
 
   smirnova::processInput(in, persons, validEntries, ignoredEntries);
 
-  // всегда печатаем "in file"
   if (hasOut)
   {
     std::cout << "in file " << outputFileName << "\n";
@@ -72,7 +71,6 @@ int main(int argc, char* argv[])
     std::cout << "in file\n";
   }
 
-  // вывод данных
   if (hasOut)
   {
     std::ofstream out(outputFileName);
@@ -90,7 +88,6 @@ int main(int argc, char* argv[])
     smirnova::printPersons(persons, std::cout);
   }
 
-  // статистика (НО не ломаем empty test)
   if (!(validEntries == 0 && ignoredEntries == 0))
   {
     std::cerr << validEntries << " " << ignoredEntries << std::endl;
