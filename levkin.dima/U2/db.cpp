@@ -1,5 +1,6 @@
 #include "db.hpp"
 #include "db.hpp"
+#include <iostream>
 namespace levkin {
   void freeDB(DB& db)
   {
@@ -29,5 +30,32 @@ namespace levkin {
       Pair p = std::make_pair(id, "");
       pushBack(db.persons, p);
     }
+  }
+
+  int loadMeetings(DB& db, const std::string& data_file)
+  {
+    std::ifstream dfs(data_file);
+    if (!dfs) {
+      std::cerr << "Error: Cannot open data file " << data_file << "\n";
+      return 2;
+    }
+
+    size_t id1, id2, duration;
+    while (dfs >> id1 >> id2 >> duration) {
+      if (id1 == id2) {
+        continue;
+      }
+      ensurePersonExists(db, id1);
+      ensurePersonExists(db, id2);
+      Meeting m{id1, id2, duration};
+      pushBack(db.meetings, m);
+    }
+
+    if (!dfs.eof() && dfs.fail()) {
+      std::cerr << "bad data in meeting file.\n";
+      return 3;
+    }
+
+    return 0;
   }
 }

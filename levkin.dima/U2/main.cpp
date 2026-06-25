@@ -11,12 +11,40 @@ int main(int argc, char* argv[])
     std::cerr << "Error: Invalid number of arguments.\n";
     return 1;
   }
+
   std::string data_file;
   std::string in_file;
 
-  using namespace levkin;
-  if (!parseArguments(argc, argv, data_file, in_file)) {
+  if (!levkin::parseArguments(argc, argv, data_file, in_file)) {
     return 1;
   }
-  
+
+  levkin::DB db;
+  db.persons.size = 0;
+  db.persons.cap = 0;
+  db.persons.data = nullptr;
+  db.meetings.size = 0;
+  db.meetings.cap = 0;
+  db.meetings.data = nullptr;
+
+  if (!in_file.empty()) {
+    std::ifstream ifs(in_file);
+    if (!ifs) {
+      std::cerr << "Error: Cannot open input file " << in_file << "\n";
+      return 2;
+    }
+    size_t total = 0, ignored = 0;
+    levkin::readToVec(db.persons, ifs, total, ignored);
+  }
+
+  int load_status = levkin::loadMeetings(db, data_file);
+  if (load_status != 0) {
+    levkin::freeDB(db);
+    return load_status;
+  }
+
+  levkin::runInteractiveLoop(db, std::cin, std::cout);
+
+  levkin::freeDB(db);
+  return 0;
 }
