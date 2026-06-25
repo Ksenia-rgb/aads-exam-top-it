@@ -53,6 +53,21 @@ namespace yalovsky
     arr.data = newData;
     arr.capacity = newCapacity;
   }
+
+  template< class T >
+  void pushBack(Array< T >& arr, const T& value)
+  {
+    if (arr.size == arr.capacity)
+    {
+      const size_t initialCapacity = 1;
+      const size_t growthFactor = 2;
+      const size_t grown = arr.capacity * growthFactor;
+      const size_t newCapacity = (arr.capacity == 0) ? initialCapacity : grown;
+      reserveArray(arr, newCapacity);
+    }
+    arr.data[arr.size] = value;
+    ++arr.size;
+  }
 }
 
 #endif
