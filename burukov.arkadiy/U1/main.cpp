@@ -90,7 +90,7 @@ namespace
       }
     }
     std::ostream& out = args.hasOut ? static_cast< std::ostream& >(outFile) : std::cout;
-    if (persons.size > 0)
+    if (stats.accepted > 0 || stats.ignored > 0)
     {
       writeAll(out, persons);
     }
