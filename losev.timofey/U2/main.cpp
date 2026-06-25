@@ -1,20 +1,51 @@
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <vector>
 #include <stdexcept>
 
 #include "../common/person.hpp"
 #include "meeting.hpp"
 #include "storage.hpp"
 #include "args.hpp"
+#include "io.hpp"
 
 int main(int argc, char* argv[])
 {
   try
   {
     losev::Args args = losev::parseArgs(argc, argv);
-    std::cout << "in: " << (args.hasIn ? args.inFile : "(stdin)") << "\n";
-    std::cout << "data: " << args.dataFile << "\n";
+
+    // Читаем людей
+    losev::PersonStorage people;
+    initPersonStorage(people);
+
+    if (args.hasIn)
+    {
+      std::ifstream inFile(args.inFile);
+      if (!inFile.is_open())
+      {
+        std::cerr << "Failed to open input file\n";
+        return 2;
+      }
+      losev::readPeople(inFile, people);
+    }
+
+    losev::MeetingStorage meetings;
+    initMeetingStorage(meetings);
+
+    std::ifstream dataFile(args.dataFile);
+    if (!dataFile.is_open())
+    {
+      std::cerr << "Failed to open data file\n";
+      clearPersonStorage(people);
+      return 2;
+    }
+    losev::readMeetings(dataFile, meetings);
+
+
+    clearPersonStorage(people);
+    clearMeetingStorage(meetings);
+
     return 0;
   }
   catch (const std::invalid_argument& e)
