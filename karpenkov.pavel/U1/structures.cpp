@@ -115,6 +115,9 @@ void goodStringsCount(std::istream &in, HashTable *table, OrderArray *order,
   successCount = 0;
   ignoredCount = 0;
   while (std::getline(in, line)) {
+    if (line.empty()) {
+      continue;
+    }
     if (processLine(line, table, order)) {
       ++successCount;
     } else {
