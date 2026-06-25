@@ -69,7 +69,7 @@ int main(int argc, char** argv)
         size_t q = 0;
         for (size_t i = 0; i < trash.size(); ++i)
         {
-          if (trash[i] != ' ' && trash[i] != '\n' && trash[i] == '\r')
+          if (trash[i] != ' ' && trash[i] != '\n' && trash[i] != '\r' && trash[i] != '\t')
           {
             q = 1;
             break;
@@ -82,10 +82,60 @@ int main(int argc, char** argv)
     std::string inf;
     std::getline(*in, inf);
     size_t st = 0;
-    while (st < inf.size() && inf[st] == ' ' || inf[st] == '\n' || inf[st] == '\r')
+    while (st < inf.size() && (inf[st] == ' ' || inf[st] == '\n' || inf[st] == '\r' || inf[st] == '\t'))
     {
       st++;
     }
+    if (st < inf.size())
+    {
+      inf = inf.substr(st);
+    }
+    else
+    {
+      inf = "";
+    }
+    if (inf.size() > 0 && inf[inf.size() - 1] == '\r')
+    {
+      inf = inf.substr(0, inf.size() - 1);
+    }
+    if (inf == "")
+    {
+      err++;
+      continue;
+    }
+    petrov::Person p;
+    p.id = id_v;
+    p.info = inf;
+    if (petrov::is_dubl(vec, p, s, c) == 0)
+    {
+      err++;
+      continue;
+    }
+    if (s == c)
+    {
+      size_t new_c = 2;
+      if (c != 0)
+      {
+        new_c = c * 2;
+      }
+      petrov::Person* new_v = new petrov::Person[new_c];
+      for (size_t i = 0; i < s; ++i)
+      {
+        new_v[i] = vec[i];
+      }
+      delete[] vec;
+      vec = new_v;
+      c = new_c;
+    }
+    vec[s] = p;
+    s++;
+    ok++;
   }
+  for (size_t i = 0; i < s; ++i)
+  {
+    *out << vec[i].id << " " << vec[i].info << "\n";
+  }
+  std::cerr << ok << " " << err << "\n";
+  delete[] vec;
   return 0;
 }
