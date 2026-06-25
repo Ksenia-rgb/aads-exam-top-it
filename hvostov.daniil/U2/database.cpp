@@ -435,7 +435,7 @@ void hvostov::greater(const Database& db, size_t time, size_t id, std::ostream& 
 
 void hvostov::outPersons(const Database& db, const std::string& filename)
 {
-  std::ofstream outFile(filename);
+  std::ofstream outFile(filename.c_str(), std::ios::app);
   if (!outFile.is_open()) {
     std::cerr << "Error: cannot open output file\n";
     return;
@@ -452,4 +452,6 @@ void hvostov::outPersons(const Database& db, const std::string& filename)
   if (!hasAny) {
     outFile << '\n';
   }
+
+  outFile.close();
 }
