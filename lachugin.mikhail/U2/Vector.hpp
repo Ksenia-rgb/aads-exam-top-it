@@ -13,7 +13,12 @@ namespace lachugin
   };
 
   template< class T >
-  void initVector(Vector< T >& vector);
+  void initVector(Vector< T >& vector)
+  {
+    vector.data = new T[8];
+    vector.size = 0;
+    vector.capacity = 8;
+  }
 
   template< class T >
   void pushBack(Vector< T >& vector, const T& value);
