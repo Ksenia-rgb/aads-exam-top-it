@@ -24,6 +24,25 @@ bool parseLine(const std::string & line, Person & person)
   return !person.info.empty();
 }
 
+void addPerson(Person *& persons, size_t & count, size_t & capacity, const Person & person)
+{
+  if (count == capacity)
+  {
+    size_t newCapacity = capacity == 0 ? 1 : capacity * 2;
+    Person * newPersons = new Person[newCapacity];
+
+    for (size_t i = 0; i < count; ++i)
+    {
+      newPersons[i] = persons[i];
+    }
+
+    delete[] persons;
+    persons = newPersons;
+    capacity = newCapacity;
+  }
+  persons[count++] = person;
+}
+
 int main()
 {
   Person * persons = nullptr;
@@ -43,6 +62,10 @@ int main()
     }
   }
 
+  for (size_t i = 0; i < count; ++i)
+  {
+    std::cout << persons[i].id << ' ' << persons[i].info << '\n';
+  }
 
   return 0;
 }
