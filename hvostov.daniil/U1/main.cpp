@@ -2,10 +2,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <set>
-#include <vector>
 #include <cstring>
 #include <limits>
+#include "utility.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -13,9 +12,10 @@ int main(int argc, char* argv[])
   std::string outputFile = "";
 
   if (argc > 3) {
-    std::cerr << "To many arguments\n";
-    return 2;
+    std::cerr << 0 << ' ' << 0 << "\n";
+    return 0;
   }
+
   for (int i = 1; i < argc; ++i) {
     std::string arg(argv[i]);
 
@@ -37,8 +37,14 @@ int main(int argc, char* argv[])
     }
   }
 
-  std::vector< hvostov::Person > persons;
-  std::set< size_t > usedIds;
+  size_t capacity = 10;
+  size_t count = 0;
+  hvostov::Person* persons = new hvostov::Person[capacity];
+
+  size_t idsCapacity = 10;
+  size_t idsCount = 0;
+  size_t* usedIds = new size_t[idsCapacity];
+
   size_t successCount = 0;
   size_t ignoredCount = 0;
 
@@ -49,6 +55,8 @@ int main(int argc, char* argv[])
     inFile.open(inputFile);
     if (!inFile.is_open()) {
       std::cerr << "Error: cannot open input file\n";
+      delete[] persons;
+      delete[] usedIds;
       return 2;
     }
     in = &inFile;
@@ -58,9 +66,23 @@ int main(int argc, char* argv[])
     hvostov::Person person;
 
     if (*in >> person) {
-      if (usedIds.find(person.id) == usedIds.end()) {
-        persons.push_back(person);
-        usedIds.insert(person.id);
+      if (!hvostov::idExists(usedIds, idsCount, person.id)) {
+        if (idsCount >= idsCapacity) {
+          size_t* newIds = new size_t[idsCapacity * 2];
+          for (size_t i = 0; i < idsCount; ++i) {
+            newIds[i] = usedIds[i];
+          }
+          delete[] usedIds;
+          usedIds = newIds;
+          idsCapacity *= 2;
+        }
+        usedIds[idsCount++] = person.id;
+
+        if (count >= capacity) {
+          persons = hvostov::resizePersons(persons, count, capacity * 2);
+          capacity *= 2;
+        }
+        persons[count++] = person;
         successCount++;
       } else {
         ignoredCount++;
@@ -75,7 +97,11 @@ int main(int argc, char* argv[])
       }
     }
   }
-
+  if (count == 0) {
+    std::cout << "\n";
+    std::cerr << 0 << ' ' << 0 << "\n";
+    return 0;
+  }
   if (inFile.is_open()) {
     inFile.close();
   }
@@ -87,18 +113,23 @@ int main(int argc, char* argv[])
     outFile.open(outputFile);
     if (!outFile.is_open()) {
       std::cerr << "Error: cannot open output file\n";
+      delete[] persons;
+      delete[] usedIds;
       return 2;
     }
     out = &outFile;
   }
 
-  for (const auto& person : persons) {
-    *out << person << '\n';
+  for (size_t i = 0; i < count; ++i) {
+    *out << persons[i] << '\n';
   }
 
   if (successCount > 0 || ignoredCount > 0) {
     std::cerr << successCount << ' ' << ignoredCount << '\n';
   }
+
+  delete[] persons;
+  delete[] usedIds;
 
   return 0;
 }
