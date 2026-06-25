@@ -23,7 +23,13 @@ void zubarev::resize(PersonArray& arr)
   arr.capacity = new_cap;
 }
 void zubarev::push(PersonArray& arr, const Person& value)
-{}
+{
+  if (arr.size == arr.capacity) {
+    resize(arr);
+  }
+  arr.data[arr.size] = value;
+  ++arr.size;
+}
 
 void zubarev::init(HashSet& set)
 {}
