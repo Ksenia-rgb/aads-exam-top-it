@@ -4,8 +4,8 @@
 #include <string>
 #include <utility>
 
-#include "array.hpp"
-#include "hashmap.hpp"
+#include <array.hpp>
+#include <hashmap.hpp>
 
 namespace burukov
 {

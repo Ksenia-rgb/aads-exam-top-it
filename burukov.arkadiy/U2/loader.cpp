@@ -3,8 +3,8 @@
 #include <istream>
 #include <string>
 
-#include "parser.hpp"
-#include "person.hpp"
+#include <parser.hpp>
+#include <person.hpp>
 
 namespace burukov
 {
