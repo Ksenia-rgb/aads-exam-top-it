@@ -102,6 +102,9 @@ int main(int argc, char* argv[]) {
   } if (in) {
     file_in.close();
   }
-  std::cerr << ignored << ' ' << not_ignored;
+  if (ids.isEmpty()) {
+    *output << '\n';
+  }
+  std::cerr << not_ignored << ' ' << ignored;
   return 0;
 }
