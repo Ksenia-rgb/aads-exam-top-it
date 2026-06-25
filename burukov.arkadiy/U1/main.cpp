@@ -94,7 +94,10 @@ namespace
     {
       writeAll(out, persons);
     }
-    std::cerr << stats.accepted << " " << stats.ignored << "\n";
+    if (stats.accepted > 0 || stats.ignored > 0)
+    {
+      std::cerr << stats.accepted << " " << stats.ignored << "\n";
+    }
     return 0;
   }
 
@@ -106,7 +109,7 @@ int main(int argc, char** argv)
   if (!args.valid)
   {
     std::cerr << "Invalid arguments" << "\n";
-    return 0;
+    return 1;
   }
   burukov::darray< burukov::Person > persons = burukov::makeArray< burukov::Person >(4);
   int code = 0;
