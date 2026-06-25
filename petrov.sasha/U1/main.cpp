@@ -15,10 +15,6 @@ namespace
 {
   bool parseArgs(int argc, char* argv[], std::string& inFile, std::string& outFile)
   {
-    if (argc > 3)
-    {
-      return false;
-    }
     bool hasIn = false;
     bool hasOut = false;
     for (int i = 1; i < argc; ++i)
@@ -55,6 +51,11 @@ int main(int argc, char* argv[])
 {
   try
   {
+    if (argc > 3)
+    {
+      std::cerr << "Too many args\n";
+      return 0;
+    }
     std::string inFilename = "";
     std::string outFilename = "";
     if (!parseArgs(argc, argv, inFilename, outFilename))
