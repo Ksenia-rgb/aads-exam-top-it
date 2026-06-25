@@ -32,10 +32,17 @@ namespace
 
 int main(int argc, char** argv)
 {
+  if (argc > 3)
+  {
+    std::cerr << "Too many arguments" << '\n';
+    return 0;
+  }
+
   vasyakin::Args args = vasyakin::parseArgs(argc, argv);
 
   if (!args.valid)
   {
+    std::cerr << "Invalid arguments" << '\n';
     return 1;
   }
 
@@ -108,12 +115,14 @@ int main(int argc, char** argv)
       {
         *outStream << persons.data[i].id << " " << persons.data[i].info << "\n";
       }
+
+      if (persons.size == 0)
+      {
+        *outStream << "\n";
+      }
     }
 
-    if (successCount > 0 || ignoreCount > 0)
-    {
-      std::cerr << successCount << " " << ignoreCount << "\n";
-    }
+    std::cerr << successCount << " " << ignoreCount << "\n";
 
     cleanupResources(persons, seen);
 
@@ -122,6 +131,6 @@ int main(int argc, char** argv)
   catch (...)
   {
     cleanupResources(persons, seen);
-    return 2;
+    throw;
   }
 }
