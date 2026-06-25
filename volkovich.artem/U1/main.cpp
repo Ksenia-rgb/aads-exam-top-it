@@ -61,9 +61,7 @@ int main(int argc, char* argv[]) {
       }
     }
   }
-  std::hash< size_t > hashf;
-  volkovich::HashTable< size_t, std::string, std::hash< size_t >, std::equal_to< size_t > > htable(
-      hashf);
+  volkovich::HashTable< size_t, std::string, std::hash< size_t >, std::equal_to< size_t > > htable;
   std::string line;
   size_t ignored = 0;
 
