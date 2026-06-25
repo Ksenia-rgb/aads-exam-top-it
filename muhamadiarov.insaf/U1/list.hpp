@@ -14,7 +14,7 @@ namespace muhamadiarov
   template< class T >
   struct List
   {
-    List();
+    List() noexcept;
     void pushFront(const T& data);
     void popBack(const T& data) noexcept;
     size_t size() const noexcept;
@@ -25,13 +25,13 @@ namespace muhamadiarov
 }
 
 template< class T >
-muh::List< T >::List():
-  head_(new Node< T >()),
+muh::List< T >::List() noexcept:
+  head_(nullptr),
   size(0)
 {}
 
 template <class T>
-void muh::List< T >::pushFront(const T& value)
+void muh::List< T >::pushBack(const T& value)
 {
   Node< T >* newNode = new Node< T >{value, nullptr, nullptr};
   try
@@ -48,7 +48,6 @@ void muh::List< T >::pushFront(const T& value)
       newNode->prev_ = head_->prev_;
       head_->prev_->next_ = newNode;
       head_->prev_ = newNode;
-      head_ = newNode;
     }
     ++size_;
   }
@@ -60,7 +59,7 @@ void muh::List< T >::pushFront(const T& value)
 }
 
 template <class T>
-void muh::List< T >::popBack() noexcept
+void muh::List< T >::popFront() noexcept
 {
   if (!head_)
   {
@@ -74,10 +73,11 @@ void muh::List< T >::popBack() noexcept
   }
   else
   {
-    Node< T >* last = head_->prev_;
-    head_->prev_ = last->prev_;
-    last->prev_->next_ = head_;
-    delete last;
+    Node< T >* newHead = head_->next_;
+    head_->prev_->next_ = newHead;
+    newHead->prev_ = head_->prev_;
+    delete head_;
+    head_ = newHead;
   }
   --size_;
 }
