@@ -17,6 +17,7 @@ int main(int argc, char** argv)
   namespace kuz = kuznetsov;
   std::ifstream ifile;
   std::ofstream ofile;
+  std::string iPath, oPath;
   std::istream* source = &std::cin;
   std::ostream* output = &std::cout;
   size_t countInp = 0, countOut = 0;
@@ -29,29 +30,40 @@ int main(int argc, char** argv)
       std::string str = argv[i];
       if (str.find("in:") == 0) {
         std::string path = str.substr(3);
-        ifile.open(path);
-        if (!ifile) {
-          std::cerr << "Cant open file\n";
-          return 2;
-        }
-        source = &ifile;
+        iPath = path;
         countInp++;
       } else if (str.find("out:") == 0) {
         std::string path = str.substr(4);
-        ofile.open(path);
-        if (!ofile) {
-          std::cerr << "Cant open file\n";
-          return 2;
-        }
-        output = &ofile;
+        oPath = path;
         countOut++;
       }
     }
   }
 
+  if (iPath == oPath) {
+    return 1;
+  }
+
   if (countInp > 1 || countOut > 1) {
     return 1;
   }
+  if (countInp == 1) {
+    ifile.open(iPath);
+    if (!ifile) {
+      std::cerr << "Cant open file\n";
+      return 2;
+    }
+    source = &ifile;
+  }
+  if (countOut == 1) {
+    ofile.open(oPath);
+    if (!ofile) {
+      std::cerr << "Cant open file\n";
+      return 2;
+    }
+    output = &ofile;
+  }
+
   size_t cSucces = 0, cFail = 0;
   kuz::darray< kuz::Person > persons = kuz::makeDarray< kuz::Person >(8);
   while (!source->eof()) {
