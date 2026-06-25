@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
   if (argc > 3)
   {
     std::cerr << "Too many arguments\n";
-    return 2;
+    return 1;
   }
 
   for (int i = 1; i < argc; ++i)
@@ -81,10 +81,12 @@ int main(int argc, char * argv[])
   size_t count = 0;
   size_t capacity = 0;
   size_t ignored = 0;
+  bool lines_read = false;
   std::string line;
 
   while (std::getline(*in, line))
   {
+    lines_read = true;
     Person person;
     if (parseLine(line, person))
     {
@@ -126,13 +128,18 @@ int main(int argc, char * argv[])
   {
     *out << persons[i].id << ' ' << persons[i].info << '\n';
   }
+  if (!count)
+  {
+    *out << '\n';
+  }
+  
 
   if (hasOut)
   {
     outStream.close();
   }
 
-  if (count > 0)
+  if (lines_read)
   {
     std::cerr << count << ' ' << ignored << '\n';
   }
