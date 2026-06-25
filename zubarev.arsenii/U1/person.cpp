@@ -10,7 +10,18 @@ void zubarev::destroy(PersonArray& arr)
   delete[] arr.data;
 }
 void zubarev::resize(PersonArray& arr)
-{}
+{
+  size_t new_cap = arr.capacity == 0 ? 8 : arr.capacity * 2;
+  Person* new_data = new Person[new_cap];
+
+  for (size_t i = 0; i < arr.size; ++i) {
+    new_data[i] = std::move(arr.data[i]);
+  }
+  delete[] arr.data;
+
+  arr.data = new_data;
+  arr.capacity = new_cap;
+}
 void zubarev::push(PersonArray& arr, const Person& value)
 {}
 
