@@ -1,14 +1,14 @@
 #include <iostream>
+#include <input.hpp>
 #include <utils.hpp>
 #include "commands.hpp"
-#include "input.hpp"
 
 int main(int argc, char * argv[])
 {
   using namespace chernov;
 
   std::string inFile, dataFile;
-  if (!parseArgs(argc, argv, inFile, dataFile)) {
+  if (!parseArgsU2(argc, argv, inFile, dataFile)) {
     std::cerr << "Invalid arguments\n";
     return 1;
   }
@@ -17,7 +17,8 @@ int main(int argc, char * argv[])
   init(persons);
 
   if (!inFile.empty()) {
-    int ret = readPersonsFromFile(inFile, persons);
+    size_t ignored = 0;
+    int ret = readPersonsFromFile(inFile, persons, ignored);
     if (ret != 0) {
       destroy(persons);
       return ret;
@@ -31,7 +32,7 @@ int main(int argc, char * argv[])
 
   try {
     if (!dataFile.empty()) {
-      int ret = readMeetings(dataFile, meetings, allIds);
+      int ret = readMeetingsFromFile(dataFile, meetings, allIds);
       if (ret != 0) {
         destroy(allIds);
         destroy(meetings);
