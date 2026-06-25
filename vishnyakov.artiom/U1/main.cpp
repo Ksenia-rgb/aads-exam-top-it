@@ -2,10 +2,10 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include <person.hpp>
-#include <list.hpp>
-#include <hash.hpp>
-#include <string_utils.hpp>
+#include "person.hpp"
+#include "list.hpp"
+#include "hash.hpp"
+#include "string_utils.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -86,7 +86,6 @@ int main(int argc, char* argv[])
 
     size_t pos = 0;
     size_t id = 0;
-    bool validId = true;
 
     while (pos < trimmed.length() && std::isdigit(trimmed[pos]))
     {
@@ -134,8 +133,8 @@ int main(int argc, char* argv[])
   }
 
   for (vishnyakov::ListNode< vishnyakov::Person >* current = persons.begin();
-      current != persons.end();
-      current = current->next)
+       current != persons.end();
+       current = current->next)
   {
     *out << current->data.id << " " << current->data.info << "\n";
   }
