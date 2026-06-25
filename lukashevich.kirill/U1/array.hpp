@@ -57,6 +57,29 @@ namespace lukashevich
     array.data_ = newData;
     array.capacity_ = newCapacity;
   }
+
+  template < class T >
+  void pushBack(Array< T >& array, const T& value)
+  {
+    if (array.size_ == array.capacity_) {
+      size_t newCapacity = detail:: INITIAL_ARRAY_CAPACITY;
+
+      if (array.capacity_ != 0) {
+        const size_t maxCapacity = std::numeric_limits< size_t >::max() / 2;
+
+        if (array.capacity_ > maxCapacity) {
+          throw std::lenght_error("overflow capacity");
+        }
+
+        newCapacity = array.capacity_ * 2;
+      }
+
+      resArray(array, newCapacity);
+    }
+
+    array.data_[array.size_] = value;
+    ++array.size_;
+  }
 }
 
 #endif
