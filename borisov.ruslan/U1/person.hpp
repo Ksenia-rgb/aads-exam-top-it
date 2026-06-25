@@ -2,6 +2,7 @@
 #define BORISOV_PERSON_HPP
 #include <cstddef>
 #include <string>
+#include <iosfwd>
 
 namespace borisov
 {
@@ -18,6 +19,7 @@ namespace borisov
   };
 
   bool containsId(const PersonNode *head, size_t id);
+  void writePersons(std::ostream &out, const PersonNode *head);
   void freePersons(PersonNode *head);
 }
 
