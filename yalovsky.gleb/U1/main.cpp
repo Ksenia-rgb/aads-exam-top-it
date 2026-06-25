@@ -25,6 +25,12 @@ int main(int argc, char** argv)
 {
   const std::string inPrefix = "in:";
   const std::string outPrefix = "out:";
+  if (argc - 1 > 2)
+  {
+    std::cerr << "invalid arguments" << '\n';
+    return yalovsky::statusOk;
+  }
+
   std::string inputName;
   std::string outputName;
   bool hasInput = false;
@@ -57,12 +63,6 @@ int main(int argc, char** argv)
       std::cerr << "invalid arguments" << '\n';
       return yalovsky::statusBadArgs;
     }
-  }
-
-  if (argc - 1 > 2)
-  {
-    std::cerr << "invalid arguments" << '\n';
-    return yalovsky::statusBadArgs;
   }
 
   yalovsky::Array< yalovsky::Person > persons = yalovsky::makeArray< yalovsky::Person >();
