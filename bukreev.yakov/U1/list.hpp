@@ -38,7 +38,7 @@ namespace bukreev
   void insertListHead(List< T >* fake, const T& val)
   {
     List< T >* newNode = new List< T >;
-    newNode.val = val;
+    newNode->val = val;
 
     newNode->prev = fake;
     newNode->next = fake->next;
@@ -49,7 +49,7 @@ namespace bukreev
   void insertListTail(List< T >* fake, const T& val)
   {
     List< T >* newNode = new List< T >;
-    newNode.val = val;
+    newNode->val = val;
 
     newNode->next = fake;
     newNode->prev = fake->prev;
