@@ -3,6 +3,27 @@
 #include "db.hpp"
 namespace levkin {
   namespace {
+    void collectUniquePartners(const DB& db,
+                               size_t target_id,
+                               Vec< size_t >& partners)
+    {
+      for (size_t i = 0; i < db.meetings.size; ++i) {
+        const auto& m = db.meetings.data[i];
+        if (m.id1 == target_id || m.id2 == target_id) {
+          size_t partner = (m.id1 == target_id) ? m.id2 : m.id1;
+          bool is_duplicate = false;
+          for (size_t j = 0; j < partners.size; ++j) {
+            if (partners.data[j] == partner) {
+              is_duplicate = true;
+              break;
+            }
+          }
+          if (!is_duplicate) {
+            pushBack(partners, partner);
+          }
+        }
+      }
+    }
     void sortMeetings(Vec< Meeting >& vec)
     {
       for (size_t i = 0; i < vec.size; ++i) {
@@ -42,7 +63,7 @@ namespace levkin {
       freeVec(user_meets);
     }
   }
-  oid anons(const DB& db, std::ostream& os)
+  void anons(const DB& db, std::ostream& os)
   {
     Vec< size_t > anon_ids{0, 0, nullptr};
     for (size_t i = 0; i < db.persons.size; ++i) {
@@ -115,7 +136,6 @@ namespace levkin {
       std::getline(is, dummy);
       return;
     }
-
     char ch;
     while (is.get(ch) && isSpaceChar(ch))
       ;
@@ -126,12 +146,10 @@ namespace levkin {
       std::getline(is, dummy);
       return;
     }
-
     std::string new_desc = "";
     while (is.get(ch) && ch != '"') {
       new_desc += ch;
     }
-
     for (size_t i = 0; i < db.persons.size; ++i) {
       if (db.persons.data[i].first == id) {
         db.persons.data[i].second = new_desc;
@@ -149,7 +167,6 @@ namespace levkin {
     }
     printFilterMeets(db, id, os, 0);
   }
-
   void less(const DB& db, std::istream& is, std::ostream& os)
   {
     size_t id, duration;
@@ -160,7 +177,6 @@ namespace levkin {
     }
     printFilterMeets(db, id, os, 1, duration);
   }
-
   void greater(const DB& db, std::istream& is, std::ostream& os)
   {
     size_t id, duration;
@@ -170,5 +186,42 @@ namespace levkin {
       return;
     }
     printFilterMeets(db, id, os, 2, duration);
+  }
+  
+  void commons(const DB& db, std::istream& is, std::ostream& os)
+  {
+    size_t id1, id2;
+    if (!(is >> id1 >> id2) || !hasPerson(db, id1) || !hasPerson(db, id2)) {
+      os << "<INVALID COMMAND>\n";
+      is.clear();
+      return;
+    }
+    Vec< size_t > partners1 = Vec< size_t >();
+    Vec< size_t > partners2 = Vec< size_t >();
+    Vec< size_t > common_ids = Vec< size_t >();
+    try {
+      collectUniquePartners(db, id1, partners1);
+      collectUniquePartners(db, id2, partners2);
+      for (size_t i = 0; i < partners1.size; ++i) {
+        for (size_t j = 0; j < partners2.size; ++j) {
+          if (partners1.data[i] == partners2.data[j]) {
+            pushBack(common_ids, partners1.data[i]);
+            break;
+          }
+        }
+      }
+      selectionSort(common_ids);
+      for (size_t i = 0; i < common_ids.size; ++i) {
+        os << common_ids.data[i] << "\n";
+      }
+      freeVec(partners1);
+      freeVec(partners2);
+      freeVec(common_ids);
+    } catch (...) {
+      freeVec(partners1);
+      freeVec(partners2);
+      freeVec(common_ids);
+      throw;
+    }
   }
 }
