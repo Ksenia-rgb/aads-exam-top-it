@@ -9,6 +9,7 @@
 int main(int argc, char* argv[])
 {
   if (argc > 3) {
+    std::cerr << "error\n";
     return 0;
   }
 
@@ -150,12 +151,9 @@ int main(int argc, char* argv[])
       return 2;
     }
 
-    if ((accepted != 0) || (ignored != 0)) {
       std::cerr << accepted << ' ' << ignored << '\n';
-    }
-    lukashevich::destroyArray(persons);
-    return 0;
-
+      lukashevich::destroyArray(persons);
+      return 0;
   } catch (const std::exception& error) {
     static_cast< void >(error);
     std::cerr << " error\n";
