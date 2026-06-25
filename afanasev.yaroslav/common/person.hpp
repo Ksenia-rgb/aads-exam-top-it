@@ -16,6 +16,7 @@ namespace afanasev
   bool existsPerson(const Person* persons, size_t count, size_t id);
   int findPersonIndex(const Person* persons, size_t count, size_t id);
   void removePersonById(Person *& persons, size_t & count, size_t id);
+  void updateOrAddPerson(Person *& persons, size_t & count, size_t & capacity, size_t id, const std::string & info);
 }
 
 #endif

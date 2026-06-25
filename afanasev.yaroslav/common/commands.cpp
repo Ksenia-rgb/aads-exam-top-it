@@ -44,13 +44,6 @@ namespace afanasev
     delete[] anonIds;
   }
 
-  struct Command
-  {
-    const char * name;
-    void (*handler)(std::istringstream &,
-      Person *&, size_t &, size_t &, Meeting *&, size_t &);
-  };
-
   void cmdDeanonymize(std::istringstream & iss, Person *& persons, size_t & count,
     size_t & capacity,Meeting *& meetings, size_t & mCount)
   {
@@ -70,6 +63,35 @@ namespace afanasev
     removeSelfMeetings(meetings, mCount);
     removePersonById(persons, count, anonId);
   }
+
+  void cmdRedesc(std::istringstream & iss, Person *& persons, size_t & count,
+    size_t & capacity, Meeting *&, size_t &)
+  {
+    size_t id;
+    if (!(iss >> id))
+    {
+      std::cout << "<INVALID COMMAND>\n";
+      return;
+    }
+    char ch;
+    iss >> std::ws;
+    if (iss.get() != '"')
+    {
+      std::cout << "<INVALID COMMAND>\n";
+      return;
+    }
+    std::string desc;
+    std::getline(iss, desc, '"');
+    updateOrAddPerson(persons, count, capacity, id, desc);
+  }
+
+
+  struct Command
+  {
+    const char * name;
+    void (*handler)(std::istringstream &,
+      Person *&, size_t &, size_t &, Meeting *&, size_t &);
+  };
 
   const Command commands[] =
   {

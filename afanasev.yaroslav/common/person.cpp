@@ -72,4 +72,18 @@ namespace afanasev
     }
     --count;
   }
+
+  void updateOrAddPerson(Person *& persons, size_t & count, size_t & capacity, size_t id, const std::string & info)
+  {
+    int idx = findPersonIndex(persons, count, id);
+    if (idx != -1)
+    {
+      persons[idx].info = info;
+    }
+    else
+    {
+      Person p{id, info};
+      addPerson(persons, count, capacity, p);
+    }
+  }
 }
